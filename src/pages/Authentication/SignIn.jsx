@@ -13,12 +13,14 @@ const validationSchema = yup.object().shape({
 });
 const SignIn = () => {
   const [loginbutton, setloginbutton] = useState(false);
+  const Email = 'admin@school.com';
+  const Password = '123456';
   const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
-      Email: 'admin@school.com',
-      Password: '123456',
+      Email: '',
+      Password: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
