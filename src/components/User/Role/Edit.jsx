@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import Logo from './../../../images/logo.jpg';
 import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -33,6 +34,11 @@ const RoleEdit = () => {
       localStorage.setItem('RoleEditData', JSON.stringify(values));
     },
   });
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div>
@@ -145,6 +151,7 @@ const RoleEdit = () => {
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                   type="submit"
+                  onClick={handleGoBack}
                 >
                   Cancel
                 </button>
