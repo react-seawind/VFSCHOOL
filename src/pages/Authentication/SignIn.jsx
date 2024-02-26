@@ -20,8 +20,8 @@ const SignIn = () => {
 
   const formik = useFormik({
     initialValues: {
-      Email: 'admin@school.com',
-      Password: '123456',
+      Email: '',
+      Password: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
