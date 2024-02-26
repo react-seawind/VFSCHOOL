@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Loader from '../../common/Loader/index';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
 
 const validationSchema = yup.object().shape({
   Email: yup.string().required('Email is required'),
