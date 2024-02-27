@@ -65,7 +65,7 @@ const PaymentListing = () => {
       name: 'Action',
       cell: (row) => (
         <div>
-          <div className="bg-red-600 text-white p-3 pl-5 flex relative">
+          <div className="bg-red-600 text-white p-3 pl-5 w-26 flex relative">
             <button>Actions</button>
             <button
               onClick={() => {

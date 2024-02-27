@@ -5,6 +5,8 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../../API';
 import Logo from '../../../images/logo.jpg';
+import { MdClose } from 'react-icons/md';
+import Multiselect from 'multiselect-react-dropdown';
 
 const UserListing = () => {
   const data = [
@@ -84,18 +86,24 @@ const UserListing = () => {
     {
       name: 'Status',
       selector: (row) => (
-        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+        <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
           Active
         </span>
       ),
       sortable: true,
     },
     {
-      name: 'Action',
+      name: 'Assign',
       cell: (row) => (
         <div>
-          <div className="bg-blue-500 text-white p-3 px-5 flex relative">
-            <button onClick={openModal}>Assign STD</button>
+          <div className=" text-white">
+            <button
+              className="w-26 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              type="button"
+              onClick={openModal}
+            >
+              Assign Standard
+            </button>
           </div>
         </div>
       ),
@@ -104,7 +112,7 @@ const UserListing = () => {
       name: 'Action',
       cell: (row) => (
         <div>
-          <div className="bg-red-600 text-white p-3 pl-5 flex relative">
+          <div className="bg-red-600 text-white p-3 pl-5 w-26 flex relative">
             <button>Actions</button>
             <button
               onClick={() => {
@@ -142,7 +150,6 @@ const UserListing = () => {
       ),
     },
   ];
-
   useEffect(() => {
     const mySearch = service.filter(
       (item) =>
@@ -151,12 +158,20 @@ const UserListing = () => {
     setfilterdata(mySearch);
   }, [search]);
 
+  // ==================popup assign task==============
+  const [selectedStd, setSelectedStd] = useState([]);
   const openModal = () => {
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  const handleSelectStd = (selectedList) => {
+    setSelectedStd(selectedList);
+    setFieldValue('stdname', selectedList);
+    // formik.setFieldValue('stdname', selectedList);
   };
   return (
     <div>
@@ -193,6 +208,47 @@ const UserListing = () => {
                 }
               />
             </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="crud-modal"
+        tabindex="-1"
+        aria-hidden="true"
+        className={`  bg-[#888b939b]  z-9999 fixed top-0 right-0 left-0 justify-center items-center w-full md:inset-0   max-h-full ${
+          isModalOpen ? 'flex' : 'hidden'
+        }`}
+      >
+        <div className="relative p-4 w-full max-w-md max-h-full">
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Assign Standard
+              </h3>
+              <button
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={closeModal}
+              >
+                <MdClose />
+              </button>
+            </div>
+            <form className="p-4 md:p-5 text-center">
+              <Multiselect
+                selectedValues={selectedStd}
+                onSelect={handleSelectStd}
+                displayValue="stdname"
+                name="stdname"
+                isObject={false}
+                options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+              />
+              <button
+                type="bsubmit"
+                className="bg-primary text-white py-2 px-4 mt-3 "
+              >
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>
