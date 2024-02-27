@@ -4,11 +4,35 @@ import Breadcrumb from '../../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../../API';
+import Logo from '../../../images/logo.jpg';
 
 const UserListing = () => {
-  const [service, setservice] = useState([]);
+  const data = [
+    {
+      Id: '1',
+      Title: 'school 1',
+      SubTitle: 'school 1',
+      Image: Logo,
+      Status: 'Avtive',
+    },
+    {
+      Id: '2',
+      Title: 'school 2',
+      SubTitle: 'school 2',
+      Image: Logo,
+      Status: 'Avtive',
+    },
+    {
+      Id: '3',
+      Title: 'school 3',
+      SubTitle: 'school 3',
+      Image: Logo,
+      Status: 'Avtive',
+    },
+  ];
+  const [service, setservice] = useState(data);
   const [search, setsearch] = useState('');
-  const [filterdata, setfilterdata] = useState([]);
+  const [filterdata, setfilterdata] = useState(data);
 
   const Navigate = useNavigate();
 
@@ -48,7 +72,10 @@ const UserListing = () => {
     {
       name: 'Image',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <img
+          className="p-1 overflow-hidden h-20 w-20 lg:h-40 lg:w-40 border"
+          src={row.Image}
+        />
       ),
       sortable: true,
     },
@@ -77,9 +104,9 @@ const UserListing = () => {
           </div>
 
           {selectedRow && selectedRow.Id === row.Id && (
-            <div className="action-buttons ml-3">
+            <div className="action-buttons  absolute z-99">
               <button
-                className=" text-black bg-white border  p-2 w-26"
+                className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
                   Navigate('/School/edit');

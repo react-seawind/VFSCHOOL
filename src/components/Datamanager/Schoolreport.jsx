@@ -78,9 +78,9 @@ const SchoolListing = () => {
           </div>
 
           {selectedRow && selectedRow.Id === row.Id && (
-            <div className="action-buttons ml-3">
+            <div className="action-buttons  absolute z-99">
               <button
-                className=" text-black bg-white border  p-2 w-26"
+                className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   alert(`Deleting ${row.Title}`);
                   setSelectedRow(null);
