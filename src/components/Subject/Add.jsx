@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import Multiselect from 'multiselect-react-dropdown';
 
 const validationSchema = yup.object().shape({
   subjectname: yup.string().required('Subject Name is required'),
+  stdname: yup
+    .array()
+    .min(1, 'Select at least one Standard')
+    .required('Standard is required'),
 });
 const SubjectAdd = () => {
+  const [selectedStd, setSelectedStd] = useState([]);
   const formik = useFormik({
     initialValues: {
       subjectname: '',
-      Status: '',
+      stdname: [],
+      Status: 1,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -20,6 +27,10 @@ const SubjectAdd = () => {
     },
   });
 
+  const handleSelectStd = (selectedList) => {
+    setSelectedStd(selectedList);
+    formik.setFieldValue('stdname', selectedList);
+  };
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -51,7 +62,7 @@ const SubjectAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="subject"
+                    name="subjectname"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Subject Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -59,6 +70,25 @@ const SubjectAdd = () => {
                   {formik.touched.subjectname && formik.errors.subjectname && (
                     <small className="text-red-500">
                       {formik.errors.subjectname}
+                    </small>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Standard Name <span className="text-danger">*</span>
+                  </label>
+                  <Multiselect
+                    selectedValues={selectedStd}
+                    onSelect={handleSelectStd}
+                    displayValue="stdname"
+                    name="stdname"
+                    isObject={false}
+                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+                  />
+                  {formik.touched.stdname && formik.errors.stdname && (
+                    <small className="text-red-500">
+                      {formik.errors.stdname}
                     </small>
                   )}
                 </div>

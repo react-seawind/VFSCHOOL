@@ -6,8 +6,14 @@ import Logo from '../../images/logo.jpg';
 import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import Multiselect from 'multiselect-react-dropdown';
+
 const validationSchema = yup.object().shape({
   subjectname: yup.string().required('Subject Name is required'),
+  stdname: yup
+    .array()
+    .min(1, 'Select at least one Standard')
+    .required('Standard is required'),
 });
 const SubjectEdit = () => {
   const formik = useFormik({
@@ -25,6 +31,10 @@ const SubjectEdit = () => {
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+  const handleSelectStd = (selectedList) => {
+    setSelectedStd(selectedList);
+    formik.setFieldValue('stdname', selectedList);
   };
   return (
     <div>
@@ -60,6 +70,25 @@ const SubjectEdit = () => {
                   {formik.touched.subjectname && formik.errors.subjectname && (
                     <small className="text-red-500">
                       {formik.errors.subjectname}
+                    </small>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Standard Name <span className="text-danger">*</span>
+                  </label>
+                  <Multiselect
+                    selectedValues={selectedStd}
+                    onSelect={handleSelectStd}
+                    displayValue="stdname"
+                    name="stdname"
+                    isObject={false}
+                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+                  />
+                  {formik.touched.stdname && formik.errors.stdname && (
+                    <small className="text-red-500">
+                      {formik.errors.stdname}
                     </small>
                   )}
                 </div>

@@ -15,13 +15,11 @@ import StdEdit from '../components/Standard/Std/Edit';
 import SubjectListing from '../components/Subject/Listing';
 import SubjectAdd from '../components/Subject/Add';
 import SubjectEdit from '../components/Subject/Edit';
-import RoleListing from '../components/User/Role/Listing';
-import RoleAdd from '../components/User/Role/Add';
-import RoleEdit from '../components/User/Role/Edit';
 import UserListing from '../components/User/User/Listing';
 import UserAdd from '../components/User/User/Add';
 import UserEdit from '../components/User/User/Edit';
 import MyQuillEditor from '../components/QuillEditor';
+import JODEDITROR from '../components/Form';
 
 const coreRoutes = [
   {
@@ -86,20 +84,6 @@ const coreRoutes = [
     component: SubjectEdit,
   },
 
-  // =================Role=============
-  {
-    path: '/role/listing',
-    component: RoleListing,
-  },
-  {
-    path: '/role/add',
-    component: RoleAdd,
-  },
-  {
-    path: '/role/edit',
-    component: RoleEdit,
-  },
-
   // =================User=============
   {
     path: '/user/listing',
@@ -125,6 +109,10 @@ const coreRoutes = [
   {
     path: '/editor',
     component: MyQuillEditor,
+  },
+  {
+    path: '/editor2',
+    component: JODEDITROR,
   },
 ];
 
