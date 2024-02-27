@@ -30,6 +30,8 @@ const UserListing = () => {
       Status: 'Avtive',
     },
   ];
+
+  const [isModalOpen, setModalOpen] = useState(false);
   const [service, setservice] = useState(data);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState(data);
@@ -92,6 +94,16 @@ const UserListing = () => {
       name: 'Action',
       cell: (row) => (
         <div>
+          <div className="bg-blue-500 text-white p-3 px-5 flex relative">
+            <button onClick={openModal}>Assign STD</button>
+          </div>
+        </div>
+      ),
+    },
+    {
+      name: 'Action',
+      cell: (row) => (
+        <div>
           <div className="bg-red-600 text-white p-3 pl-5 flex relative">
             <button>Actions</button>
             <button
@@ -138,6 +150,14 @@ const UserListing = () => {
     );
     setfilterdata(mySearch);
   }, [search]);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   return (
     <div>
       <Breadcrumb pageName="User Listing" />
