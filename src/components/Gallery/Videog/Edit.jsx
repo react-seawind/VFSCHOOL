@@ -8,23 +8,20 @@ import { IoMdClose } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
-  stdname: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
-    .required('Video name is required'),
-  div: yup.string().required('Div is required'),
+  title: yup.string().required('Title is required'),
+  videofile: yup.string().required('Image is required'),
 });
 
 const VideoEdit = () => {
   const formik = useFormik({
     initialValues: {
-      stdname: '',
-      div: '',
+      title: '',
+      videofile: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('VideoEditData', JSON.stringify(values));
+      localStorage.setItem('NEWVIDEOEDITDATA', JSON.stringify(values));
     },
   });
   const navigate = useNavigate();
@@ -51,57 +48,59 @@ const VideoEdit = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
+              <div className="grid md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Video Name <span className="text-danger">*</span>
+                    Title <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="stdname"
+                    name="title"
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Video Name"
+                    placeholder="Enter Your Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.title && formik.errors.title && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.title}
                     </small>
                   )}
                 </div>
 
                 <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Select Div
-                  </label>
-                  <div className="relative z-20 bg-white dark:bg-form-input">
-                    <select
-                      name="div"
+                  <div>
+                    <label className="mb-3 block text-black dark:text-white">
+                      Photo
+                      <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      name="videofile"
                       onChange={formik.handleChange}
-                      className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                    >
-                      <option>Select Div</option>
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                      <option value="F">F</option>
-                      <option value="G">G</option>
-                      <option value="H">H</option>
-                    </select>
-                    <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
-                      <BsChevronDown />
-                    </span>
-                    {formik.touched.div && formik.errors.div && (
+                      className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                    />
+                    {formik.touched.videofile && formik.errors.videofile && (
                       <small className="text-red-500">
-                        {formik.errors.div}
+                        {formik.errors.videofile}
                       </small>
                     )}
+                    <p>Please select an a png,jpeg,jpg,gif file only.</p>
+                  </div>
+                  <div className="mt-5">
+                    <p>Your Exsisting Img File*</p>
+                    <div className="grid grid-cols-4 gap-2 relative">
+                      <div className="relative">
+                        <img
+                          src={Logo}
+                          alt=""
+                          className="w-full rounded border p-2 "
+                        />
+                        <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>

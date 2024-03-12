@@ -7,30 +7,29 @@ import { useNavigate } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 
 const validationSchema = yup.object().shape({
-  Mealname: yup.string().required('Meal Name is required'),
-  stdname: yup
-    .array()
-    .min(1, 'Select at least one Standard')
-    .required('Standard is required'),
+  mondaymeal: yup.string().required('Monday Meal is required'),
+  tuesdaymeal: yup.string().required('Tuesday Meal is required'),
+  wednesdaymeal: yup.string().required('Wednesday Meal is required'),
+  thursdaymeal: yup.string().required('Thursday Meal is required'),
+  fridaymeal: yup.string().required('Friday Meal is required'),
+  saturdaymeal: yup.string().required('Saturday Meal is required'),
 });
 const MealAdd = () => {
-  const [selectedStd, setSelectedStd] = useState([]);
   const formik = useFormik({
     initialValues: {
-      Mealname: '',
-      stdname: [],
-      Status: 1,
+      mondaymeal: '',
+      tuesdaymeal: '',
+      wednesdaymeal: '',
+      thursdaymeal: '',
+      fridaymeal: '',
+      saturdaymeal: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('MealData', JSON.stringify(values));
+      localStorage.setItem('NEWMEALDATA', JSON.stringify(values));
     },
   });
 
-  const handleSelectStd = (selectedList) => {
-    setSelectedStd(selectedList);
-    formik.setFieldValue('stdname', selectedList);
-  };
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -49,80 +48,117 @@ const MealAdd = () => {
                 Meal Add
               </h3>
               <p>
-                Please fill all detail and add new Meal in your Meal
-                directory
+                Please fill all detail and add new Meal in your Meal directory
               </p>
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
+              <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Meal Name <span className="text-danger">*</span>
+                    Monday Meal <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="Mealname"
+                    name="mondaymeal"
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Meal Name"
+                    placeholder="Enter Monday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.Mealname && formik.errors.Mealname && (
+                  {formik.touched.mondaymeal && formik.errors.mondaymeal && (
                     <small className="text-red-500">
-                      {formik.errors.Mealname}
+                      {formik.errors.mondaymeal}
                     </small>
                   )}
                 </div>
-
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Standard Name <span className="text-danger">*</span>
+                    Tuesday Meal <span className="text-danger">*</span>
                   </label>
-                  <Multiselect
-                    selectedValues={selectedStd}
-                    onSelect={handleSelectStd}
-                    displayValue="stdname"
-                    name="stdname"
-                    isObject={false}
-                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+                  <input
+                    type="text"
+                    name="tuesdaymeal"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Tuesday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.tuesdaymeal && formik.errors.tuesdaymeal && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.tuesdaymeal}
                     </small>
                   )}
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      // checked={blogadd.Status === '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      // checked={blogadd.Status == = '0'}
-                    />
-                    In Active
-                  </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Wednesday Meal <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="wednesdaymeal"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Wednesday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.wednesdaymeal &&
+                    formik.errors.wednesdaymeal && (
+                      <small className="text-red-500">
+                        {formik.errors.wednesdaymeal}
+                      </small>
+                    )}
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Thursday Meal <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="thursdaymeal"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Thursday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.thursdaymeal &&
+                    formik.errors.thursdaymeal && (
+                      <small className="text-red-500">
+                        {formik.errors.thursdaymeal}
+                      </small>
+                    )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Friday Meal <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="fridaymeal"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Friday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.fridaymeal && formik.errors.fridaymeal && (
+                    <small className="text-red-500">
+                      {formik.errors.fridaymeal}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Saturday Meal <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="saturdaymeal"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Saturday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.saturdaymeal &&
+                    formik.errors.saturdaymeal && (
+                      <small className="text-red-500">
+                        {formik.errors.saturdaymeal}
+                      </small>
+                    )}
+                </div>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
@@ -134,7 +170,7 @@ const MealAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
+                  type="reset"
                   onClick={handleGoBack}
                 >
                   Cancel

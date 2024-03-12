@@ -2,35 +2,33 @@ import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import Multiselect from 'multiselect-react-dropdown';
 
 const validationSchema = yup.object().shape({
-  ExamTimetablename: yup.string().required('ExamTimetable Name is required'),
-  stdname: yup
-    .array()
-    .min(1, 'Select at least one Standard')
-    .required('ExamTimetableis required'),
+  student: yup.string().required('Student Name is required'),
+  dname: yup.string().required('Driver Name is required'),
+  dnumber: yup.string().required('Driver Number is required'),
+  cname: yup.string().required('Conductor Name is required'),
+  cnumber: yup.string().required('Conductor Number is required'),
+  vnubmer: yup.string().required('Vehicle Name is required'),
 });
-const ExamTimetableAdd = () => {
-  const [selectedStd, setSelectedStd] = useState([]);
+const TransportationAdd = () => {
   const formik = useFormik({
     initialValues: {
-      ExamTimetablename: '',
-      stdname: [],
+      student: '',
+      dname: '',
+      dnumber: '',
+      cname: '',
+      cnumber: '',
+      vnubmer: '',
       Status: 1,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('ExamTimetableData', JSON.stringify(values));
+      localStorage.setItem('NEWTRANSPORATIONDATA', JSON.stringify(values));
     },
   });
 
-  const handleSelectStd = (selectedList) => {
-    setSelectedStd(selectedList);
-    formik.setFieldValue('stdname', selectedList);
-  };
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -38,7 +36,7 @@ const ExamTimetableAdd = () => {
   };
   return (
     <div>
-      <Breadcrumb pageName="ExamTimetable Add " />
+      <Breadcrumb pageName="Transportation Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
@@ -46,11 +44,11 @@ const ExamTimetableAdd = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                ExamTimetable Add
+                Transportation Add
               </h3>
               <p>
-                Please fill all detail and add new ExamTimetable in your
-                ExamTimetable directory
+                Please fill all detail and add new Transportation in your
+                Transportation directory
               </p>
             </div>
 
@@ -58,38 +56,106 @@ const ExamTimetableAdd = () => {
               <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    ExamTimetable Name <span className="text-danger">*</span>
+                    Student Name <span className="text-danger">*</span>
+                  </label>
+                  <select
+                    name="student"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    onChange={formik.handleChange}
+                  >
+                    <option>Select Student</option>
+                    <option value="Rajan">Rajan</option>
+                    <option value="Test">Test</option>
+                  </select>
+
+                  {formik.touched.student && formik.errors.student && (
+                    <small className="text-red-500">
+                      {formik.errors.student}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Driver Name <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="ExamTimetablename"
+                    name="dname"
                     onChange={formik.handleChange}
-                    placeholder="Enter Your ExamTimetable Name"
+                    placeholder="Enter Driver Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.ExamTimetablename &&
-                    formik.errors.ExamTimetablename && (
-                      <small className="text-red-500">
-                        {formik.errors.ExamTimetablename}
-                      </small>
-                    )}
+                  {formik.touched.dname && formik.errors.dname && (
+                    <small className="text-red-500">
+                      {formik.errors.dname}
+                    </small>
+                  )}
                 </div>
-
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    ExamTimetable Name <span className="text-danger">*</span>
+                    Driver Number <span className="text-danger">*</span>
                   </label>
-                  <Multiselect
-                    selectedValues={selectedStd}
-                    onSelect={handleSelectStd}
-                    displayValue="stdname"
-                    name="stdname"
-                    isObject={false}
-                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+                  <input
+                    type="text"
+                    name="dnumber"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Driver Number"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.dnumber && formik.errors.dnumber && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.dnumber}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Conductor Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="cname"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Conductor Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.cname && formik.errors.cname && (
+                    <small className="text-red-500">
+                      {formik.errors.cname}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Conductor Number <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="cnumber"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Conductor Number"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.cnumber && formik.errors.cnumber && (
+                    <small className="text-red-500">
+                      {formik.errors.cnumber}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Vehicle Number <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="vnubmer"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Your Vehicle Number"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.vnubmer && formik.errors.vnubmer && (
+                    <small className="text-red-500">
+                      {formik.errors.vnubmer}
                     </small>
                   )}
                 </div>
@@ -149,4 +215,4 @@ const ExamTimetableAdd = () => {
   );
 };
 
-export default ExamTimetableAdd;
+export default TransportationAdd;

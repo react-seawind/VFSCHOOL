@@ -5,7 +5,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
 
-const MealListing = () => {
+const ExamTTListing = () => {
   const [service, setservice] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
@@ -82,7 +82,7 @@ const MealListing = () => {
                 className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
-                  Navigate('/meal/edit');
+                  Navigate('/examtimetable/edit');
                 }}
               >
                 Edit
@@ -113,7 +113,7 @@ const MealListing = () => {
   }, [search]);
   return (
     <div>
-      <Breadcrumb pageName="Meal Listing" />
+      <Breadcrumb pageName="Exam Timetable Listing" />
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -126,7 +126,7 @@ const MealListing = () => {
                 highlightOnHover
                 actions={
                   <Link
-                    to="/meal/add"
+                    to="/examtimetable/add"
                     className="bg-blue-500 text-white p-3 px-10 text-sm"
                   >
                     Add
@@ -153,4 +153,4 @@ const MealListing = () => {
   );
 };
 
-export default MealListing;
+export default ExamTTListing;

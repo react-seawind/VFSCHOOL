@@ -8,29 +8,24 @@ import Multiselect from 'multiselect-react-dropdown';
 
 const validationSchema = yup.object().shape({
   subjectname: yup.string().required('Subject Name is required'),
-  stdname: yup
-    .array()
-    .min(1, 'Select at least one Standard')
-    .required('Standard is required'),
+  stdname: yup.string().required('Standard Name is required'),
+  divname: yup.string().required('Division Name is required'),
 });
 const SubjectAdd = () => {
   const [selectedStd, setSelectedStd] = useState([]);
   const formik = useFormik({
     initialValues: {
       subjectname: '',
-      stdname: [],
+      stdname: '',
+      divname: '',
       Status: 1,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('SubjectData', JSON.stringify(values));
+      localStorage.setItem('NEWSUBJECTDATA', JSON.stringify(values));
     },
   });
 
-  const handleSelectStd = (selectedList) => {
-    setSelectedStd(selectedList);
-    formik.setFieldValue('stdname', selectedList);
-  };
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -55,7 +50,7 @@ const SubjectAdd = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Subject Name <span className="text-danger">*</span>
@@ -76,19 +71,44 @@ const SubjectAdd = () => {
 
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Standard Name <span className="text-danger">*</span>
+                    Select Standard <span className="text-danger">*</span>
                   </label>
-                  <Multiselect
-                    selectedValues={selectedStd}
-                    onSelect={handleSelectStd}
-                    displayValue="stdname"
+
+                  <select
                     name="stdname"
-                    isObject={false}
-                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
-                  />
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Standard</option>
+                    <option value="1">std 1</option>
+                    <option value="2">std 2</option>
+                  </select>
+
                   {formik.touched.stdname && formik.errors.stdname && (
                     <small className="text-red-500">
                       {formik.errors.stdname}
+                    </small>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Select Division <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    name="divname"
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Division</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                  </select>
+
+                  {formik.touched.divname && formik.errors.divname && (
+                    <small className="text-red-500">
+                      {formik.errors.divname}
                     </small>
                   )}
                 </div>

@@ -134,7 +134,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                 </NavLink>
               </li>
               {/* ===============USER MANAGER============== */}
-              <SidebarLinkGroup>
+              {/*  <SidebarLinkGroup>
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
@@ -190,7 +190,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                                         <FaChevronDown />
                                       </span>
                                     </NavLink>
-                                    {/* <!-- Dropdown Menu Start --> */}
                                     <div
                                       className={`translate transform overflow-hidden ${
                                         !open && 'hidden'
@@ -217,7 +216,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                                         </li>
                                       </ul>
                                     </div>
-                                    {/* <!-- Dropdown Menu End --> */}
                                   </React.Fragment>
                                 );
                               }}
@@ -228,7 +226,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>
+              </SidebarLinkGroup>*/}
               {/* ===============Standard MANAGER============== */}
               <SidebarLinkGroup>
                 {(handleClick, open) => {
@@ -772,20 +770,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
                               <li>
                                 <NavLink
-                                  to="/meal/listing"
+                                  to="/meal/add"
                                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                                 >
                                   <FaClipboardList />
                                   Listing
-                                </NavLink>
-                              </li>
-                              <li>
-                                <NavLink
-                                  to="/meal/add"
-                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                                >
-                                  <IoMdAdd />
-                                  Add
                                 </NavLink>
                               </li>
                             </ul>
@@ -934,7 +923,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                         }}
                       >
                         <MdOutlineHolidayVillage />
-                        Holiday Manager
+                        Holiday Homework
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                             open && 'rotate-180'

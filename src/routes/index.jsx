@@ -18,8 +18,6 @@ import SubjectEdit from '../components/Subject/Edit';
 import UserListing from '../components/User/User/Listing';
 import UserAdd from '../components/User/User/Add';
 import UserEdit from '../components/User/User/Edit';
-import MyQuillEditor from '../components/QuillEditor';
-import JODEDITROR from '../components/Form';
 import TeacherListing from '../components/Teacher/Listing';
 import TeacherAdd from '../components/Teacher/Add';
 import TeacherEdit from '../components/Teacher/Edit';
@@ -32,9 +30,7 @@ import ImageEdit from '../components/Gallery/Imageg/Edit';
 import VideoListing from '../components/Gallery/Videog/Listing';
 import VideoAdd from '../components/Gallery/Videog/Add';
 import VideoEdit from '../components/Gallery/Videog/Edit';
-import MealListing from '../components/Meal/Listing';
 import MealAdd from '../components/Meal/Add';
-import MealEdit from '../components/Meal/Edit';
 import SyllabusListing from '../components/Syllabus/Listing';
 import SyllabusAdd from '../components/Syllabus/Add';
 import SyllabusEdit from '../components/Syllabus/Edit';
@@ -47,9 +43,6 @@ import HolidayEdit from '../components/Holiday/Edit';
 import TransportationListing from '../components/Transportation/Listing';
 import TransportationAdd from '../components/Transportation/Add';
 import TransportationEdit from '../components/Transportation/Edit';
-import ExamTimetableListing from '../components/Transportation/Listing';
-import ExamTimetableAdd from '../components/Transportation/Add';
-import ExamTimetableEdit from '../components/Transportation/Edit';
 import PaperListing from '../components/Paper/Listing';
 import PaperAdd from '../components/Paper/Add';
 import PaperEdit from '../components/Paper/Edit';
@@ -62,6 +55,11 @@ import NoticeEdit from '../components/NoticeCircular/Edit';
 import EventListing from '../components/Event/Listing';
 import EventAdd from '../components/Event/Add';
 import EventEdit from '../components/Event/Edit';
+import ExamTTListing from '../components/ExamTT/Listing';
+import ExamTTAdd from '../components/ExamTT/Add';
+import ExamTTEdit from '../components/ExamTT/Edit';
+import TeacherView from '../components/Teacher/View';
+// import MainForm from '../components/TINY';
 
 const coreRoutes = [
   {
@@ -125,6 +123,10 @@ const coreRoutes = [
     path: '/teacher/edit',
     component: TeacherEdit,
   },
+  {
+    path: '/teacher/view',
+    component: TeacherView,
+  },
   // =================student=============
   {
     path: '/student/listing',
@@ -175,14 +177,6 @@ const coreRoutes = [
     path: '/paymentreport',
     component: Paymentreport,
   },
-  {
-    path: '/editor',
-    component: MyQuillEditor,
-  },
-  {
-    path: '/editor2',
-    component: JODEDITROR,
-  },
 
   // =================image=============
   {
@@ -211,17 +205,10 @@ const coreRoutes = [
     component: VideoEdit,
   },
   // =================meal=============
-  {
-    path: '/meal/listing',
-    component: MealListing,
-  },
+
   {
     path: '/meal/add',
     component: MealAdd,
-  },
-  {
-    path: '/meal/edit',
-    component: MealEdit,
   },
   // =================Syllabus=============
   {
@@ -278,15 +265,15 @@ const coreRoutes = [
   // =================examtimetable=============
   {
     path: '/examtimetable/listing',
-    component: ExamTimetableListing,
+    component: ExamTTListing,
   },
   {
     path: '/examtimetable/add',
-    component: ExamTimetableAdd,
+    component: ExamTTAdd,
   },
   {
     path: '/examtimetable/edit',
-    component: ExamTimetableEdit,
+    component: ExamTTEdit,
   },
   // =================paper=============
   {
@@ -340,6 +327,11 @@ const coreRoutes = [
     path: '/event/edit',
     component: EventEdit,
   },
+
+  // {
+  //   path: '/form',
+  //   component: MainForm,
+  // },
 ];
 
 const routes = [...coreRoutes];

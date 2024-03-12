@@ -7,16 +7,18 @@ import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
   divname: yup.string().required('Division Name is required'),
+  stdname: yup.string().required('Standard is required'),
 });
 const DivAdd = () => {
   const formik = useFormik({
     initialValues: {
       divname: '',
+      stdname: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('DivData', JSON.stringify(values));
+      localStorage.setItem('NEWDIVDATA', JSON.stringify(values));
     },
   });
 
@@ -43,7 +45,7 @@ const DivAdd = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
+              <div className="grid md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Division Name <span className="text-danger">*</span>
@@ -58,6 +60,27 @@ const DivAdd = () => {
                   {formik.touched.divname && formik.errors.divname && (
                     <small className="text-red-500">
                       {formik.errors.divname}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Select Standard <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    name="stdname"
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Standard</option>
+                    <option value="1">std 1</option>
+                    <option value="2">std 2</option>
+                  </select>
+
+                  {formik.touched.stdname && formik.errors.stdname && (
+                    <small className="text-red-500">
+                      {formik.errors.stdname}
                     </small>
                   )}
                 </div>

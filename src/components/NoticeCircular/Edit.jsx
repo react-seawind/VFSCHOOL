@@ -9,17 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 
 const validationSchema = yup.object().shape({
-  Noticename: yup.string().required('Notice Name is required'),
-  stdname: yup
-    .array()
-    .min(1, 'Select at least one Standard')
-    .required('Standard is required'),
+  title: yup.string().required('Title is required'),
+  noticepdf: yup.string().required('Notice PDF is required'),
 });
 const NoticeEdit = () => {
   const formik = useFormik({
     initialValues: {
-      Noticename: '',
-      Status: '',
+      title: '',
+      noticepdf: '',
+      Status: 1,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -62,38 +60,48 @@ const NoticeEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="Notice"
+                    name="title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Notice Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.Noticename && formik.errors.Noticename && (
+                  {formik.touched.title && formik.errors.title && (
                     <small className="text-red-500">
-                      {formik.errors.Noticename}
+                      {formik.errors.title}
                     </small>
                   )}
                 </div>
-
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Standard Name <span className="text-danger">*</span>
+                    Notice PDF <span className="text-danger">*</span>
                   </label>
-                  <Multiselect
-                    selectedValues={selectedStd}
-                    onSelect={handleSelectStd}
-                    displayValue="stdname"
-                    name="stdname"
-                    isObject={false}
-                    options={['std 1', 'std 2', 'std 3', 'std 4', 'std 5']}
+                  <input
+                    type="file"
+                    name="noticepdf"
+                    onChange={formik.handleChange}
+                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.noticepdf && formik.errors.noticepdf && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.noticepdf}
                     </small>
                   )}
+                  <p>Please select an a pdf file only.</p>
+                  <div className="mt-5">
+                    <p>Your Exsisting File*</p>
+                    <div className="grid grid-cols-4 gap-2 relative">
+                      <div className="relative">
+                        <img
+                          src={Logo}
+                          alt=""
+                          className="w-full rounded border p-2 "
+                        />
+                        <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>

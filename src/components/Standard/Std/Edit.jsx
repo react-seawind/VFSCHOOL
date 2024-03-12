@@ -8,23 +8,18 @@ import { IoMdClose } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
-  stdname: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
-    .required('Standard name is required'),
-  div: yup.string().required('Div is required'),
+  stdname: yup.string().required('Standard name is required'),
 });
 
 const StdEdit = () => {
   const formik = useFormik({
     initialValues: {
       stdname: '',
-      div: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      localStorage.setItem('StdEditData', JSON.stringify(values));
+      localStorage.setItem('NEWSTDEDITDATA', JSON.stringify(values));
     },
   });
   const navigate = useNavigate();
@@ -52,7 +47,7 @@ const StdEdit = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Standard Name <span className="text-danger">*</span>
@@ -69,37 +64,6 @@ const StdEdit = () => {
                       {formik.errors.stdname}
                     </small>
                   )}
-                </div>
-
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Select Div
-                  </label>
-                  <div className="relative z-20 bg-white dark:bg-form-input">
-                    <select
-                      name="div"
-                      onChange={formik.handleChange}
-                      className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                    >
-                      <option>Select Div</option>
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                      <option value="F">F</option>
-                      <option value="G">G</option>
-                      <option value="H">H</option>
-                    </select>
-                    <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
-                      <BsChevronDown />
-                    </span>
-                    {formik.touched.div && formik.errors.div && (
-                      <small className="text-red-500">
-                        {formik.errors.div}
-                      </small>
-                    )}
-                  </div>
                 </div>
               </div>
 
