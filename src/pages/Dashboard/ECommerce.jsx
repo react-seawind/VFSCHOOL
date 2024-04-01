@@ -9,17 +9,18 @@ import { getAllSchool } from '../../API/SchoolAPI.jsx';
 import { getAllStandard } from '../../API/StandardApi.jsx';
 import { getAllSubject } from '../../API/SubjectAPI.jsx';
 import { getAllChapter } from '../../API/ChapterApi.jsx';
+import { getAllDivision } from '../../API/DivisionApi.jsx';
 
 const ECommerce = () => {
   // --------------------school data------------------------
-  const [schoolData, setSchoolData] = useState([]);
+  const [divdata, setdivdata] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const allSchool = await getAllSchool();
-        setSchoolData(allSchool);
+        const allDivision = await getAllDivision();
+        setdivdata(allDivision);
       } catch (error) {
-        console.error('Error fetching School data:', error);
+        console.error('Error fetching Division data:', error);
       }
     };
 
@@ -70,8 +71,8 @@ const ECommerce = () => {
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardOne schoolData={schoolData} />
         <CardTwo StandardData={StandardData} />
+        <CardOne divdata={divdata} />
         <CardThree SubjectData={SubjectData} />
         <CardFour ChapterData={ChapterData} />
       </div>
