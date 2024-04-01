@@ -66,7 +66,7 @@ const TeacherView = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/chapter/listing');
   };
   return (
     <div>

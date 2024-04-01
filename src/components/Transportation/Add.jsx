@@ -32,7 +32,7 @@ const TransportationAdd = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/chapter/listing');
   };
   return (
     <div>
@@ -173,7 +173,7 @@ const TransportationAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -184,7 +184,7 @@ const TransportationAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -201,8 +201,8 @@ const TransportationAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

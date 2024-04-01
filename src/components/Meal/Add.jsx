@@ -33,7 +33,7 @@ const MealAdd = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/chapter/listing');
   };
   return (
     <div>
@@ -170,8 +170,8 @@ const MealAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="reset"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

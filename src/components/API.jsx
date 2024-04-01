@@ -63,7 +63,7 @@ export const AddBlog = async (formData) => {
 
 // const API_BASE_URL = 'https://seawindsolution.ae/node-app/api-new';
 
-// const sessiondata = sessionStorage.getItem('logindata');
+// const sessiondata = sessionStorage.getItem('schoollogindata');
 // const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
 // const token = parsedSessionData ? parsedSessionData.token : null;
 // const Id = parsedSessionData ? parsedSessionData.Id : null;
@@ -80,7 +80,7 @@ export const AddBlog = async (formData) => {
 //     const response = await axios.post(`${API_BASE_URL}/adminLogin`, data);
 //     if (response.data.status == true) {
 //       sessionStorage.setItem(
-//         'logindata',
+//         'schoollogindata',
 //         JSON.stringify(response.data.responseData),
 //       );
 //       toast('Login Successfully');

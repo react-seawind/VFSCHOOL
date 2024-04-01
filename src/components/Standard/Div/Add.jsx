@@ -1,31 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import Config from '../../../API/Config';
+import { AddDivision } from '../../../API/DivisionApi';
+import { getAllStandard } from '../../../API/StandardApi';
 
 const validationSchema = yup.object().shape({
-  divname: yup.string().required('Division Name is required'),
-  stdname: yup.string().required('Standard is required'),
+  Title: yup.string().required('Division Name is required'),
+  SchoolStandardId: yup.string().required('School Name is required'),
 });
 const DivAdd = () => {
+  const Id = Config.getId();
+
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getAllStandard();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      divname: '',
-      stdname: '',
+      SchoolId: Id,
+      SchoolStandardId: '',
+      Title: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWDIVDATA', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        await AddDivision(values);
+        actions.resetForm();
+        navigate('/div/listing');
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/div/listing');
   };
   return (
     <div>
@@ -52,14 +79,14 @@ const DivAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="divname"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Division Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.divname && formik.errors.divname && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.divname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -69,13 +96,16 @@ const DivAdd = () => {
                   </label>
 
                   <select
-                    name="stdname"
+                    name="SchoolStandardId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Standard</option>
-                    <option value="1">std 1</option>
-                    <option value="2">std 2</option>
+                    {std.map((std) => (
+                      <option key={std.Id} value={std.Id}>
+                        {std.Title}
+                      </option>
+                    ))}
                   </select>
 
                   {formik.touched.stdname && formik.errors.stdname && (
@@ -98,7 +128,7 @@ const DivAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -109,7 +139,7 @@ const DivAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -126,8 +156,8 @@ const DivAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

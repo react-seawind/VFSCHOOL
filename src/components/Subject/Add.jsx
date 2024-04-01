@@ -5,31 +5,72 @@ import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
+import Config from '../../API/Config';
+import { AddSubject } from '../../API/SubjectAPI';
+import { getAllDivision } from '../../API/DivisionApi';
+import { getAllStandard } from '../../API/StandardApi';
 
 const validationSchema = yup.object().shape({
-  subjectname: yup.string().required('Subject Name is required'),
-  stdname: yup.string().required('Standard Name is required'),
-  divname: yup.string().required('Division Name is required'),
+  Title: yup.string().required('Division Name is required'),
+  SchoolStandardId: yup.string().required('School is required'),
+  SchoolDivisionId: yup.string().required('Division is required'),
 });
 const SubjectAdd = () => {
-  const [selectedStd, setSelectedStd] = useState([]);
+  const Id = Config.getId();
+
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getAllStandard();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+  // ------------Division DATA-------------------
+  const [div, setdiv] = useState([]);
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      try {
+        const DivisionData = await getAllDivision();
+        setdiv(DivisionData);
+      } catch (error) {
+        console.error('Error fetching Division:', error);
+      }
+    };
+    fetchDivision();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      subjectname: '',
-      stdname: '',
-      divname: '',
-      Status: 1,
+      SchoolId: Id,
+      Title: '',
+      SchoolStandardId: '',
+      SchoolDivisionId: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWSUBJECTDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        await AddSubject(values);
+        actions.resetForm();
+        navigate('/subject/listing');
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/subject/listing');
   };
   return (
     <div>
@@ -57,14 +98,14 @@ const SubjectAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="subjectname"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Subject Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.subjectname && formik.errors.subjectname && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.subjectname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -75,20 +116,24 @@ const SubjectAdd = () => {
                   </label>
 
                   <select
-                    name="stdname"
+                    name="SchoolStandardId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Standard</option>
-                    <option value="1">std 1</option>
-                    <option value="2">std 2</option>
+                    {std.map((std) => (
+                      <option key={std.Id} value={std.Id}>
+                        {std.Title}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.stdname && formik.errors.stdname && (
-                    <small className="text-red-500">
-                      {formik.errors.stdname}
-                    </small>
-                  )}
+                  {formik.touched.SchoolStandardId &&
+                    formik.errors.SchoolStandardId && (
+                      <small className="text-red-500">
+                        {formik.errors.SchoolStandardId}
+                      </small>
+                    )}
                 </div>
 
                 <div>
@@ -97,20 +142,24 @@ const SubjectAdd = () => {
                   </label>
 
                   <select
-                    name="divname"
+                    name="SchoolDivisionId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Division</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
+                    {div.map((div) => (
+                      <option key={div.Id} value={div.Id}>
+                        {div.Title}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.divname && formik.errors.divname && (
-                    <small className="text-red-500">
-                      {formik.errors.divname}
-                    </small>
-                  )}
+                  {formik.touched.SchoolDivisionId &&
+                    formik.errors.SchoolDivisionId && (
+                      <small className="text-red-500">
+                        {formik.errors.SchoolDivisionId}
+                      </small>
+                    )}
                 </div>
               </div>
 
@@ -126,7 +175,7 @@ const SubjectAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -137,7 +186,7 @@ const SubjectAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -154,8 +203,8 @@ const SubjectAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

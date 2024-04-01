@@ -1,40 +1,38 @@
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb';
-import { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { ChangePassword } from '../API/AdminApi';
+const validateSchema = Yup.object().shape({
+  OldPassword: Yup.string().required('Old Password is required.'),
+  NewPassword: Yup.string().required('New Password is required.'),
+});
 const Settings = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [rows, setRows] = useState(
-    localStorage.getItem('alertSettings')
-      ? JSON.parse(localStorage.getItem('alertSettings'))
-      : [],
-  );
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem('alertSettings', JSON.stringify(rows));
-  }, [rows]);
-  const [rowToEdit, setRowToEdit] = useState(null);
+  const sessiondata = sessionStorage.getItem('schoollogindata');
+  const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
+  const Id = parsedSessionData ? parsedSessionData.Id : null;
+  const formik = useFormik({
+    initialValues: {
+      Id: Id,
+      OldPassword: '',
+      NewPassword: '',
+    },
+    validationSchema: validateSchema,
+    onSubmit: async (values, actions) => {
+      try {
+        await ChangePassword(values);
+        actions.resetForm();
+      } catch (error) {
+        console.error('Error updating Password:', error);
+      }
+    },
+  });
 
-  const handleDeleteRow = (targetIndex) => {
-    setRows(rows.filter((_, idx) => idx !== targetIndex));
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/dashboard');
   };
-
-  const handleEditRow = (idx) => {
-    setRowToEdit(idx);
-
-    setModalOpen(true);
-  };
-
-  const handleSubmit = (newRow) => {
-    rowToEdit === null
-      ? setRows([...rows, newRow])
-      : setRows(
-          rows.map((currRow, idx) => {
-            if (idx !== rowToEdit) return currRow;
-
-            return newRow;
-          }),
-        );
-  };
-
   return (
     <>
       <div className="mx-auto max-w-270">
@@ -49,7 +47,7 @@ const Settings = () => {
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
+                <form onSubmit={formik.handleSubmit}>
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -59,55 +57,60 @@ const Settings = () => {
                     </label>
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      name="Old Password"
+                      type="password"
+                      name="OldPassword"
                       id="Old Password"
+                      value={formik.values.OldPassword}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder="Old Password"
                     />
+                    {formik.touched.OldPassword &&
+                      formik.errors.OldPassword && (
+                        <div className="text-red-500">
+                          {formik.errors.OldPassword}
+                        </div>
+                      )}
                   </div>
 
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="New Password"
+                      htmlFor="NewPassword"
                     >
                       New Password
                     </label>
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      name="New Password"
-                      id="New Password"
+                      type="password"
+                      name="NewPassword"
+                      id="NewPassword"
+                      value={formik.values.NewPassword}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder="New Password"
                     />
+                    {formik.touched.NewPassword &&
+                      formik.errors.NewPassword && (
+                        <div className="text-red-500">
+                          {formik.errors.NewPassword}
+                        </div>
+                      )}
                   </div>
-                  <div className="mb-5.5">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="Confirm Password"
-                    >
-                      Confirm Password
-                    </label>
-                    <input
-                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      name="Confirm Password"
-                      id="Confirm Password"
-                      placeholder="Confirm Password"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-4.5">
-                    <button
-                      className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                      type="submit"
-                    >
-                      Cancel
-                    </button>
+
+                  <div className="flex   gap-5.5 py-3.5 ">
                     <button
                       className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
                       type="submit"
                     >
-                      Save
+                      Submit
+                    </button>
+                    <button
+                      className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                      onClick={handleGoBack}
+                      type="button"
+                    >
+                      Cancel
                     </button>
                   </div>
                 </form>

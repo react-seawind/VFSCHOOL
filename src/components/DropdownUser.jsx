@@ -1,21 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
-import UserOne from '../images/logo.jpg';
-import { FaUser } from 'react-icons/fa6';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import UserOne from '../images/mainlogo.png'; // Import the default image
+import { FaChevronDown, FaUser } from 'react-icons/fa6';
 import { FcSettings } from 'react-icons/fc';
 import { GrLogout } from 'react-icons/gr';
+import { getAdmindataById } from './../API/AdminApi';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const trigger = useRef(null);
+  const dropdown = useRef(null);
   const myNav = useNavigate();
-  const trigger = useRef<any>(null);
-  const dropdown = useRef<any>(null);
 
-  // close on click outside
   useEffect(() => {
-    const clickHandler = ({ target }: MouseEvent) => {
+    const clickHandler = ({ target }) => {
       if (!dropdown.current) return;
       if (
         !dropdownOpen ||
@@ -29,9 +27,8 @@ const DropdownUser = () => {
     return () => document.removeEventListener('click', clickHandler);
   });
 
-  // close if the esc key is pressed
   useEffect(() => {
-    const keyHandler = ({ keyCode }: KeyboardEvent) => {
+    const keyHandler = ({ keyCode }) => {
       if (!dropdownOpen || keyCode !== 27) return;
       setDropdownOpen(false);
     };
@@ -40,9 +37,26 @@ const DropdownUser = () => {
   });
 
   const myLogout = () => {
-    sessionStorage.removeItem('newLoginData');
-    myNav('/');
+    sessionStorage.removeItem('schoollogindata');
+    myNav('/login');
   };
+
+  // --------------------Data------------------
+
+  const [adminData, setAdminData] = useState({});
+  const { adminId } = useParams();
+  // ================GetData==============
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAdmindataById(adminId);
+        setAdminData(response.responsedata[0]);
+      } catch (error) {
+        console.log('Error fetching admin data');
+      }
+    };
+    fetchData();
+  }, [adminId]);
 
   return (
     <div className="relative">
@@ -54,35 +68,22 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Virtual Filaments
+            {adminData.SchoolName}
           </span>
-          <span className="block text-xs">Admin</span>
+          <span className="block text-xs">{adminData.SchoolEmail}</span>
         </span>
 
-        <span className="h-14 w-14 ">
-          <img src={UserOne} alt="User" className="rounded border " />
+        <span className="h-14 w-14">
+          <img src={adminData.Photo} alt="User" className="rounded border" />
         </span>
 
-        <svg
+        <FaChevronDown
           className={`hidden fill-current sm:block ${
             dropdownOpen ? 'rotate-180' : ''
           }`}
-          width="12"
-          height="8"
-          viewBox="0 0 12 8"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M0.410765 0.910734C0.736202 0.585297 1.26384 0.585297 1.58928 0.910734L6.00002 5.32148L10.4108 0.910734C10.7362 0.585297 11.2638 0.585297 11.5893 0.910734C11.9147 1.23617 11.9147 1.76381 11.5893 2.08924L6.58928 7.08924C6.26384 7.41468 5.7362 7.41468 5.41077 7.08924L0.410765 2.08924C0.0853277 1.76381 0.0853277 1.23617 0.410765 0.910734Z"
-            fill=""
-          />
-        </svg>
+        />
       </Link>
 
-      {/* <!-- Dropdown Start --> */}
       <div
         ref={dropdown}
         onFocus={() => setDropdownOpen(true)}
@@ -113,7 +114,7 @@ const DropdownUser = () => {
           </li>
         </ul>
         <Link
-          to="/"
+          to="/login"
           onClick={myLogout}
           className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
         >

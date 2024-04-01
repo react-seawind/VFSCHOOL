@@ -4,9 +4,11 @@ import Breadcrumb from '../../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../../API';
+import { getAllDivision } from '../../../API/DivisionApi';
+import { format } from 'date-fns';
 
 const DivListing = () => {
-  const [service, setservice] = useState([]);
+  const [division, setdivision] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,10 +19,9 @@ const DivListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getServicedata();
-        setservice(result);
+        const result = await getAllDivision();
+        setdivision(result);
         setfilterdata(result);
-        console.log(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -28,43 +29,71 @@ const DivListing = () => {
 
     fetchData();
   }, []);
+  // -------------------delete division------------------
+  const handleDelete = async (row) => {
+    try {
+      await deletedivision(row.Id);
+      setdivision((prevdivision) =>
+        prevdivision.filter((item) => item.Id !== row.Id),
+      );
+      setfilterdata((prevFilterData) =>
+        prevFilterData.filter((item) => item.Id !== row.Id),
+      );
+    } catch (error) {
+      console.error('Error deleting division:', error);
+    }
+  };
 
+  useEffect(() => {
+    const mySearch = division.filter(
+      (item) =>
+        item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
+    );
+    setfilterdata(mySearch);
+  }, [search]);
   const columns = [
     {
-      name: ' # ',
-      selector: (row) => <h1 className="text-base">{row.Id}</h1>,
-      sortable: true,
+      name: '#',
+      selector: (row) => <h1 className="text-base min-h-29 mt-2">{row.Id}</h1>,
     },
     {
       name: 'Title',
-      selector: (row) => <h1 className="text-base">{row.Title}</h1>,
-      sortable: true,
-    },
-    {
-      name: 'SubTitle',
-      selector: (row) => <h1 className="text-base">{row.SubTitle}</h1>,
-      sortable: true,
-    },
-    {
-      name: 'Image',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <h1 className="text-base min-h-29 mt-2">{row.Title}</h1>
       ),
-      sortable: true,
     },
     {
-      name: 'Status',
+      name: 'Status ',
+      selector: (row) => {
+        const statusText = row.Status == '1' ? 'Active' : 'Inactive';
+        const statusColor =
+          row.Status == '1'
+            ? 'bg-green-600 text-white '
+            : 'bg-red-600 text-white';
+
+        return (
+          <h1 className="min-h-29 mt-2">
+            <span
+              className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full   ${statusColor}`}
+            >
+              {statusText}
+            </span>
+          </h1>
+        );
+      },
+    },
+    {
+      name: 'Entry Date',
       selector: (row) => (
-        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-          Active
-        </span>
+        <h1 className="text-base min-h-29 mt-2">
+          {format(new Date(row.EntDt), 'MM/dd/yyyy hh:mm a')}
+        </h1>
       ),
-      sortable: true,
     },
     {
       name: 'Action',
       cell: (row) => (
-        <div>
+        <div className="min-h-29 mt-2">
           <div className="bg-red-600 text-white p-3 pl-5 w-26 flex relative">
             <button>Actions</button>
             <button
@@ -82,16 +111,23 @@ const DivListing = () => {
                 className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
-                  Navigate('/div/edit');
+                  Navigate(`/div/edit/${row.Id}`);
                 }}
               >
                 Edit
               </button>
+
               <br />
               <button
                 className=" text-black bg-white border  p-2 w-26"
                 onClick={() => {
-                  alert(`Deleting ${row.Title}`);
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete ${row.Title}?`,
+                    )
+                  ) {
+                    handleDelete(row); // Call handleDelete function on click of delete button
+                  }
                   setSelectedRow(null);
                 }}
               >
@@ -103,14 +139,6 @@ const DivListing = () => {
       ),
     },
   ];
-
-  useEffect(() => {
-    const mySearch = service.filter(
-      (item) =>
-        item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
-    );
-    setfilterdata(mySearch);
-  }, [search]);
   return (
     <div>
       <Breadcrumb pageName="Division Listing" />

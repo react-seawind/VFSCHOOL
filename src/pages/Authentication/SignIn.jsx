@@ -7,6 +7,7 @@ import Loader from '../../common/Loader/index';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
+import { AdminLogin } from '../../API/AdminApi';
 
 const validationSchema = yup.object().shape({
   Email: yup.string().required('Email is required'),
@@ -14,8 +15,6 @@ const validationSchema = yup.object().shape({
 });
 const SignIn = () => {
   const [loginbutton, setloginbutton] = useState(false);
-  const Email = 'admin@school.com';
-  const Password = '123456';
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -26,29 +25,17 @@ const SignIn = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setloginbutton(true);
-      // await AdminLogin(values);
+      await AdminLogin(values);
 
-      // const sessiondata = sessionStorage.getItem('logindata');
-      // const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
-      // const token = parsedSessionData.token;
-      // if (token) {
-      //   navigate('/dashboard');
-      //   window.location.reload();
-      // } else {
-      //   navigate('/');
-      // }
+      const sessiondata = sessionStorage.getItem('schoollogindata');
+      const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
+      const token = parsedSessionData.token;
 
-      if (values.Email === Email && values.Password === Password) {
-        sessionStorage.setItem('newLoginData', JSON.stringify(values));
-        const sessionget = sessionStorage.getItem('newLoginData');
-        if (sessionget) {
-          navigate('/dashboard');
-          window.location.reload();
-        } else {
-          navigate('/login');
-        }
+      if (token) {
+        navigate('/dashboard');
+        window.location.reload();
       } else {
-        // Show error message
+        navigate('/login');
         toast.error('Invalid email or password');
         setloginbutton(false);
       }
@@ -56,10 +43,10 @@ const SignIn = () => {
   });
 
   return (
-    <div>
-      <div className="rounded-sm border my-[9%] border-stroke  container mx-auto  bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="px-4">
+      <div className="rounded-sm border my-[9%]  border-stroke  container mx-auto  bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center ">
-          <div className="hidden w-full xl:block xl:w-1/2">
+          <div className="w-full  block xl:w-1/2">
             <div className="py-17.5   text-center">
               <Link className="mb-5.5 inline-block" to="/dashboard">
                 <img

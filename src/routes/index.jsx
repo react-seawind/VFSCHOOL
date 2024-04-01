@@ -63,7 +63,7 @@ import TeacherView from '../components/Teacher/View';
 
 const coreRoutes = [
   {
-    path: '/',
+    path: '/login',
     title: 'Login',
     component: SignIn,
   },
@@ -93,7 +93,7 @@ const coreRoutes = [
     component: DivAdd,
   },
   {
-    path: '/div/edit',
+    path: '/div/edit/:Id',
     component: DivEdit,
   },
   // =================STD=============
@@ -106,7 +106,7 @@ const coreRoutes = [
     component: StdAdd,
   },
   {
-    path: '/std/edit',
+    path: '/std/edit/:Id',
     component: StdEdit,
   },
 
@@ -120,7 +120,7 @@ const coreRoutes = [
     component: TeacherAdd,
   },
   {
-    path: '/teacher/edit',
+    path: '/teacher/edit/:Id',
     component: TeacherEdit,
   },
   {
@@ -137,7 +137,7 @@ const coreRoutes = [
     component: StudentAdd,
   },
   {
-    path: '/student/edit',
+    path: '/student/edit/:Id',
     component: StudentEdit,
   },
 
@@ -151,7 +151,7 @@ const coreRoutes = [
     component: SubjectAdd,
   },
   {
-    path: '/subject/edit',
+    path: '/subject/edit/:Id',
     component: SubjectEdit,
   },
 
@@ -165,7 +165,7 @@ const coreRoutes = [
     component: UserAdd,
   },
   {
-    path: '/user/edit',
+    path: '/user/edit/:Id',
     component: UserEdit,
   },
   // =================REPOET=============
@@ -188,7 +188,7 @@ const coreRoutes = [
     component: ImageAdd,
   },
   {
-    path: '/image/edit',
+    path: '/image/edit/:Id',
     component: ImageEdit,
   },
   // =================video=============
@@ -201,7 +201,7 @@ const coreRoutes = [
     component: VideoAdd,
   },
   {
-    path: '/video/edit',
+    path: '/video/edit/:Id',
     component: VideoEdit,
   },
   // =================meal=============
@@ -220,7 +220,7 @@ const coreRoutes = [
     component: SyllabusAdd,
   },
   {
-    path: '/syllabus/edit',
+    path: '/syllabus/edit/:Id',
     component: SyllabusEdit,
   },
   // =================classtimetable=============
@@ -233,7 +233,7 @@ const coreRoutes = [
     component: ClassTimetableAdd,
   },
   {
-    path: '/classtimetable/edit',
+    path: '/classtimetable/edit/:Id',
     component: ClassTimetableEdit,
   },
   // =================holiday=============
@@ -246,7 +246,7 @@ const coreRoutes = [
     component: HolidayAdd,
   },
   {
-    path: '/holiday/edit',
+    path: '/holiday/edit/:Id',
     component: HolidayEdit,
   },
   // =================transportation=============
@@ -259,7 +259,7 @@ const coreRoutes = [
     component: TransportationAdd,
   },
   {
-    path: '/transportation/edit',
+    path: '/transportation/edit/:Id',
     component: TransportationEdit,
   },
   // =================examtimetable=============
@@ -272,7 +272,7 @@ const coreRoutes = [
     component: ExamTTAdd,
   },
   {
-    path: '/examtimetable/edit',
+    path: '/examtimetabl/:Ide/edit',
     component: ExamTTEdit,
   },
   // =================paper=============
@@ -285,7 +285,7 @@ const coreRoutes = [
     component: PaperAdd,
   },
   {
-    path: '/paper/edit',
+    path: '/paper/edit/:Id',
     component: PaperEdit,
   },
   // =================reportcard=============
@@ -298,7 +298,7 @@ const coreRoutes = [
     component: ReportCardAdd,
   },
   {
-    path: '/reportcard/edit',
+    path: '/reportcard/edit/:Id',
     component: ReportCardEdit,
   },
   // =================notice=============
@@ -311,7 +311,7 @@ const coreRoutes = [
     component: NoticeAdd,
   },
   {
-    path: '/notice/edit',
+    path: '/notice/edit/:Id',
     component: NoticeEdit,
   },
   // =================event=============
@@ -324,7 +324,7 @@ const coreRoutes = [
     component: EventAdd,
   },
   {
-    path: '/event/edit',
+    path: '/event/edit/:Id',
     component: EventEdit,
   },
 

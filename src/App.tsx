@@ -109,7 +109,7 @@ function App() {
       {loggedIn ? (
         <Routes>
           <Route
-            path="/"
+            path="/login"
             index
             element={
               <Suspense fallback={<Loader />}>

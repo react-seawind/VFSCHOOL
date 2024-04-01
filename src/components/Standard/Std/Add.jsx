@@ -4,32 +4,36 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { AddStandard } from '../../../API/StandardApi';
+import Config from '../../../API/Config';
 
 const validationSchema = yup.object().shape({
-  stdname: yup.string().required('Standard name is required'),
+  Title: yup.string().required('Standard Name is required'),
 });
 const StdAdd = () => {
+  const Id = Config.getId();
   const formik = useFormik({
     initialValues: {
-      stdname: '',
+      SchoolId: Id,
+      Title: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values, actions) => {
-      localStorage.setItem('NEWSTDDATA', JSON.stringify(values));
-
-      toast.success('Data inserted successfully!', {
-        duration: 3000,
-      });
-
-      // Reset the form
-      actions.resetForm();
+    onSubmit: async (values, actions) => {
+      try {
+        await AddStandard(values);
+        actions.resetForm();
+        navigate('/std/listing');
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
+
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/std/listing');
   };
   return (
     <div>
@@ -57,20 +61,21 @@ const StdAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="stdname"
-                    value={formik.values.stdname}
+                    name="Title"
+                    value={formik.values.Title}
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Standard Name"
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Standard Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.stdname && formik.errors.stdname && (
+
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
               </div>
-
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>
@@ -83,7 +88,7 @@ const StdAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -94,7 +99,7 @@ const StdAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -111,8 +116,8 @@ const StdAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

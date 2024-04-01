@@ -1,33 +1,84 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Logo from './../../../images/logo.jpg';
 import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getAllStandard } from '../../../API/StandardApi';
+import { getDivisionById, updateDivisionById } from '../../../API/DivisionApi';
 
 const validationSchema = yup.object().shape({
-  divname: yup.string().required('School Name is required'),
-  stdname: yup.string().required('Standard is required'),
+  Title: yup.string().required('Division Name is required'),
+  SchoolStandardId: yup.string().required('School Name is required'),
 });
 
 const DivEdit = () => {
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getAllStandard();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const StandardData = await getDivisionById(Id);
+          formik.setValues({
+            Id: StandardData.Id || '',
+            SchoolStandardId: StandardData.SchoolStandardId || '',
+            SchoolId: StandardData.SchoolId || '',
+            Title: StandardData.Title || '',
+            Status: StandardData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
+
   const formik = useFormik({
     initialValues: {
-      divname: '',
-      stdname: '',
+      SchoolId: '',
+      Id: Id,
+      SchoolStandardId: '',
+      Title: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWDIVEDITDATA', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        await updateDivisionById(values);
+        actions.resetForm();
+        navigate('/div/listing');
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/chapter/listing');
   };
 
   return (
@@ -56,14 +107,15 @@ const DivEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="divname"
+                    name="Title"
                     onChange={formik.handleChange}
+                    value={formik.values.Title}
                     placeholder="Enter Your Division Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.divname && formik.errors.divname && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.divname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -73,13 +125,16 @@ const DivEdit = () => {
                   </label>
 
                   <select
-                    name="stdname"
+                    name="SchoolStandardId"
                     onChange={formik.handleChange}
+                    value={formik.values.SchoolStandardId}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Standard</option>
-                    <option value="1">std 1</option>
-                    <option value="2">std 2</option>
+                    {std.map((std) => (
+                      <option key={std.Id} value={std.Id}>
+                        {std.Title}
+                      </option>
+                    ))}
                   </select>
 
                   {formik.touched.stdname && formik.errors.stdname && (
@@ -89,7 +144,6 @@ const DivEdit = () => {
                   )}
                 </div>
               </div>
-
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>
@@ -102,7 +156,7 @@ const DivEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -113,7 +167,7 @@ const DivEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -130,8 +184,8 @@ const DivEdit = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>
