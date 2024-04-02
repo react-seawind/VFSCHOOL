@@ -4,9 +4,11 @@ import Breadcrumb from '../../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../../API';
+import { deleteVideo, getAllVideo } from '../../../API/VideoAPI';
+import { format } from 'date-fns';
 
 const VideoListing = () => {
-  const [chapter, setchapter] = useState([]);
+  const [video, setvideo] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,8 +19,8 @@ const VideoListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllChapter();
-        setchapter(result);
+        const result = await getAllVideo();
+        setvideo(result);
         setfilterdata(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -27,23 +29,21 @@ const VideoListing = () => {
 
     fetchData();
   }, []);
-  // -------------------delete chapter------------------
+  // -------------------delete video------------------
   const handleDelete = async (row) => {
     try {
-      await deleteChapter(row.Id);
-      setchapter((prevchapter) =>
-        prevchapter.filter((item) => item.Id !== row.Id),
-      );
+      await deleteVideo(row.Id);
+      setvideo((prevvideo) => prevvideo.filter((item) => item.Id !== row.Id));
       setfilterdata((prevFilterData) =>
         prevFilterData.filter((item) => item.Id !== row.Id),
       );
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error('Error deleting video:', error);
     }
   };
 
   useEffect(() => {
-    const mySearch = chapter.filter(
+    const mySearch = video.filter(
       (item) =>
         item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
     );
@@ -61,9 +61,16 @@ const VideoListing = () => {
     },
 
     {
-      name: 'Image',
+      name: 'Video',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <video
+          width="400"
+          controls
+          // autoPlay
+          className="w-full rounded border p-2 h-50  "
+        >
+          <source src={row.Video} type="video/mp4" />
+        </video>
       ),
     },
     {

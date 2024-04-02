@@ -3,37 +3,76 @@ import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
+import Config from '../../API/Config';
+import { AddMeal, getMealById } from '../../API/MealAPI';
 
 const validationSchema = yup.object().shape({
-  mondaymeal: yup.string().required('Monday Meal is required'),
-  tuesdaymeal: yup.string().required('Tuesday Meal is required'),
-  wednesdaymeal: yup.string().required('Wednesday Meal is required'),
-  thursdaymeal: yup.string().required('Thursday Meal is required'),
-  fridaymeal: yup.string().required('Friday Meal is required'),
-  saturdaymeal: yup.string().required('Saturday Meal is required'),
+  Monday: yup.string().required('Monday Meal is required'),
+  Tuesday: yup.string().required('Tuesday Meal is required'),
+  Wednesday: yup.string().required('Wednesday Meal is required'),
+  Thursday: yup.string().required('Thursday Meal is required'),
+  Friday: yup.string().required('Friday Meal is required'),
+  Saturday: yup.string().required('Saturday Meal is required'),
+  Sunday: yup.string().required('Sunday Meal is required'),
 });
 const MealAdd = () => {
+  const Id = Config.getId();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const StandardData = await getMealById(Id);
+          formik.setValues({
+            Id: StandardData.Id || '',
+            SchoolId: StandardData.SchoolId || '',
+            Monday: StandardData.Monday || '',
+            Tuesday: StandardData.Tuesday || '',
+            Wednesday: StandardData.Wednesday || '',
+            Thursday: StandardData.Thursday || '',
+            Friday: StandardData.Friday || '',
+            Saturday: StandardData.Saturday || '',
+            Sunday: StandardData.Sunday || '',
+            Status: StandardData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
-      mondaymeal: '',
-      tuesdaymeal: '',
-      wednesdaymeal: '',
-      thursdaymeal: '',
-      fridaymeal: '',
-      saturdaymeal: '',
+      Monday: '',
+      SchoolId: Id,
+      Tuesday: '',
+      Wednesday: '',
+      Thursday: '',
+      Friday: '',
+      Saturday: '',
+      Sunday: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWMEALDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        await AddMeal(values);
+      } catch (error) {
+        console.error('Error adding Meal:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/dashboard');
   };
   return (
     <div>
@@ -60,14 +99,15 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="mondaymeal"
+                    name="Monday"
                     onChange={formik.handleChange}
+                    value={formik.values.Monday}
                     placeholder="Enter Monday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.mondaymeal && formik.errors.mondaymeal && (
+                  {formik.touched.Monday && formik.errors.Monday && (
                     <small className="text-red-500">
-                      {formik.errors.mondaymeal}
+                      {formik.errors.Monday}
                     </small>
                   )}
                 </div>
@@ -77,14 +117,15 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="tuesdaymeal"
+                    name="Tuesday"
                     onChange={formik.handleChange}
+                    value={formik.values.Tuesday}
                     placeholder="Enter Tuesday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.tuesdaymeal && formik.errors.tuesdaymeal && (
+                  {formik.touched.Tuesday && formik.errors.Tuesday && (
                     <small className="text-red-500">
-                      {formik.errors.tuesdaymeal}
+                      {formik.errors.Tuesday}
                     </small>
                   )}
                 </div>
@@ -94,17 +135,17 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="wednesdaymeal"
+                    name="Wednesday"
                     onChange={formik.handleChange}
+                    value={formik.values.Wednesday}
                     placeholder="Enter Wednesday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.wednesdaymeal &&
-                    formik.errors.wednesdaymeal && (
-                      <small className="text-red-500">
-                        {formik.errors.wednesdaymeal}
-                      </small>
-                    )}
+                  {formik.touched.Wednesday && formik.errors.Wednesday && (
+                    <small className="text-red-500">
+                      {formik.errors.Wednesday}
+                    </small>
+                  )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -112,17 +153,17 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="thursdaymeal"
+                    name="Thursday"
                     onChange={formik.handleChange}
+                    value={formik.values.Thursday}
                     placeholder="Enter Thursday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.thursdaymeal &&
-                    formik.errors.thursdaymeal && (
-                      <small className="text-red-500">
-                        {formik.errors.thursdaymeal}
-                      </small>
-                    )}
+                  {formik.touched.Thursday && formik.errors.Thursday && (
+                    <small className="text-red-500">
+                      {formik.errors.Thursday}
+                    </small>
+                  )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -130,14 +171,15 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="fridaymeal"
+                    name="Friday"
                     onChange={formik.handleChange}
+                    value={formik.values.Friday}
                     placeholder="Enter Friday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.fridaymeal && formik.errors.fridaymeal && (
+                  {formik.touched.Friday && formik.errors.Friday && (
                     <small className="text-red-500">
-                      {formik.errors.fridaymeal}
+                      {formik.errors.Friday}
                     </small>
                   )}
                 </div>
@@ -147,17 +189,64 @@ const MealAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="saturdaymeal"
+                    name="Saturday"
                     onChange={formik.handleChange}
+                    value={formik.values.Saturday}
                     placeholder="Enter Saturday Meal"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.saturdaymeal &&
-                    formik.errors.saturdaymeal && (
-                      <small className="text-red-500">
-                        {formik.errors.saturdaymeal}
-                      </small>
-                    )}
+                  {formik.touched.Saturday && formik.errors.Saturday && (
+                    <small className="text-red-500">
+                      {formik.errors.Saturday}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Sunday Meal <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Sunday"
+                    onChange={formik.handleChange}
+                    value={formik.values.Sunday}
+                    placeholder="Enter Sunday Meal"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Sunday && formik.errors.Sunday && (
+                    <small className="text-red-500">
+                      {formik.errors.Sunday}
+                    </small>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
+                <label className="mb-3 block text-black dark:text-white">
+                  Status <span className="text-danger">*</span>
+                </label>
+                <div className="relative">
+                  <div>
+                    <input
+                      type="radio"
+                      onChange={formik.handleChange}
+                      name="Status"
+                      className="mx-2"
+                      value="1"
+                      checked={formik.values.Status == '1'}
+                    />
+                    Active
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      onChange={formik.handleChange}
+                      name="Status"
+                      className="mx-2"
+                      value="0"
+                      checked={formik.values.Status == '0'}
+                    />
+                    In Active
+                  </div>
                 </div>
               </div>
 

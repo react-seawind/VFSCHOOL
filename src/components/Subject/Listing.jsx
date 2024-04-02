@@ -142,7 +142,7 @@ const SubjectListing = () => {
   ];
   return (
     <div>
-      <Breadcrumb pageName="subject Listing" />
+      <Breadcrumb pageName="Subject Listing" />
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

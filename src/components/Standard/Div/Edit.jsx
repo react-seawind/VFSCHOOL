@@ -68,8 +68,6 @@ const DivEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         await updateDivisionById(values);
-        actions.resetForm();
-        navigate('/div/listing');
       } catch (error) {
         console.error('Error adding standard:', error);
       }
@@ -78,7 +76,7 @@ const DivEdit = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/div/listing');
   };
 
   return (
@@ -172,7 +170,6 @@ const DivEdit = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

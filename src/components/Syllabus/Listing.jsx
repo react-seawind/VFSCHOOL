@@ -4,6 +4,8 @@ import Breadcrumb from '../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
+import { deleteSyllabus, getAllSyllabus } from '../../API/SyllabusApi';
+import { format } from 'date-fns';
 
 const SyllabusListing = () => {
   const [chapter, setchapter] = useState([]);
@@ -17,7 +19,7 @@ const SyllabusListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllChapter();
+        const result = await getAllSyllabus();
         setchapter(result);
         setfilterdata(result);
       } catch (error) {
@@ -30,7 +32,7 @@ const SyllabusListing = () => {
   // -------------------delete chapter------------------
   const handleDelete = async (row) => {
     try {
-      await deleteChapter(row.Id);
+      await deleteSyllabus(row.Id);
       setchapter((prevchapter) =>
         prevchapter.filter((item) => item.Id !== row.Id),
       );
@@ -53,41 +55,38 @@ const SyllabusListing = () => {
   const columns = [
     {
       name: '#',
-      selector: (row) => <h1 className="text-base">{row.Id}</h1>,
+      selector: (row) => <h1 className="text-base min-h-29 mt-2">{row.Id}</h1>,
     },
     {
       name: 'Title',
-      selector: (row) => <h1 className="text-base">{row.Title}</h1>,
-    },
-
-    {
-      name: 'Image',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <h1 className="text-base min-h-29 mt-2">{row.Title}</h1>
       ),
     },
     {
-      name: 'Status',
+      name: 'Status ',
       selector: (row) => {
         const statusText = row.Status == '1' ? 'Active' : 'Inactive';
         const statusColor =
           row.Status == '1'
-            ? 'bg-green-600 text-white'
+            ? 'bg-green-600 text-white '
             : 'bg-red-600 text-white';
 
         return (
-          <span
-            className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full  ${statusColor}`}
-          >
-            {statusText}
-          </span>
+          <h1 className="min-h-29 mt-2">
+            <span
+              className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full   ${statusColor}`}
+            >
+              {statusText}
+            </span>
+          </h1>
         );
       },
     },
     {
       name: 'Entry Date',
       selector: (row) => (
-        <h1 className="text-base">
+        <h1 className="text-base min-h-29 mt-2">
           {format(new Date(row.EntDt), 'MM/dd/yyyy hh:mm a')}
         </h1>
       ),
@@ -95,7 +94,7 @@ const SyllabusListing = () => {
     {
       name: 'Action',
       cell: (row) => (
-        <div>
+        <div className="min-h-29 mt-2">
           <div className="bg-red-600 text-white p-3 pl-5 w-26 flex relative">
             <button>Actions</button>
             <button

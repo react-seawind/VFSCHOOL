@@ -4,27 +4,43 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { AddVideo } from '../../../API/VideoAPI';
+import Config from '../../../API/Config';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  videofile: yup.string().required('Video is required'),
+  Title: yup.string().required('Title is required'),
+  Video: yup.string().required('Video is required'),
 });
 const VideoAdd = () => {
+  const Id = Config.getId();
   const formik = useFormik({
     initialValues: {
-      title: '',
-      videofile: '',
+      Title: '',
+      SchoolId: Id,
+      Video: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWVIDEODATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        if (values.Video instanceof File) {
+          formData.append('Video', values.Video);
+        }
+        formData.append('Status', values.Status);
+        await AddVideo(formData);
+        navigate('/video/listing');
+      } catch (error) {
+        console.error('Error adding Video:', error);
+      }
     },
   });
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/video/listing');
   };
   return (
     <div>
@@ -51,14 +67,14 @@ const VideoAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -69,16 +85,21 @@ const VideoAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="videofile"
-                    onChange={formik.handleChange}
+                    name="Video"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'Video',
+                        event.currentTarget.files[0],
+                      );
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.videofile && formik.errors.videofile && (
+                  {formik.touched.Video && formik.errors.Video && (
                     <small className="text-red-500">
-                      {formik.errors.videofile}
+                      {formik.errors.Video}
                     </small>
                   )}
-                  <p>Please select an a mp4 file only.</p>
+                  <p>Please select an a MP4 file only.</p>
                 </div>
               </div>
 
@@ -110,7 +131,6 @@ const VideoAdd = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

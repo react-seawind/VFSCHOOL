@@ -1,39 +1,85 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Logo from '../../images/logo.jpg';
-import { BsChevronDown } from 'react-icons/bs';
-import { IoMdClose } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
-import Multiselect from 'multiselect-react-dropdown';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { getAllStandard } from '../../API/StandardApi';
+import { getAllDivision } from '../../API/DivisionApi';
+import { getAllSubject } from '../../API/SubjectAPI';
+import { getExamPaperById, updateExamPaperById } from '../../API/ExampaperApi';
+import { getNoticeById, updateNoticeById } from '../../API/NoticeApi';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  noticepdf: yup.string().required('Notice PDF is required'),
+  Title: yup.string().required('Title is required'),
 });
 const NoticeEdit = () => {
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const HolidayData = await getNoticeById(Id);
+          formik.setValues({
+            Id: HolidayData.Id || '',
+            path: HolidayData.path || '',
+            SchoolId: HolidayData.SchoolId || '',
+            Title: HolidayData.Title || '',
+            PDF: HolidayData.PDF || '',
+            Hid_PDF: HolidayData.Hid_PDF || '',
+            Status: HolidayData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
-      title: '',
-      noticepdf: '',
-      Status: 1,
+      Id: Id,
+      SchoolId: '',
+      Title: '',
+      PDF: '',
+      Hid_PDF: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NoticeEditData', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Id', values.Id);
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        if (values.PDF instanceof File) {
+          formData.append('PDF', values.PDF);
+        } else {
+          formData.append('PDF', values.PDF);
+        }
+        if (values.Hid_PDF instanceof File) {
+          formData.append('Hid_PDF', values.Hid_PDF);
+        } else {
+          formData.append('Hid_PDF', values.Hid_PDF);
+        }
+        formData.append('Status', values.Status);
+        await updateNoticeById(formData);
+      } catch (error) {
+        console.error('Error adding Photo:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/notice/listing');
   };
-  const handleSelectStd = (selectedList) => {
-    setSelectedStd(selectedList);
-    formik.setFieldValue('stdname', selectedList);
-  };
+
   return (
     <div>
       <Breadcrumb pageName="Notice Edit" />
@@ -53,55 +99,66 @@ const NoticeEdit = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
+              <input
+                type="hidden"
+                name="Hid_PDF"
+                value={formik.values.Hid_PDF}
+              />
+              <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Notice Name <span className="text-danger">*</span>
+                    Title <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Notice Name"
+                    value={formik.values.Title}
+                    placeholder="Enter Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
+
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Notice PDF <span className="text-danger">*</span>
+                    Upload Syllabus
+                    <span className="text-danger">*</span>
                   </label>
                   <input
                     type="file"
-                    name="noticepdf"
-                    onChange={formik.handleChange}
+                    name="PDF"
+                    onChange={(event) => {
+                      formik.setFieldValue('PDF', event.currentTarget.files[0]);
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.noticepdf && formik.errors.noticepdf && (
-                    <small className="text-red-500">
-                      {formik.errors.noticepdf}
-                    </small>
+                  {formik.touched.PDF && formik.errors.PDF && (
+                    <small className="text-red-500">{formik.errors.PDF}</small>
                   )}
-                  <p>Please select an a pdf file only.</p>
+                  <p>Please select an a PDF file only.</p>
                   <div className="mt-5">
-                    <p>Your Exsisting File*</p>
-                    <div className="grid grid-cols-4 gap-2 relative">
+                    <p>Your Exsisting Notice File*</p>
+                    <div className="  gap-2 relative ">
                       <div className="relative">
-                        <img
-                          src={Logo}
-                          alt=""
-                          className="w-full rounded border p-2 "
-                        />
-                        <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
+                        <Link to={formik.values.PDF} target="_blank">
+                          <button
+                            type="button"
+                            className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                          >
+                            Download Syllabus
+                          </button>
+                        </Link>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>
@@ -130,7 +187,6 @@ const NoticeEdit = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

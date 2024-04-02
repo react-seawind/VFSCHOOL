@@ -272,7 +272,7 @@ const coreRoutes = [
     component: ExamTTAdd,
   },
   {
-    path: '/examtimetabl/:Ide/edit',
+    path: '/examtimetable/edit/:Id',
     component: ExamTTEdit,
   },
   // =================paper=============

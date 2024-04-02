@@ -3,28 +3,46 @@ import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { AddPhoto } from '../../../API/PhotoAPI';
+import Config from '../../../API/Config';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  imagefile: yup.string().required('Image is required'),
+  Title: yup.string().required('Title is required'),
+  Image: yup.string().required('Image is required'),
 });
 const ImageAdd = () => {
+  const Id = Config.getId();
   const formik = useFormik({
     initialValues: {
-      title: '',
-      imagefile: '',
+      SchoolId: Id,
+      Title: '',
+      Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWIMAGEDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        if (values.Image instanceof File) {
+          formData.append('Image', values.Image);
+        } else {
+          formData.append('Image', values.Image);
+        }
+        formData.append('Status', values.Status);
+        await AddPhoto(formData);
+        navigate('/image/listing');
+      } catch (error) {
+        console.error('Error adding Photo:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/image/listing');
   };
   return (
     <div>
@@ -51,14 +69,14 @@ const ImageAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -69,13 +87,18 @@ const ImageAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="imagefile"
-                    onChange={formik.handleChange}
+                    name="Image"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'Image',
+                        event.currentTarget.files[0],
+                      );
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.imagefile && formik.errors.imagefile && (
+                  {formik.touched.Image && formik.errors.Image && (
                     <small className="text-red-500">
-                      {formik.errors.imagefile}
+                      {formik.errors.Image}
                     </small>
                   )}
                   <p>Please select an a png,jpeg,jpg,gif file only.</p>
@@ -110,7 +133,6 @@ const ImageAdd = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

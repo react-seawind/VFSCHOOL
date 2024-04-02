@@ -38,6 +38,12 @@ const Profile = () => {
   }, [adminId]);
 
   function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
     return filename.split('.').pop().toLowerCase();
   }
 
@@ -288,12 +294,11 @@ const Profile = () => {
                           <div className="relative">
                             {val.AddressProof ? (
                               getFileExtension(val.AddressProof) === 'pdf' ? (
-                                <Link
-                                  to={val.AddressProof}
-                                  target="_blank"
-                                  className="rounded border p-2 "
-                                >
-                                  <button type="button" className="mt-2">
+                                <Link to={val.AddressProof} target="_blank">
+                                  <button
+                                    type="button"
+                                    className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                                  >
                                     Download Address Proof
                                   </button>
                                 </Link>
@@ -317,12 +322,11 @@ const Profile = () => {
                           <div className="relative">
                             {val.IdProof ? (
                               getFileExtension(val.IdProof) === 'pdf' ? (
-                                <Link
-                                  to={val.IdProof}
-                                  target="_blank"
-                                  className="rounded border p-2 "
-                                >
-                                  <button type="button" className="mt-2">
+                                <Link to={val.IdProof} target="_blank">
+                                  <button
+                                    type="button"
+                                    className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                                  >
                                     Download Address Proof
                                   </button>
                                 </Link>

@@ -3,32 +3,84 @@ import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import Config from '../../API/Config';
+import { getAllDivision } from '../../API/DivisionApi';
+import { AddClassTT } from '../../API/ClasstimetableApi';
+import { getAllStandard } from '../../API/StandardApi';
+import { AddExamTT } from '../../API/ExamtimetableApi';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  stdname: yup.string().required('Standard Name is required'),
-  divname: yup.string().required('Division Name is required'),
-  timetablepdf: yup.string().required('Please Upload PDF file'),
+  Title: yup.string().required('Title is required'),
+  StandardId: yup.string().required('Standard is required'),
+  DivisionId: yup.string().required('Division is required'),
+  PDF: yup.string().required('Timetable is required'),
 });
 const ExamTTAdd = () => {
+  const Id = Config.getId();
+
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getAllStandard();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+  // ------------Division DATA-------------------
+  const [div, setdiv] = useState([]);
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      try {
+        const DivisionData = await getAllDivision();
+        setdiv(DivisionData);
+      } catch (error) {
+        console.error('Error fetching Division:', error);
+      }
+    };
+    fetchDivision();
+  }, []);
   const formik = useFormik({
     initialValues: {
-      title: '',
-      stdname: '',
-      divname: '',
-      timetablepdf: '',
-      Status: 1,
+      SchoolId: Id,
+      StandardId: '',
+      DivisionId: '',
+      Title: '',
+      PDF: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWEXAMTTDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        formData.append('StandardId', values.StandardId);
+        formData.append('DivisionId', values.DivisionId);
+        if (values.PDF instanceof File) {
+          formData.append('PDF', values.PDF);
+        } else {
+          formData.append('PDF', values.PDF);
+        }
+        formData.append('Status', values.Status);
+        await AddExamTT(formData);
+        navigate('/examtimetable/listing');
+      } catch (error) {
+        console.error('Error adding Photo:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/examtimetable/listing');
   };
   return (
     <div>
@@ -56,14 +108,15 @@ const ExamTTAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
+                    value={formik.values.Title}
                     onChange={formik.handleChange}
                     placeholder="Enter Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -74,18 +127,21 @@ const ExamTTAdd = () => {
                   </label>
 
                   <select
-                    name="stdname"
+                    name="StandardId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Standard</option>
-                    <option value="1">std 1</option>
-                    <option value="2">std 2</option>
+                    {std.map((std) => (
+                      <option key={std.Id} value={std.Id}>
+                        {std.Title}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.StandardId && formik.errors.StandardId && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.StandardId}
                     </small>
                   )}
                 </div>
@@ -95,39 +151,41 @@ const ExamTTAdd = () => {
                   </label>
 
                   <select
-                    name="divname"
+                    name="DivisionId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Division</option>
-                    <option value="1">Division 1</option>
-                    <option value="2">Division 2</option>
+                    {div.map((div) => (
+                      <option key={div.Id} value={div.Id}>
+                        {div.Title}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.divname && formik.errors.divname && (
+                  {formik.touched.DivisionId && formik.errors.DivisionId && (
                     <small className="text-red-500">
-                      {formik.errors.divname}
+                      {formik.errors.DivisionId}
                     </small>
                   )}
                 </div>
 
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Upload Homework
+                    Upload Syllabus
                     <span className="text-danger">*</span>
                   </label>
                   <input
                     type="file"
-                    name="timetablepdf"
-                    onChange={formik.handleChange}
+                    name="PDF"
+                    onChange={(event) => {
+                      formik.setFieldValue('PDF', event.currentTarget.files[0]);
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.timetablepdf &&
-                    formik.errors.timetablepdf && (
-                      <small className="text-red-500">
-                        {formik.errors.timetablepdf}
-                      </small>
-                    )}
+                  {formik.touched.PDF && formik.errors.PDF && (
+                    <small className="text-red-500">{formik.errors.PDF}</small>
+                  )}
                   <p>Please select an a pdf file only.</p>
                 </div>
               </div>
@@ -160,7 +218,6 @@ const ExamTTAdd = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

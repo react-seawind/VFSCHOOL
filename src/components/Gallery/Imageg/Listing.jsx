@@ -4,9 +4,11 @@ import Breadcrumb from '../../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../../API';
+import { deletePhoto, getAllPhoto } from '../../../API/PhotoAPI';
+import { format } from 'date-fns';
 
 const ImageListing = () => {
-  const [chapter, setchapter] = useState([]);
+  const [photo, setphoto] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,8 +19,8 @@ const ImageListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllChapter();
-        setchapter(result);
+        const result = await getAllPhoto();
+        setphoto(result);
         setfilterdata(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -27,23 +29,21 @@ const ImageListing = () => {
 
     fetchData();
   }, []);
-  // -------------------delete chapter------------------
+  // -------------------delete photo------------------
   const handleDelete = async (row) => {
     try {
-      await deleteChapter(row.Id);
-      setchapter((prevchapter) =>
-        prevchapter.filter((item) => item.Id !== row.Id),
-      );
+      await deletePhoto(row.Id);
+      setphoto((prevphoto) => prevphoto.filter((item) => item.Id !== row.Id));
       setfilterdata((prevFilterData) =>
         prevFilterData.filter((item) => item.Id !== row.Id),
       );
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error('Error deleting photo:', error);
     }
   };
 
   useEffect(() => {
-    const mySearch = chapter.filter(
+    const mySearch = photo.filter(
       (item) =>
         item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
     );

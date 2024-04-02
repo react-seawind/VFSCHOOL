@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import Logo from '../images/logo.jpg';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
+import logo from '../images/logo.jpg';
 import {
   MdDashboard,
   MdEmojiEvents,
@@ -10,17 +10,14 @@ import {
   MdMenuBook,
   MdOutlineHolidayVillage,
 } from 'react-icons/md';
-import { RiAdminFill } from 'react-icons/ri';
 import { TbFileReport } from 'react-icons/tb';
 import { CiViewBoard, CiViewTimeline } from 'react-icons/ci';
-import { IoIosContact, IoMdAdd } from 'react-icons/io';
+import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineApartment } from 'react-icons/ai';
 import {
   FaBook,
-  FaBookOpenReader,
   FaChevronDown,
   FaChild,
-  FaDivide,
   FaImage,
   FaMoneyBill,
   FaRegNewspaper,
@@ -30,25 +27,37 @@ import {
 } from 'react-icons/fa6';
 
 import {
-  FaAddressCard,
   FaArrowLeft,
-  FaBlog,
   FaBookOpen,
   FaClipboardList,
   FaDatabase,
   FaEdit,
-  FaHome,
-  FaRegUser,
-  FaSitemap,
-  FaUserCircle,
 } from 'react-icons/fa';
-import { BsChatQuoteFill } from 'react-icons/bs';
+import Cookies from 'js-cookie';
+import { getAdmindataById } from '../API/AdminApi';
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
   const location = useLocation();
 
   const trigger = useRef(null);
   const sidebar = useRef(null);
+
+  // -------------------logo image----------------
+
+  const [adminData, setAdminData] = useState({});
+  const { adminId } = useParams();
+  // ================GetData==============
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAdmindataById(adminId);
+        setAdminData(response.responsedata[0]);
+      } catch (error) {
+        console.log('Error fetching admin data');
+      }
+    };
+    fetchData();
+  }, [adminId]);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -100,9 +109,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
       <div className="flex items-center lg:justify-center   gap-2 px-6 py-2.5 lg:py-4.5">
         <NavLink to="/dashboard">
           <img
-            src={Logo}
-            alt="Logo"
-            className="w-15 bg-white p-2 rounded lg:w-40 lg:mx-auto"
+            src={adminData.Photo}
+            className="w-15 h-15 bg-white p-2 rounded lg:w-40 lg:h-30  lg:mx-auto"
           />
         </NavLink>
         <button
@@ -133,100 +141,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                   Dashboard
                 </NavLink>
               </li>
-              {/* ===============USER MANAGER============== */}
-              {/*  <SidebarLinkGroup>
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <NavLink
-                        to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                        <FaUser />
-                        User Manager
-                        <div
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                            open && 'rotate-180'
-                          }`}
-                        >
-                          <FaChevronDown />
-                        </div>
-                      </NavLink>
 
-                      <div
-                        className={`translate transform overflow-hidden ${
-                          !open && 'hidden'
-                        }`}
-                      >
-                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
-                          <li>
-                            <SidebarLinkGroup>
-                              {(handleClick, open) => {
-                                return (
-                                  <React.Fragment>
-                                    <NavLink
-                                      to="#"
-                                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4  `}
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        sidebarExpanded
-                                          ? handleClick()
-                                          : setSidebarExpanded(true);
-                                      }}
-                                    >
-                                      <FaUserCircle />
-                                      User
-                                      <span
-                                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                                          open && 'rotate-180'
-                                        }`}
-                                      >
-                                        <FaChevronDown />
-                                      </span>
-                                    </NavLink>
-                                    <div
-                                      className={`translate transform overflow-hidden ${
-                                        !open && 'hidden'
-                                      }`}
-                                    >
-                                      <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
-                                        <li>
-                                          <NavLink
-                                            to="/user/listing"
-                                            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                                          >
-                                            <FaClipboardList />
-                                            Listing
-                                          </NavLink>
-                                        </li>
-                                        <li>
-                                          <NavLink
-                                            to="/user/add"
-                                            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                                          >
-                                            <IoMdAdd />
-                                            Add
-                                          </NavLink>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </React.Fragment>
-                                );
-                              }}
-                            </SidebarLinkGroup>
-                          </li>
-                        </ul>
-                      </div>
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>*/}
               {/* ===============Standard MANAGER============== */}
               <SidebarLinkGroup>
                 {(handleClick, open) => {
@@ -242,7 +157,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaChild />
+                        <FaChild className="text-red-700" />
                         Standard Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -405,7 +320,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaImage />
+                        <FaImage className="text-red-700" />
                         Gallery Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -568,7 +483,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook />
+                        <FaBook className="text-red-700" />
                         Subject Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -749,7 +664,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdFastfood />
+                        <MdFastfood className="text-red-700" />
                         Meal Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -800,7 +715,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBookOpen />
+                        <FaBookOpen className="text-red-700" />
                         Syllabus Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -861,7 +776,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdMenuBook />
+                        <MdMenuBook className="text-red-700" />
                         Class Timetable
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -922,7 +837,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdOutlineHolidayVillage />
+                        <MdOutlineHolidayVillage className="text-red-700" />
                         Holiday Homework
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1044,7 +959,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <CiViewTimeline />
+                        <CiViewTimeline className="text-red-700" />
                         Exam Time Table
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1105,7 +1020,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaRegNewspaper />
+                        <FaRegNewspaper className="text-red-700" />
                         Paper Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1225,7 +1140,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <CiViewBoard />
+                        <CiViewBoard className="text-red-700" />
                         Notice/Circular
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${

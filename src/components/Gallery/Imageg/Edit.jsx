@@ -1,33 +1,81 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Logo from './../../../images/logo.jpg';
 import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getPhotoById, updatePhotoById } from '../../../API/PhotoAPI';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  imagefile: yup.string().required('Image is required'),
+  Title: yup.string().required('Title is required'),
+  Image: yup.string().required('Image is required'),
 });
 
 const ImageEdit = () => {
+  // ================ Get data by Id============
+  const { Id } = useParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const PhotoData = await getPhotoById(Id);
+          formik.setValues({
+            Id: PhotoData.Id || '',
+            Title: PhotoData.Title || '',
+            SchoolId: PhotoData.SchoolId || '',
+            Image: PhotoData.Image || '',
+            Hid_Image: PhotoData.Hid_Image || '',
+            Status: PhotoData.Status || '',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
-      title: '',
-      imagefile: '',
+      Title: '',
+      SchoolId: '',
+      Id: Id,
+      Image: '',
+      Hid_Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWIMAGEEDITDATA', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        const formData = new FormData();
+        formData.append('Id', values.Id);
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        if (values.Image instanceof File) {
+          formData.append('Image', values.Image);
+        } else {
+          formData.append('Image', values.Image);
+        }
+        if (values.Hid_Image instanceof File) {
+          formData.append('Hid_Image', values.Hid_Image);
+        } else {
+          formData.append('Hid_Image', values.Hid_Image);
+        }
+        formData.append('Status', values.Status);
+        await updatePhotoById(formData);
+      } catch (error) {
+        console.error('Error updating slider:', error);
+      }
     },
   });
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/image/listing');
   };
 
   return (
@@ -48,6 +96,11 @@ const ImageEdit = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
+              <input
+                type="hidden"
+                name="Hid_Image"
+                value={formik.values.Hid_Image}
+              />
               <div className="grid md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -55,14 +108,15 @@ const ImageEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
+                    value={formik.values.Title}
                     onChange={formik.handleChange}
                     placeholder="Enter Your Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -75,13 +129,18 @@ const ImageEdit = () => {
                     </label>
                     <input
                       type="file"
-                      name="imagefile"
-                      onChange={formik.handleChange}
+                      name="Image"
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          'Image',
+                          event.currentTarget.files[0],
+                        );
+                      }}
                       className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
-                    {formik.touched.imagefile && formik.errors.imagefile && (
+                    {formik.touched.Image && formik.errors.Image && (
                       <small className="text-red-500">
-                        {formik.errors.imagefile}
+                        {formik.errors.Image}
                       </small>
                     )}
                     <p>Please select an a png,jpeg,jpg,gif file only.</p>
@@ -91,11 +150,10 @@ const ImageEdit = () => {
                     <div className="grid grid-cols-4 gap-2 relative">
                       <div className="relative">
                         <img
-                          src={Logo}
+                          src={formik.values.Image}
                           alt=""
-                          className="w-full rounded border p-2 "
+                          className="rounded border p-2 h-28 w-28  "
                         />
-                        <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
                       </div>
                     </div>
                   </div>
@@ -130,7 +188,6 @@ const ImageEdit = () => {
                     In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
