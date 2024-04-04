@@ -8,7 +8,6 @@ import { getAllStandard } from '../../API/StandardApi.jsx';
 import { getAllSubject } from '../../API/SubjectAPI.jsx';
 import { getAllStudent } from '../../API/StudentApi.jsx';
 import { getAllDivision } from '../../API/DivisionApi.jsx';
-import { getAllStudent } from '../../API/StudentApi.jsx';
 
 const ECommerce = () => {
   // --------------------school data------------------------
