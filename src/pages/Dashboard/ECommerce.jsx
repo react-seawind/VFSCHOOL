@@ -3,13 +3,12 @@ import CardFour from '../../components/CardFour';
 import CardOne from '../../components/CardOne';
 import CardThree from '../../components/CardThree';
 import CardTwo from '../../components/CardTwo';
-import ChartOne from '../../components/ChartOne.tsx';
-import ChartThree from '../../components/ChartThree.tsx';
-import { getAllSchool } from '../../API/SchoolAPI.jsx';
+
 import { getAllStandard } from '../../API/StandardApi.jsx';
 import { getAllSubject } from '../../API/SubjectAPI.jsx';
-import { getAllChapter } from '../../API/ChapterApi.jsx';
+import { getAllStudent } from '../../API/StudentApi.jsx';
 import { getAllDivision } from '../../API/DivisionApi.jsx';
+import { getAllStudent } from '../../API/StudentApi.jsx';
 
 const ECommerce = () => {
   // --------------------school data------------------------
@@ -54,13 +53,13 @@ const ECommerce = () => {
 
     fetchData();
   }, []);
-  // --------------------Chapter data------------------------
-  const [ChapterData, setChapterData] = useState([]);
+  // --------------------Student data------------------------
+  const [StudentData, setStudentData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const allChapter = await getAllChapter();
-        setChapterData(allChapter);
+        const allStudent = await getAllStudent();
+        setStudentData(allStudent);
       } catch (error) {
         console.error('Error fetching School data:', error);
       }
@@ -74,7 +73,7 @@ const ECommerce = () => {
         <CardTwo StandardData={StandardData} />
         <CardOne divdata={divdata} />
         <CardThree SubjectData={SubjectData} />
-        <CardFour ChapterData={ChapterData} />
+        <CardFour StudentData={StudentData} />
       </div>
       {/*<div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
