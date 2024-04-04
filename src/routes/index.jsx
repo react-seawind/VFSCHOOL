@@ -59,6 +59,7 @@ import ExamTTListing from '../components/ExamTT/Listing';
 import ExamTTAdd from '../components/ExamTT/Add';
 import ExamTTEdit from '../components/ExamTT/Edit';
 import TeacherView from '../components/Teacher/View';
+import ChangePassword from '../components/Student/ChangePassword';
 // import MainForm from '../components/TINY';
 
 const coreRoutes = [
@@ -140,7 +141,10 @@ const coreRoutes = [
     path: '/student/edit/:Id',
     component: StudentEdit,
   },
-
+  {
+    path: '/student/changepassword/:Id',
+    component: ChangePassword,
+  },
   // =================Subject=============
   {
     path: '/subject/listing',

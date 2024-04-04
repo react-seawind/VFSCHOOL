@@ -11,25 +11,30 @@ const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
 };
 
-// ---------------------------Division------------------------
-// =========================Get All Division=========================
-export const getAllDivision = async () => {
+// =============================================================================
+// ==================================Transportation======================================
+// =============================================================================
+// =========================Get All Transportation=========================
+export const getAllTransportation = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}`, {
+    const response = await axios.get(`${API_BASE_URL}/transportation/${SId}`, {
       headers,
     });
     return response.data.responsedata;
   } catch (error) {
-    toast.error(response.data.message);
+    throw error;
   }
 };
 
-// ----------------------getDivisionbyId----------------
-export const getDivisionById = async (Id) => {
+// ----------------------getTransportationbyId----------------
+export const getTransportationById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}/${Id}`, {
-      headers,
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}/transportation/${SId}/${Id}`,
+      {
+        headers,
+      },
+    );
 
     if (response.data.status === true) {
       return response.data.responseData;
@@ -41,13 +46,17 @@ export const getDivisionById = async (Id) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ===================Edit Division================D
-export const updateDivisionById = async (formData) => {
+// ===================Edit Transportation================D
+export const updateTransportationById = async (formData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/division`, formData, {
-      headers,
-      'Content-Type': 'multipart/form-data',
-    });
+    const response = await axios.put(
+      `${API_BASE_URL}/transportation`,
+      formData,
+      {
+        headers,
+        'Content-Type': 'multipart/form-data',
+      },
+    );
 
     if (response.data.status === true) {
       toast(response.data.message); // Toast success message
@@ -61,12 +70,16 @@ export const updateDivisionById = async (formData) => {
   }
 };
 
-// ------------------------Add Division---------------------
-export const AddDivision = async (formData) => {
+// ------------------------Add Transportation---------------------
+export const AddTransportation = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/division`, formData, {
-      headers,
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/transportation`,
+      formData,
+      {
+        headers,
+      },
+    );
     if (response.data.status === true) {
       toast(response.data.message); // Toast success message
       return response.data; // Return response data
@@ -78,12 +91,15 @@ export const AddDivision = async (formData) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ------------------------delete Division---------------------
-export const deleteDivision = async (Id) => {
+// ------------------------delete Transportation---------------------
+export const deleteTransportation = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/division/${Id}`, {
-      headers,
-    });
+    const response = await axios.delete(
+      `${API_BASE_URL}/transportation/${Id}`,
+      {
+        headers,
+      },
+    );
     if (response.data.status === true) {
       toast(response.data.message); // Toast success message
       return response.data; // Return response data

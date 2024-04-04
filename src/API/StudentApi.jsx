@@ -11,23 +11,22 @@ const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
 };
 
-// ---------------------------Division------------------------
-// =========================Get All Division=========================
-export const getAllDivision = async () => {
+// =========================Get All Student=========================
+export const getAllStudent = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}`, {
+    const response = await axios.get(`${API_BASE_URL}/student/${SId}`, {
       headers,
     });
     return response.data.responsedata;
   } catch (error) {
-    toast.error(response.data.message);
+    throw error;
   }
 };
 
-// ----------------------getDivisionbyId----------------
-export const getDivisionById = async (Id) => {
+// ----------------------getStudentbyId----------------
+export const getStudentById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/student/${SId}/${Id}`, {
       headers,
     });
 
@@ -41,12 +40,11 @@ export const getDivisionById = async (Id) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ===================Edit Division================D
-export const updateDivisionById = async (formData) => {
+// ===================Edit Student================D
+export const updateStudentById = async (formData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.put(`${API_BASE_URL}/student`, formData, {
       headers,
-      'Content-Type': 'multipart/form-data',
     });
 
     if (response.data.status === true) {
@@ -61,10 +59,10 @@ export const updateDivisionById = async (formData) => {
   }
 };
 
-// ------------------------Add Division---------------------
-export const AddDivision = async (formData) => {
+// ------------------------Add Student---------------------
+export const AddStudent = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/student`, formData, {
       headers,
     });
     if (response.data.status === true) {
@@ -78,10 +76,10 @@ export const AddDivision = async (formData) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ------------------------delete Division---------------------
-export const deleteDivision = async (Id) => {
+// ------------------------delete Student---------------------
+export const deleteStudent = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/division/${Id}`, {
+    const response = await axios.delete(`${API_BASE_URL}/student/${Id}`, {
       headers,
     });
     if (response.data.status === true) {
@@ -93,5 +91,26 @@ export const deleteDivision = async (Id) => {
     }
   } catch (error) {
     throw error; // Rethrow the error for further handling
+  }
+};
+// ===================ChangePassword================D
+export const StudentChangePassword = async (data) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/student/changePassword`,
+      data,
+      {
+        headers,
+      },
+    );
+
+    if (response.data.status === true) {
+      toast.success(response.data.message);
+      return response.data;
+    } else {
+      toast.error(response.data.message);
+    }
+  } catch (error) {
+    throw error;
   }
 };

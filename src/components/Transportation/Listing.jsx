@@ -4,9 +4,14 @@ import Breadcrumb from '../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
+import {
+  deleteTransportation,
+  getAllTransportation,
+} from '../../API/TransportationAPI';
+import { format } from 'date-fns';
 
 const TransporationListing = () => {
-  const [chapter, setchapter] = useState([]);
+  const [transportation, settransportation] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,8 +22,8 @@ const TransporationListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllChapter();
-        setchapter(result);
+        const result = await getAllTransportation();
+        settransportation(result);
         setfilterdata(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -27,23 +32,23 @@ const TransporationListing = () => {
 
     fetchData();
   }, []);
-  // -------------------delete chapter------------------
+  // -------------------delete transportation------------------
   const handleDelete = async (row) => {
     try {
-      await deleteChapter(row.Id);
-      setchapter((prevchapter) =>
-        prevchapter.filter((item) => item.Id !== row.Id),
+      await deleteTransportation(row.Id);
+      settransportation((prevtransportation) =>
+        prevtransportation.filter((item) => item.Id !== row.Id),
       );
       setfilterdata((prevFilterData) =>
         prevFilterData.filter((item) => item.Id !== row.Id),
       );
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error('Error deleting transportation:', error);
     }
   };
 
   useEffect(() => {
-    const mySearch = chapter.filter(
+    const mySearch = transportation.filter(
       (item) =>
         item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
     );
@@ -53,41 +58,38 @@ const TransporationListing = () => {
   const columns = [
     {
       name: '#',
-      selector: (row) => <h1 className="text-base">{row.Id}</h1>,
+      selector: (row) => <h1 className="text-base min-h-29 mt-2">{row.Id}</h1>,
     },
     {
-      name: 'Title',
-      selector: (row) => <h1 className="text-base">{row.Title}</h1>,
-    },
-
-    {
-      name: 'Image',
+      name: 'Driver Name',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <h1 className="text-base min-h-29 mt-2">{row.DriverName}</h1>
       ),
     },
     {
-      name: 'Status',
+      name: 'Status ',
       selector: (row) => {
         const statusText = row.Status == '1' ? 'Active' : 'Inactive';
         const statusColor =
           row.Status == '1'
-            ? 'bg-green-600 text-white'
+            ? 'bg-green-600 text-white '
             : 'bg-red-600 text-white';
 
         return (
-          <span
-            className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full  ${statusColor}`}
-          >
-            {statusText}
-          </span>
+          <h1 className="min-h-29 mt-2">
+            <span
+              className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full   ${statusColor}`}
+            >
+              {statusText}
+            </span>
+          </h1>
         );
       },
     },
     {
       name: 'Entry Date',
       selector: (row) => (
-        <h1 className="text-base">
+        <h1 className="text-base min-h-29 mt-2">
           {format(new Date(row.EntDt), 'MM/dd/yyyy hh:mm a')}
         </h1>
       ),
@@ -95,7 +97,7 @@ const TransporationListing = () => {
     {
       name: 'Action',
       cell: (row) => (
-        <div>
+        <div className="min-h-29 mt-2">
           <div className="bg-red-600 text-white p-3 pl-5 w-26 flex relative">
             <button>Actions</button>
             <button
@@ -113,7 +115,7 @@ const TransporationListing = () => {
                 className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
-                  Navigate(`/transporation/edit/${row.Id}`);
+                  Navigate(`/transportation/edit/${row.Id}`);
                 }}
               >
                 Edit
@@ -156,7 +158,7 @@ const TransporationListing = () => {
                 highlightOnHover
                 actions={
                   <Link
-                    to="/transporation/add"
+                    to="/transportation/add"
                     className="bg-blue-500 text-white p-3 px-10 text-sm"
                   >
                     Add

@@ -11,25 +11,30 @@ const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
 };
 
-// ---------------------------Division------------------------
-// =========================Get All Division=========================
-export const getAllDivision = async () => {
+// =============================================================================
+// ==================================Reportcard======================================
+// =============================================================================
+// =========================Get All Reportcard=========================
+export const getAllReportcard = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}`, {
+    const response = await axios.get(`${API_BASE_URL}/reportcard/${SId}`, {
       headers,
     });
     return response.data.responsedata;
   } catch (error) {
-    toast.error(response.data.message);
+    throw error;
   }
 };
 
-// ----------------------getDivisionbyId----------------
-export const getDivisionById = async (Id) => {
+// ----------------------getReportcardbyId----------------
+export const getReportcardById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}/${Id}`, {
-      headers,
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}/reportcard/${SId}/${Id}`,
+      {
+        headers,
+      },
+    );
 
     if (response.data.status === true) {
       return response.data.responseData;
@@ -41,10 +46,10 @@ export const getDivisionById = async (Id) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ===================Edit Division================D
-export const updateDivisionById = async (formData) => {
+// ===================Edit Reportcard================D
+export const updateReportcardById = async (formData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.put(`${API_BASE_URL}/reportcard`, formData, {
       headers,
       'Content-Type': 'multipart/form-data',
     });
@@ -61,10 +66,10 @@ export const updateDivisionById = async (formData) => {
   }
 };
 
-// ------------------------Add Division---------------------
-export const AddDivision = async (formData) => {
+// ------------------------Add Reportcard---------------------
+export const AddReportcard = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/reportcard`, formData, {
       headers,
     });
     if (response.data.status === true) {
@@ -78,10 +83,10 @@ export const AddDivision = async (formData) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ------------------------delete Division---------------------
-export const deleteDivision = async (Id) => {
+// ------------------------delete Reportcard---------------------
+export const deleteReportcard = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/division/${Id}`, {
+    const response = await axios.delete(`${API_BASE_URL}/reportcard/${Id}`, {
       headers,
     });
     if (response.data.status === true) {

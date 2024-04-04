@@ -1,35 +1,98 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Logo from '../../images/logo.jpg';
-import { useNavigate } from 'react-router-dom';
-import Multiselect from 'multiselect-react-dropdown';
-import { IoMdClose } from 'react-icons/io';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { getAllStudent } from '../../API/StudentApi';
+import {
+  getReportcardById,
+  updateReportcardById,
+} from '../../API/ReportcardApi';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  studentname: yup.string().required('Student Name is required'),
-  reportpdf: yup.string().required('Please Upload PDF file'),
+  Title: yup.string().required('Title is required'),
+  StudentId: yup.string().required('Student Name is required'),
+  PDF: yup.string().required('Please Upload PDF file'),
 });
 const ReportCardEdit = () => {
+  // ------------Student DATA-------------------
+  const [student, setstudent] = useState([]);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const StudentData = await getAllStudent();
+        setstudent(StudentData);
+      } catch (error) {
+        console.error('Error fetching Student:', error);
+      }
+    };
+    fetchStudent();
+  }, []);
+
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const ReportcardData = await getReportcardById(Id);
+          formik.setValues({
+            Id: ReportcardData.Id || '',
+            SchoolId: ReportcardData.SchoolId || '',
+            StudentId: ReportcardData.StudentId || '',
+            Title: ReportcardData.Title || '',
+            PDF: ReportcardData.PDF || '',
+            Hid_PDF: ReportcardData.Hid_PDF || '',
+            Status: ReportcardData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
-      title: '',
-      studentname: '',
-      reportpdf: '',
-      Status: 1,
+      Id: Id,
+      SchoolId: '',
+      Title: '',
+      StudentId: '',
+      PDF: '',
+      Hid_PDF: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWREPORTCARDEDITDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Id', values.Id);
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        formData.append('StudentId', values.StudentId);
+        if (values.PDF instanceof File) {
+          formData.append('PDF', values.PDF);
+        } else {
+          formData.append('PDF', values.PDF);
+        }
+        formData.append('Hid_PDF', values.Hid_PDF);
+        formData.append('Status', values.Status);
+        await updateReportcardById(formData);
+      } catch (error) {
+        console.error('Error adding Photo:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/reportcard/listing');
   };
 
   return (
@@ -51,6 +114,12 @@ const ReportCardEdit = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
+              <input
+                type="hidden"
+                name="Hid_PDF"
+                value={formik.values.Hid_PDF}
+              />
+
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -58,14 +127,15 @@ const ReportCardEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    value={formik.values.Title}
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -76,18 +146,21 @@ const ReportCardEdit = () => {
                   </label>
 
                   <select
-                    name="studentname"
+                    name="StudentId"
+                    value={formik.values.StudentId}
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Student</option>
-                    <option value="1">Student 1</option>
-                    <option value="2">Student 2</option>
+                    {student.map((student) => (
+                      <option key={student.Id} value={student.Id}>
+                        {student.StudentName}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.studentname && formik.errors.studentname && (
+                  {formik.touched.StudentId && formik.errors.StudentId && (
                     <small className="text-red-500">
-                      {formik.errors.studentname}
+                      {formik.errors.StudentId}
                     </small>
                   )}
                 </div>
@@ -99,33 +172,34 @@ const ReportCardEdit = () => {
                   </label>
                   <input
                     type="file"
-                    name="reportpdf"
-                    onChange={formik.handleChange}
+                    name="PDF"
+                    onChange={(event) => {
+                      formik.setFieldValue('PDF', event.currentTarget.files[0]);
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.reportpdf && formik.errors.reportpdf && (
-                    <small className="text-red-500">
-                      {formik.errors.reportpdf}
-                    </small>
+                  {formik.touched.PDF && formik.errors.PDF && (
+                    <small className="text-red-500">{formik.errors.PDF}</small>
                   )}
                   <p>Please select an a pdf file only.</p>
                 </div>
 
                 <div>
                   <p>Your Exsisting File*</p>
-                  <div className="grid grid-cols-4 gap-2 relative">
+                  <div className="grid   gap-2 relative">
                     <div className="relative">
-                      <img
-                        src={Logo}
-                        alt=""
-                        className="w-full rounded border p-2 "
-                      />
-                      <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
+                      <Link to={formik.values.PDF} target="_blank">
+                        <button
+                          type="button"
+                          className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                        >
+                          Download Report Card
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
                 <label className="mb-3 block text-black dark:text-white">
                   Status <span className="text-danger">*</span>
@@ -155,7 +229,6 @@ const ReportCardEdit = () => {
                   </div>
                 </div>
               </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"

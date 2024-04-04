@@ -603,7 +603,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaUser />
+                        <FaUser className="text-red-700" />
                         Student Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -898,7 +898,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdEmojiTransportation />
+                        <MdEmojiTransportation className="text-red-700" />
                         Transportation
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1080,7 +1080,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <TbFileReport />
+                        <TbFileReport className="text-red-700" />
                         Report Card
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1201,7 +1201,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdEmojiEvents />
+                        <MdEmojiEvents className="text-red-700" />
                         Event
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${

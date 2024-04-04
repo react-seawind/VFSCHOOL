@@ -3,36 +3,62 @@ import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { getAllStudent } from '../../API/StudentApi';
+import Config from '../../API/Config';
+import { AddTransportation } from '../../API/TransportationAPI';
 
 const validationSchema = yup.object().shape({
-  student: yup.string().required('Student Name is required'),
-  dname: yup.string().required('Driver Name is required'),
-  dnumber: yup.string().required('Driver Number is required'),
-  cname: yup.string().required('Conductor Name is required'),
-  cnumber: yup.string().required('Conductor Number is required'),
-  vnubmer: yup.string().required('Vehicle Name is required'),
+  StudentId: yup.string().required('Student Name is required'),
+  DriverName: yup.string().required('Driver Name is required'),
+  DriverPhone: yup.string().required('Driver Number is required'),
+  ConductorName: yup.string().required('Conductor Name is required'),
+  ConductorPhone: yup.string().required('Conductor Number is required'),
+  BusNo: yup.string().required('Vehicle Name is required'),
 });
 const TransportationAdd = () => {
+  const Id = Config.getId();
+
+  // ------------Student DATA-------------------
+  const [student, setstudent] = useState([]);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const StudentData = await getAllStudent();
+        setstudent(StudentData);
+      } catch (error) {
+        console.error('Error fetching Student:', error);
+      }
+    };
+    fetchStudent();
+  }, []);
   const formik = useFormik({
     initialValues: {
-      student: '',
-      dname: '',
-      dnumber: '',
-      cname: '',
-      cnumber: '',
-      vnubmer: '',
-      Status: 1,
+      SchoolId: Id,
+      StudentId: '',
+      DriverName: '',
+      DriverPhone: '',
+      ConductorName: '',
+      ConductorPhone: '',
+      BusNo: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWTRANSPORATIONDATA', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        await AddTransportation(values);
+        actions.resetForm();
+        navigate('/transportation/listing');
+      } catch (error) {
+        console.error('Error adding transportation:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/transportation/listing');
   };
   return (
     <div>
@@ -56,21 +82,24 @@ const TransportationAdd = () => {
               <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Student Name <span className="text-danger">*</span>
+                    StudentId Name <span className="text-danger">*</span>
                   </label>
                   <select
-                    name="student"
+                    name="StudentId"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     onChange={formik.handleChange}
                   >
                     <option>Select Student</option>
-                    <option value="Rajan">Rajan</option>
-                    <option value="Test">Test</option>
+                    {student.map((student) => (
+                      <option key={student.Id} value={student.Id}>
+                        {student.StudentName}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.student && formik.errors.student && (
+                  {formik.touched.StudentId && formik.errors.StudentId && (
                     <small className="text-red-500">
-                      {formik.errors.student}
+                      {formik.errors.StudentId}
                     </small>
                   )}
                 </div>
@@ -80,14 +109,14 @@ const TransportationAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="dname"
+                    name="DriverName"
                     onChange={formik.handleChange}
                     placeholder="Enter Driver Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.dname && formik.errors.dname && (
+                  {formik.touched.DriverName && formik.errors.DriverName && (
                     <small className="text-red-500">
-                      {formik.errors.dname}
+                      {formik.errors.DriverName}
                     </small>
                   )}
                 </div>
@@ -97,14 +126,14 @@ const TransportationAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="dnumber"
+                    name="DriverPhone"
                     onChange={formik.handleChange}
                     placeholder="Enter Driver Number"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.dnumber && formik.errors.dnumber && (
+                  {formik.touched.DriverPhone && formik.errors.DriverPhone && (
                     <small className="text-red-500">
-                      {formik.errors.dnumber}
+                      {formik.errors.DriverPhone}
                     </small>
                   )}
                 </div>
@@ -114,16 +143,17 @@ const TransportationAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="cname"
+                    name="ConductorName"
                     onChange={formik.handleChange}
                     placeholder="Enter Conductor Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.cname && formik.errors.cname && (
-                    <small className="text-red-500">
-                      {formik.errors.cname}
-                    </small>
-                  )}
+                  {formik.touched.ConductorName &&
+                    formik.errors.ConductorName && (
+                      <small className="text-red-500">
+                        {formik.errors.ConductorName}
+                      </small>
+                    )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -131,16 +161,17 @@ const TransportationAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="cnumber"
+                    name="ConductorPhone"
                     onChange={formik.handleChange}
                     placeholder="Enter Conductor Number"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.cnumber && formik.errors.cnumber && (
-                    <small className="text-red-500">
-                      {formik.errors.cnumber}
-                    </small>
-                  )}
+                  {formik.touched.ConductorPhone &&
+                    formik.errors.ConductorPhone && (
+                      <small className="text-red-500">
+                        {formik.errors.ConductorPhone}
+                      </small>
+                    )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -148,14 +179,14 @@ const TransportationAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="vnubmer"
+                    name="BusNo"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Vehicle Number"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.vnubmer && formik.errors.vnubmer && (
+                  {formik.touched.BusNo && formik.errors.BusNo && (
                     <small className="text-red-500">
-                      {formik.errors.vnubmer}
+                      {formik.errors.BusNo}
                     </small>
                   )}
                 </div>

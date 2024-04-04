@@ -1,38 +1,85 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 import ContentEditor from '../EDITOR/NewEditor';
+import { getEventById, updateEventById } from '../../API/EventApi';
 
 const validationSchema = yup.object().shape({
-  ename: yup.string().required('Event Name is required'),
-  edate: yup.string().required('Event Date is required'),
-  content: yup.string().required('Content is required'),
+  Title: yup.string().required('Event Name is required'),
+  EventDate: yup.string().required('Event Date is required'),
+  Content: yup.string().required('Content is required'),
 });
 const EventEdit = () => {
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const EventData = await getEventById(Id);
+          // ---------------data format------------------
+          let eventDate = EventData.EventDate || '';
+          let formattedDate = '';
+
+          if (eventDate) {
+            let dateObj = new Date(eventDate);
+
+            let year = dateObj.getFullYear();
+            let month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+            let day = ('0' + dateObj.getDate()).slice(-2);
+            let hours = ('0' + dateObj.getHours()).slice(-2);
+            let minutes = ('0' + dateObj.getMinutes()).slice(-2);
+            let seconds = ('0' + dateObj.getSeconds()).slice(-2);
+
+            formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+          }
+          formik.setValues({
+            Id: EventData.Id || '',
+            SchoolId: EventData.SchoolId || '',
+            EventDate: formattedDate || '',
+            Content: EventData.Content || '',
+            Title: EventData.Title || '',
+            Status: EventData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
-      ename: '',
-      edate: '',
-      content: '',
-      Status: 1,
+      SchoolId: '',
+      Id: Id,
+      Title: '',
+      EventDate: null,
+      Content: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWEVENTEDITDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        await updateEventById(values);
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/event/listing');
   };
-  const handleContentChange = (content) => {
-    formik.setFieldValue('content', content);
-  };
+
   return (
     <div>
       <Breadcrumb pageName="Event Edit" />
@@ -59,14 +106,15 @@ const EventEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="ename"
+                    name="Title"
                     onChange={formik.handleChange}
+                    value={formik.values.Title}
                     placeholder="Enter Your Event Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.ename && formik.errors.ename && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.ename}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -75,14 +123,15 @@ const EventEdit = () => {
                     Event Date <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="date"
-                    name="edate"
+                    type="datetime-local"
+                    name="EventDate"
+                    value={formik.values.EventDate}
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.edate && formik.errors.edate && (
+                  {formik.touched.EventDate && formik.errors.EventDate && (
                     <small className="text-red-500">
-                      {formik.errors.edate}
+                      {formik.errors.EventDate}
                     </small>
                   )}
                 </div>
@@ -91,11 +140,18 @@ const EventEdit = () => {
                 <label className="mb-3 block text-black dark:text-white">
                   Content <span className="text-danger">*</span>
                 </label>
-                <ContentEditor onChange={handleContentChange} />
+                <textarea
+                  rows={2}
+                  onChange={formik.handleChange}
+                  name="Content"
+                  value={formik.values.Content}
+                  placeholder="Please enter Content"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                ></textarea>
 
-                {formik.touched.content && formik.errors.content && (
+                {formik.touched.Content && formik.errors.Content && (
                   <small className="text-red-500">
-                    {formik.errors.content}
+                    {formik.errors.Content}
                   </small>
                 )}
               </div>

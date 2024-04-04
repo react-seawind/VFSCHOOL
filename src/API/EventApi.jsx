@@ -5,17 +5,17 @@ import Config from './Config';
 const { API_BASE_URL } = Config; // Destructure the values from the config file
 
 const TOKEN = Config.getToken();
-const SId = Config.getId();
+const Id = Config.getId();
 
 const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
 };
 
-// ---------------------------Division------------------------
-// =========================Get All Division=========================
-export const getAllDivision = async () => {
+// ---------------------------Event------------------------
+// =========================Get All Event=========================
+export const getAllEvent = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}`, {
+    const response = await axios.get(`${API_BASE_URL}/event`, {
       headers,
     });
     return response.data.responsedata;
@@ -24,10 +24,10 @@ export const getAllDivision = async () => {
   }
 };
 
-// ----------------------getDivisionbyId----------------
-export const getDivisionById = async (Id) => {
+// ----------------------getEventbyId----------------
+export const getEventById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/division/${SId}/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/event/${Id}`, {
       headers,
     });
 
@@ -41,12 +41,11 @@ export const getDivisionById = async (Id) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ===================Edit Division================D
-export const updateDivisionById = async (formData) => {
+// ===================Edit Event================D
+export const updateEventById = async (data) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.put(`${API_BASE_URL}/event`, data, {
       headers,
-      'Content-Type': 'multipart/form-data',
     });
 
     if (response.data.status === true) {
@@ -61,10 +60,10 @@ export const updateDivisionById = async (formData) => {
   }
 };
 
-// ------------------------Add Division---------------------
-export const AddDivision = async (formData) => {
+// ------------------------Add Event---------------------
+export const AddEvent = async (data) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/division`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/event`, data, {
       headers,
     });
     if (response.data.status === true) {
@@ -78,10 +77,10 @@ export const AddDivision = async (formData) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ------------------------delete Division---------------------
-export const deleteDivision = async (Id) => {
+// ------------------------delete Event---------------------
+export const deleteEvent = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/division/${Id}`, {
+    const response = await axios.delete(`${API_BASE_URL}/event/${Id}`, {
       headers,
     });
     if (response.data.status === true) {

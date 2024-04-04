@@ -271,7 +271,10 @@ const Profile = () => {
                           <div className="relative">
                             {val.Photo ? (
                               getFileExtension(val.Photo) === 'pdf' ? (
-                                <button className="rounded border p-2">
+                                <button
+                                  className="rounded border  p-2"
+                                  type="button"
+                                >
                                   Download Photo
                                 </button>
                               ) : (

@@ -4,35 +4,42 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import ContentEditor from '../EDITOR/NewEditor';
+import { AddEvent } from '../../API/EventApi';
+import Config from '../../API/Config';
 
 const validationSchema = yup.object().shape({
-  ename: yup.string().required('Event Name is required'),
-  edate: yup.string().required('Event Date is required'),
-  content: yup.string().required('Content is required'),
+  Title: yup.string().required('Event Name is required'),
+  EventDate: yup.string().required('Event Date is required'),
+  Content: yup.string().required('Content is required'),
 });
 const EventAdd = () => {
+  const Id = Config.getId();
   const formik = useFormik({
     initialValues: {
-      ename: '',
-      edate: '',
-      content: '',
-      Status: 1,
+      SchoolId: Id,
+      Title: '',
+      EventDate: '',
+      Content: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWEVENTDATA', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        await AddEvent(values);
+        actions.resetForm();
+        navigate('/event/listing');
+      } catch (error) {
+        console.error('Error adding standard:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/event/listing');
   };
 
-  const handleContentChange = (content) => {
-    formik.setFieldValue('content', content);
-  };
   return (
     <div>
       <Breadcrumb pageName="Event Add " />
@@ -58,14 +65,14 @@ const EventAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="ename"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Your Event Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.ename && formik.errors.ename && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.ename}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -74,14 +81,14 @@ const EventAdd = () => {
                     Event Date <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="date"
-                    name="edate"
+                    type="datetime-local"
+                    name="EventDate"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.edate && formik.errors.edate && (
+                  {formik.touched.EventDate && formik.errors.EventDate && (
                     <small className="text-red-500">
-                      {formik.errors.edate}
+                      {formik.errors.EventDate}
                     </small>
                   )}
                 </div>
@@ -90,11 +97,17 @@ const EventAdd = () => {
                 <label className="mb-3 block text-black dark:text-white">
                   Content <span className="text-danger">*</span>
                 </label>
-                <ContentEditor onChange={handleContentChange} />
+                <textarea
+                  rows={2}
+                  onChange={formik.handleChange}
+                  name="Content"
+                  placeholder="Please enter Content"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                ></textarea>
 
-                {formik.touched.content && formik.errors.content && (
+                {formik.touched.Content && formik.errors.Content && (
                   <small className="text-red-500">
-                    {formik.errors.content}
+                    {formik.errors.Content}
                   </small>
                 )}
               </div>

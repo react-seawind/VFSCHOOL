@@ -3,30 +3,65 @@ import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import Config from '../../API/Config';
+import { AddReportcard } from '../../API/ReportcardApi';
+import { getAllStudent } from '../../API/StudentApi';
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  studentname: yup.string().required('Student Name is required'),
-  reportpdf: yup.string().required('Please Upload PDF file'),
+  Title: yup.string().required('Title is required'),
+  StudentId: yup.string().required('Student Name is required'),
+  PDF: yup.string().required('Please Upload PDF file'),
 });
 const ReportCardAdd = () => {
+  const Id = Config.getId();
+
+  // ------------Student DATA-------------------
+  const [student, setstudent] = useState([]);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const StudentData = await getAllStudent();
+        setstudent(StudentData);
+      } catch (error) {
+        console.error('Error fetching Student:', error);
+      }
+    };
+    fetchStudent();
+  }, []);
   const formik = useFormik({
     initialValues: {
-      title: '',
-      studentname: '',
-      reportpdf: '',
-      Status: 1,
+      SchoolId: Id,
+      Title: '',
+      StudentId: '',
+      PDF: '',
+      Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('NEWREPORTCARDDATA', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Title', values.Title);
+        formData.append('SchoolId', values.SchoolId);
+        formData.append('StudentId', values.StudentId);
+        if (values.PDF instanceof File) {
+          formData.append('PDF', values.PDF);
+        } else {
+          formData.append('PDF', values.PDF);
+        }
+        formData.append('Status', values.Status);
+        await AddReportcard(formData);
+        navigate('/reportcard/listing');
+      } catch (error) {
+        console.error('Error adding Photo:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/chapter/listing');
+    navigate('/reportcard/listing');
   };
 
   return (
@@ -55,14 +90,14 @@ const ReportCardAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Title"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.title}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -73,18 +108,21 @@ const ReportCardAdd = () => {
                   </label>
 
                   <select
-                    name="studentname"
+                    name="StudentId"
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Student</option>
-                    <option value="1">Student 1</option>
-                    <option value="2">Student 2</option>
+                    {student.map((student) => (
+                      <option key={student.Id} value={student.Id}>
+                        {student.StudentName}
+                      </option>
+                    ))}
                   </select>
 
-                  {formik.touched.studentname && formik.errors.studentname && (
+                  {formik.touched.StudentId && formik.errors.StudentId && (
                     <small className="text-red-500">
-                      {formik.errors.studentname}
+                      {formik.errors.StudentId}
                     </small>
                   )}
                 </div>
@@ -96,14 +134,14 @@ const ReportCardAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="reportpdf"
-                    onChange={formik.handleChange}
+                    name="PDF"
+                    onChange={(event) => {
+                      formik.setFieldValue('PDF', event.currentTarget.files[0]);
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.reportpdf && formik.errors.reportpdf && (
-                    <small className="text-red-500">
-                      {formik.errors.reportpdf}
-                    </small>
+                  {formik.touched.PDF && formik.errors.PDF && (
+                    <small className="text-red-500">{formik.errors.PDF}</small>
                   )}
                   <p>Please select an a pdf file only.</p>
                 </div>

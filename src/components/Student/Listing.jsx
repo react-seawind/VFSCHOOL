@@ -4,9 +4,11 @@ import Breadcrumb from '../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
+import { format } from 'date-fns';
+import { deleteStudent, getAllStudent } from '../../API/StudentApi';
 
 const StudentListing = () => {
-  const [chapter, setchapter] = useState([]);
+  const [student, setstudent] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,8 +19,8 @@ const StudentListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllChapter();
-        setchapter(result);
+        const result = await getAllStudent();
+        setstudent(result);
         setfilterdata(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -27,23 +29,23 @@ const StudentListing = () => {
 
     fetchData();
   }, []);
-  // -------------------delete chapter------------------
+  // -------------------delete student------------------
   const handleDelete = async (row) => {
     try {
-      await deleteChapter(row.Id);
-      setchapter((prevchapter) =>
-        prevchapter.filter((item) => item.Id !== row.Id),
+      await deleteStudent(row.Id);
+      setstudent((prevstudent) =>
+        prevstudent.filter((item) => item.Id !== row.Id),
       );
       setfilterdata((prevFilterData) =>
         prevFilterData.filter((item) => item.Id !== row.Id),
       );
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error('Error deleting student:', error);
     }
   };
 
   useEffect(() => {
-    const mySearch = chapter.filter(
+    const mySearch = student.filter(
       (item) =>
         item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
     );
@@ -56,14 +58,14 @@ const StudentListing = () => {
       selector: (row) => <h1 className="text-base">{row.Id}</h1>,
     },
     {
-      name: 'Title',
-      selector: (row) => <h1 className="text-base">{row.Title}</h1>,
+      name: 'Student Name',
+      selector: (row) => <h1 className="text-base">{row.StudentName}</h1>,
     },
 
     {
       name: 'Image',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Photo} />
       ),
     },
     {
@@ -125,7 +127,7 @@ const StudentListing = () => {
                 onClick={() => {
                   if (
                     window.confirm(
-                      `Are you sure you want to delete ${row.Title}?`,
+                      `Are you sure you want to delete ${row.StudentName}?`,
                     )
                   ) {
                     handleDelete(row); // Call handleDelete function on click of delete button
@@ -134,6 +136,16 @@ const StudentListing = () => {
                 }}
               >
                 Delete
+              </button>
+              <br />
+              <button
+                className="text-black bg-white border  p-2 w-26"
+                onClick={() => {
+                  setSelectedRow(null);
+                  Navigate(`/student/changepassword/${row.Id}`);
+                }}
+              >
+                Change Password
               </button>
             </div>
           )}
