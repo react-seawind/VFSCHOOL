@@ -67,7 +67,7 @@ const VideoListing = () => {
           width="400"
           controls
           // autoPlay
-          className="w-full rounded border p-2 h-50  "
+          className="p-2 overflow-hidden h-40 rounded-md w-full border my-2 border-slate-200 bg-white "
         >
           <source src={row.Video} type="video/mp4" />
         </video>

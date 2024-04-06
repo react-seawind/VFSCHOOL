@@ -56,7 +56,7 @@ const SubjectAdd = () => {
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, actions) => {
       try {
         await AddSubject(values);
         actions.resetForm();

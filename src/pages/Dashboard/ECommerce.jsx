@@ -8,6 +8,8 @@ import { getAllStandard } from '../../API/StandardApi.jsx';
 import { getAllSubject } from '../../API/SubjectAPI.jsx';
 import { getAllStudent } from '../../API/StudentApi.jsx';
 import { getAllDivision } from '../../API/DivisionApi.jsx';
+import { getAllTeacher } from '../../API/TeacherApi.jsx';
+import CardFive from '../../components/CardFive.jsx';
 
 const ECommerce = () => {
   // --------------------school data------------------------
@@ -66,6 +68,21 @@ const ECommerce = () => {
 
     fetchData();
   }, []);
+
+  // --------------------school data------------------------
+  const [Teacher, setTeacher] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const allDivision = await getAllTeacher();
+        setTeacher(allDivision);
+      } catch (error) {
+        console.error('Error fetching Division data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -73,6 +90,7 @@ const ECommerce = () => {
         <CardOne divdata={divdata} />
         <CardThree SubjectData={SubjectData} />
         <CardFour StudentData={StudentData} />
+        <CardFive Teacher={Teacher} />
       </div>
       {/*<div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />

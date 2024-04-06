@@ -4,8 +4,6 @@ import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import ECommerce from '../pages/Dashboard/ECommerce';
 import SignIn from '../pages/Authentication/SignIn';
-import Paymentreport from '../components/Datamanager/Paymentreport';
-import Schoolreport from '../components/Datamanager/Schoolreport';
 import DivListing from '../components/Standard/Div/Listing';
 import DivAdd from '../components/Standard/Div/Add';
 import DivEdit from '../components/Standard/Div/Edit';
@@ -60,6 +58,9 @@ import ExamTTAdd from '../components/ExamTT/Add';
 import ExamTTEdit from '../components/ExamTT/Edit';
 import TeacherView from '../components/Teacher/View';
 import ChangePassword from '../components/Student/ChangePassword';
+import TeacherChangePwd from '../components/Teacher/ChangePassword';
+import StudentDataManager from '../components/Datamanager/StudentDataManager';
+import TeacherDataManager from '../components/Datamanager/Teacherreport';
 // import MainForm from '../components/TINY';
 
 const coreRoutes = [
@@ -125,8 +126,12 @@ const coreRoutes = [
     component: TeacherEdit,
   },
   {
-    path: '/teacher/view',
+    path: '/teacher/view/:Id',
     component: TeacherView,
+  },
+  {
+    path: '/teacher/changepassword/:Id',
+    component: TeacherChangePwd,
   },
   // =================student=============
   {
@@ -174,12 +179,12 @@ const coreRoutes = [
   },
   // =================REPOET=============
   {
-    path: '/schoolreport',
-    component: Schoolreport,
+    path: '/studentreport',
+    component: StudentDataManager,
   },
   {
-    path: '/paymentreport',
-    component: Paymentreport,
+    path: '/teacherreport',
+    component: TeacherDataManager,
   },
 
   // =================image=============

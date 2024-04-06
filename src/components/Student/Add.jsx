@@ -7,6 +7,7 @@ import { AddStudent } from '../../API/StudentApi';
 import Config from '../../API/Config';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
+import { getAllTeacher } from '../../API/TeacherApi';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -74,6 +75,21 @@ const StudentAdd = () => {
       }
     };
     fetchDivision();
+  }, []);
+
+  // ------------Teacher DATA-------------------
+  const [teacher, setteacher] = useState([]);
+
+  useEffect(() => {
+    const fetchTeacher = async () => {
+      try {
+        const TeacherData = await getAllTeacher();
+        setteacher(TeacherData);
+      } catch (error) {
+        console.error('Error fetching Teacher:', error);
+      }
+    };
+    fetchTeacher();
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -578,7 +594,11 @@ const StudentAdd = () => {
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Division</option>
-                    <option value="1">Test</option>
+                    {teacher.map((teacher) => (
+                      <option key={teacher.Id} value={teacher.Id}>
+                        {teacher.Title}
+                      </option>
+                    ))}
                   </select>
 
                   {formik.touched.TeacherId && formik.errors.TeacherId && (

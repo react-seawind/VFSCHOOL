@@ -1,21 +1,21 @@
 import React from 'react';
-import { BiBook, BiCategory, BiChild } from 'react-icons/bi';
+import { BiBook, BiCategory } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 
-const CardFour = ({ StudentData }) => {
+const CardSix = ({ StandardData }) => {
   return (
-    <Link to={'/dashboard'}>
+    <Link to={'/std/listing'}>
       <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-          <BiChild className="fill-primary dark:fill-white text-2xl" />
+          <BiBook className="fill-primary dark:fill-white text-2xl" />
         </div>
 
         <div className="mt-4 flex items-end justify-between">
           <div>
             <h4 className="text-title-md font-bold text-black dark:text-white">
-              {StudentData.length}
+              {StandardData.length}
             </h4>
-            <span className="text-sm font-medium">Total Student</span>
+            <span className="text-sm font-medium">Total Standard</span>
           </div>
         </div>
       </div>
@@ -23,4 +23,4 @@ const CardFour = ({ StudentData }) => {
   );
 };
 
-export default CardFour;
+export default CardSix;

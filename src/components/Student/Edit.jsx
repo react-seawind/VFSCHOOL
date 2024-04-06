@@ -10,6 +10,7 @@ import Multiselect from 'multiselect-react-dropdown';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getAllStandard } from '../../API/StandardApi';
 import { getStudentById, updateStudentById } from '../../API/StudentApi';
+import { getAllTeacher } from '../../API/TeacherApi';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -120,6 +121,20 @@ const StudentEdit = () => {
       }
     };
     fetchDivision();
+  }, []);
+  // ------------Teacher DATA-------------------
+  const [teacher, setteacher] = useState([]);
+
+  useEffect(() => {
+    const fetchTeacher = async () => {
+      try {
+        const TeacherData = await getAllTeacher();
+        setteacher(TeacherData);
+      } catch (error) {
+        console.error('Error fetching Teacher:', error);
+      }
+    };
+    fetchTeacher();
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -533,7 +548,6 @@ const StudentEdit = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Division</option>
                     {div.map((div) => (
                       <option key={div.Id} value={div.Id}>
                         {div.Title}
@@ -558,7 +572,11 @@ const StudentEdit = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option value="1">Test</option>
+                    {teacher.map((teacher) => (
+                      <option key={teacher.Id} value={teacher.Id}>
+                        {teacher.Title}
+                      </option>
+                    ))}
                   </select>
 
                   {formik.touched.TeacherId && formik.errors.TeacherId && (

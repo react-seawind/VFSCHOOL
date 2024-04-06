@@ -61,17 +61,14 @@ const UserListing = () => {
     {
       name: ' # ',
       selector: (row) => <h1 className="text-base">{row.Id}</h1>,
-      sortable: true,
     },
     {
       name: 'Title',
       selector: (row) => <h1 className="text-base">{row.Title}</h1>,
-      sortable: true,
     },
     {
       name: 'SubTitle',
       selector: (row) => <h1 className="text-base">{row.SubTitle}</h1>,
-      sortable: true,
     },
     {
       name: 'Image',
@@ -81,7 +78,6 @@ const UserListing = () => {
           src={row.Image}
         />
       ),
-      sortable: true,
     },
     {
       name: 'Status',
@@ -90,7 +86,6 @@ const UserListing = () => {
           Active
         </span>
       ),
-      sortable: true,
     },
     {
       name: 'Assign',

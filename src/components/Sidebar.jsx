@@ -1283,20 +1283,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
                               <li>
                                 <NavLink
-                                  to="/schoolreport"
+                                  to="/studentreport"
                                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                                 >
                                   <FaSchool />
-                                  School Report
+                                  Student Report
                                 </NavLink>
                               </li>
                               <li>
                                 <NavLink
-                                  to="/paymentreport"
+                                  to="/teacherreport"
                                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                                 >
                                   <FaMoneyBill />
-                                  Payment Report
+                                  Teacher Report
                                 </NavLink>
                               </li>
                             </ul>
