@@ -64,7 +64,7 @@ const ImageListing = () => {
       name: 'Image',
       selector: (row) => (
         <img
-          className="p-2 overflow-hidden h-40 rounded-md w-full border my-2 border-slate-200 bg-white"
+          className="p-2 overflow-hidden h-40 rounded-md w-40 border my-2 border-slate-200 bg-white "
           src={row.Image}
         />
       ),

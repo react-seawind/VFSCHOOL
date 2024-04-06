@@ -596,7 +596,7 @@ const StudentAdd = () => {
                     <option>Select Division</option>
                     {teacher.map((teacher) => (
                       <option key={teacher.Id} value={teacher.Id}>
-                        {teacher.Title}
+                        {teacher.TeacherName}
                       </option>
                     ))}
                   </select>

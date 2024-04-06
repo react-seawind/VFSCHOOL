@@ -62,6 +62,9 @@ const TeacherView = () => {
     fetchDivision();
   }, []);
 
+  console.log('====================================');
+  console.log(sub);
+  console.log('====================================');
   useEffect(() => {
     const fetchSubject = async () => {
       try {
@@ -73,7 +76,6 @@ const TeacherView = () => {
     };
     fetchSubject();
   }, []);
-
   const handleDelete = async (row) => {
     try {
       await deleteTeacherAssign(row.Id);
@@ -87,6 +89,9 @@ const TeacherView = () => {
     setSelectedStd(selectedList);
     formik.setFieldValue('SubjectId', selectedList.join(','));
   };
+  console.log('====================================');
+  console.log(selectedStd);
+  console.log('====================================');
   // -------------------delete/print over-------------
 
   const formik = useFormik({
@@ -135,7 +140,7 @@ const TeacherView = () => {
                   onSubmit={formik.handleSubmit}
                   className="border mt-3 rounded-sm"
                 >
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-2">
+                  <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-5.5 py-3.5 px-2">
                     <div>
                       <label className="mb-3 block text-black dark:text-white">
                         Select Standard <span className="text-danger">*</span>
@@ -190,9 +195,9 @@ const TeacherView = () => {
                       <Multiselect
                         selectedValues={selectedStd}
                         onSelect={handleSelectStd}
-                        displayValue="stdname"
                         name="SubjectId"
-                        isObject={false}
+                        isObject={true}
+                        displayValue="Title"
                         options={sub}
                       />
                       {formik.touched.TeacherPhone &&
@@ -247,8 +252,8 @@ const TeacherView = () => {
                 </form>
               </div>
 
-              <div className="mt-5">
-                <table className="w-full table-auto">
+              <div className="mt-5 table-responsive overflow-scroll overflow-y-hidden">
+                <table className="w-full  ">
                   <thead>
                     <tr className="bg-gray-2 text-left dark:bg-meta-4">
                       <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
@@ -278,17 +283,17 @@ const TeacherView = () => {
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                           <h5 className="font-medium text-black dark:text-white">
-                            {val.SchoolId}
+                            {val.StandardId}
                           </h5>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {val.TeacherId}
+                            {val.DivisionId}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {val.StandardId}
+                            {val.SubjectId}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
