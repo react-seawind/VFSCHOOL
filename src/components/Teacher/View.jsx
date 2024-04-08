@@ -62,9 +62,6 @@ const TeacherView = () => {
     fetchDivision();
   }, []);
 
-  console.log('====================================');
-  console.log(sub);
-  console.log('====================================');
   useEffect(() => {
     const fetchSubject = async () => {
       try {
@@ -91,9 +88,6 @@ const TeacherView = () => {
     formik.setFieldValue('SubjectId', selectedSubjectIds.join(',')); // Set only IDs to the formik field
   };
 
-  console.log('====================================');
-  console.log(selectedStd);
-  console.log('====================================');
   // -------------------delete/print over-------------
 
   const formik = useFormik({
