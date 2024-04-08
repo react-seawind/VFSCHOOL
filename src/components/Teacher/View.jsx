@@ -85,10 +85,16 @@ const TeacherView = () => {
     }
   };
   const [selectedStd, setSelectedStd] = useState([]);
+  // const handleSelectStd = (selectedList) => {
+  //   setSelectedStd(selectedList);
+  //   formik.setFieldValue('SubjectId', selectedList.join(','));
+  // };
   const handleSelectStd = (selectedList) => {
+    const selectedSubjectIds = selectedList.map((subject) => subject.Id); // Extract IDs from selected subjects
     setSelectedStd(selectedList);
-    formik.setFieldValue('SubjectId', selectedList.join(','));
+    formik.setFieldValue('SubjectId', selectedSubjectIds.join(',')); // Set only IDs to the formik field
   };
+
   console.log('====================================');
   console.log(selectedStd);
   console.log('====================================');

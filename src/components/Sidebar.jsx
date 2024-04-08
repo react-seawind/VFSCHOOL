@@ -157,7 +157,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaChild className="text-red-700" />
+                        <FaChild />
                         Standard Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -320,7 +320,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaImage className="text-red-700" />
+                        <FaImage />
                         Gallery Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -483,7 +483,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook className="text-red-700" />
+                        <FaBook />
                         Subject Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -603,7 +603,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaUser className="text-red-700" />
+                        <FaUser />
                         Student Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -664,7 +664,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdFastfood className="text-red-700" />
+                        <MdFastfood />
                         Meal Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -715,7 +715,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBookOpen className="text-red-700" />
+                        <FaBookOpen />
                         Syllabus Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -776,7 +776,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdMenuBook className="text-red-700" />
+                        <MdMenuBook />
                         Class Timetable
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -837,7 +837,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdOutlineHolidayVillage className="text-red-700" />
+                        <MdOutlineHolidayVillage />
                         Holiday Homework
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -898,7 +898,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdEmojiTransportation className="text-red-700" />
+                        <MdEmojiTransportation />
                         Transportation
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -959,7 +959,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <CiViewTimeline className="text-red-700" />
+                        <CiViewTimeline />
                         Exam Time Table
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1020,7 +1020,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaRegNewspaper className="text-red-700" />
+                        <FaRegNewspaper />
                         Paper Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1080,7 +1080,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <TbFileReport className="text-red-700" />
+                        <TbFileReport />
                         Report Card
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1140,7 +1140,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <CiViewBoard className="text-red-700" />
+                        <CiViewBoard />
                         Notice/Circular
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -1201,7 +1201,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <MdEmojiEvents className="text-red-700" />
+                        <MdEmojiEvents />
                         Event
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
