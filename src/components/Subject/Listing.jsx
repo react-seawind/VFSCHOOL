@@ -3,7 +3,6 @@ import DataTable from 'react-data-table-component';
 import Breadcrumb from '../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
-import { getServicedata } from '../API';
 import { deleteSubject, getAllSubject } from '../../API/SubjectAPI';
 import { format } from 'date-fns';
 
