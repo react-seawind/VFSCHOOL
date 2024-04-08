@@ -13,9 +13,6 @@ import StdEdit from '../components/Standard/Std/Edit';
 import SubjectListing from '../components/Subject/Listing';
 import SubjectAdd from '../components/Subject/Add';
 import SubjectEdit from '../components/Subject/Edit';
-import UserListing from '../components/User/User/Listing';
-import UserAdd from '../components/User/User/Add';
-import UserEdit from '../components/User/User/Edit';
 import TeacherListing from '../components/Teacher/Listing';
 import TeacherAdd from '../components/Teacher/Add';
 import TeacherEdit from '../components/Teacher/Edit';
@@ -164,19 +161,6 @@ const coreRoutes = [
     component: SubjectEdit,
   },
 
-  // =================User=============
-  {
-    path: '/user/listing',
-    component: UserListing,
-  },
-  {
-    path: '/user/add',
-    component: UserAdd,
-  },
-  {
-    path: '/user/edit/:Id',
-    component: UserEdit,
-  },
   // =================REPOET=============
   {
     path: '/studentreport',
