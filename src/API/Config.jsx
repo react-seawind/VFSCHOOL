@@ -1,5 +1,5 @@
 const Config = {
-  API_BASE_URL: 'https://seawindsolution.ae/VFSCHOOL/api',
+  API_BASE_URL: 'https://vfs.seawindsolution.ae/api',
   getToken: () => {
     const sessiondata = sessionStorage.getItem('schoollogindata');
     const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
