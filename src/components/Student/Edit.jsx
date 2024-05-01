@@ -565,9 +565,14 @@ const StudentEdit = () => {
                       <div className="relative">
                         {PhotoPreview ? (
                           getFileExtension(PhotoPreview) === 'pdf' ? (
-                            <button className="rounded border p-2">
-                              Download Photo
-                            </button>
+                            <Link to={PhotoPreview} target="_blank">
+                              <button
+                                type="button"
+                                className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                              >
+                                Download Address Proof
+                              </button>
+                            </Link>
                           ) : (
                             <img
                               src={PhotoPreview}
@@ -576,7 +581,7 @@ const StudentEdit = () => {
                             />
                           )
                         ) : (
-                          <p>No photo available</p>
+                          <p>No Address Proof available</p>
                         )}
                       </div>
                     </div>
@@ -622,7 +627,7 @@ const StudentEdit = () => {
                             </Link>
                           ) : (
                             <img
-                              src={formik.values.AddressProof}
+                              src={AddressProofPreview}
                               alt=""
                               className="rounded border p-2 h-28 w-28"
                             />
@@ -674,7 +679,7 @@ const StudentEdit = () => {
                             </Link>
                           ) : (
                             <img
-                              src={formik.values.IdProof}
+                              src={IdProofPreview}
                               alt=""
                               className="rounded border p-2 h-28 w-28 "
                             />

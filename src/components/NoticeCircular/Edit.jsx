@@ -150,7 +150,7 @@ const NoticeEdit = () => {
                             </Link>
                           ) : (
                             <img
-                              src={formik.values.AddressProof}
+                              src={imagePreview}
                               alt=""
                               className="rounded border p-2 h-28 w-28"
                             />
