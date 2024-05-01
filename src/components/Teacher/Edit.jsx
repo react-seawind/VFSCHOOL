@@ -82,7 +82,7 @@ const TeacherEdit = () => {
       Hid_AddressProof: '',
       IdProof: '',
       Hid_IdProof: '',
-
+      Role: '',
       Status: '',
     },
     validationSchema: validationSchema,
@@ -342,7 +342,23 @@ const TeacherEdit = () => {
                     </small>
                   )}
                 </div>
-
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Role <span className="text-danger">*</span>
+                  </label>
+                  <select
+                    name="Role"
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Role</option>
+                    <option value="class">Class teacher</option>
+                    <option value="subject">Subject teacher</option>
+                  </select>
+                  {formik.touched.Role && formik.errors.Role && (
+                    <small className="text-red-500">{formik.errors.Role}</small>
+                  )}
+                </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Photo
