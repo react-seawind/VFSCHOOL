@@ -55,14 +55,7 @@ const SubjectEdit = () => {
       try {
         if (Id) {
           const StandardData = await getSubjectById(Id);
-          formik.setValues({
-            Id: StandardData.Id || '',
-            SchoolStandardId: StandardData.SchoolStandardId || '',
-            SchoolDivisionId: StandardData.SchoolDivisionId || '',
-            SchoolId: StandardData.SchoolId || '',
-            Title: StandardData.Title || '',
-            Status: StandardData.Status || '0',
-          });
+          formik.setValues(StandardData);
         } else {
           console.log('error');
         }

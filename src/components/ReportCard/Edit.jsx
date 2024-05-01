@@ -32,29 +32,23 @@ const ReportCardEdit = () => {
 
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const ReportcardData = await getReportcardById(Id);
-          formik.setValues({
-            Id: ReportcardData.Id || '',
-            SchoolId: ReportcardData.SchoolId || '',
-            StudentId: ReportcardData.StudentId || '',
-            Title: ReportcardData.Title || '',
-            PDF: ReportcardData.PDF || '',
-            Hid_PDF: ReportcardData.Hid_PDF || '',
-            Status: ReportcardData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const ReportcardData = await getReportcardById(Id);
+        formik.setValues(ReportcardData);
+        if (ReportcardData.PDF) {
+          setImagePreview(ReportcardData.PDF); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -71,23 +65,25 @@ const ReportCardEdit = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('StudentId', values.StudentId);
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        } else {
-          formData.append('PDF', values.PDF);
-        }
-        formData.append('Hid_PDF', values.Hid_PDF);
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateReportcardById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
       }
     },
   });
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
 
   const navigate = useNavigate();
 
@@ -188,14 +184,26 @@ const ReportCardEdit = () => {
                   <p>Your Exsisting File*</p>
                   <div className="grid   gap-2 relative">
                     <div className="relative">
-                      <Link to={formik.values.PDF} target="_blank">
-                        <button
-                          type="button"
-                          className="mt-2 bg-blue-600 p-2 rounded border  text-white"
-                        >
-                          Download Report Card
-                        </button>
-                      </Link>
+                      {imagePreview ? (
+                        getFileExtension(imagePreview) === 'pdf' ? (
+                          <Link to={imagePreview} target="_blank">
+                            <button
+                              type="button"
+                              className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                            >
+                              Download Report card
+                            </button>
+                          </Link>
+                        ) : (
+                          <img
+                            src={formik.values.AddressProof}
+                            alt=""
+                            className="rounded border p-2 h-28 w-28"
+                          />
+                        )
+                      ) : (
+                        <p>No Report card available</p>
+                      )}
                     </div>
                   </div>
                 </div>

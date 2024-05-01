@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,28 +15,23 @@ const validationSchema = yup.object().shape({
 const VideoEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const VideoData = await getVideoById(Id);
-          formik.setValues({
-            Id: VideoData.Id || '',
-            SchoolId: VideoData.SchoolId || '',
-            path: VideoData.path || '',
-            Title: VideoData.Title || '',
-            Video: VideoData.Video || '',
-            Hid_Video: VideoData.Hid_Video || '',
-            Status: VideoData.Status || '',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const VideoData = await getVideoById(Id);
+        formik.setValues(VideoData);
+        if (VideoData.Video) {
+          setImagePreview(VideoData.Video); // Update image preview if image exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -52,17 +47,11 @@ const VideoEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('Title', values.Title);
-        if (values.Video instanceof File) {
-          formData.append('Video', values.Video);
-        }
-
-        formData.append('Hid_Video', values.Hid_Video);
-
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateVideoById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
       }
@@ -151,7 +140,7 @@ const VideoEdit = () => {
                           className="w-50 rounded border p-2 h-50  "
                           // autoPlay
                         >
-                          <source src={formik.values.Video} type="video/mp4" />
+                          <source src={imagePreview} type="video/mp4" />
                         </video>
                       </div>
                     </div>

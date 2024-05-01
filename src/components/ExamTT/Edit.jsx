@@ -46,31 +46,23 @@ const ExamTTEdit = () => {
 
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const ExamTTData = await getExamTTById(Id);
-          formik.setValues({
-            Id: ExamTTData.Id || '',
-            path: ExamTTData.path || '',
-            SchoolId: ExamTTData.SchoolId || '',
-            StandardId: ExamTTData.StandardId || '',
-            DivisionId: ExamTTData.DivisionId || '',
-            Title: ExamTTData.Title || '',
-            PDF: ExamTTData.PDF || '',
-            Hid_PDF: ExamTTData.Hid_PDF || '',
-            Status: ExamTTData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const ExamTTData = await getExamTTById(Id);
+        formik.setValues(ExamTTData);
+        if (ExamTTData.PDF) {
+          setImagePreview(ExamTTData.PDF); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -88,29 +80,26 @@ const ExamTTEdit = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('StandardId', values.StandardId);
-        formData.append('DivisionId', values.DivisionId);
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        } else {
-          formData.append('PDF', values.PDF);
-        }
-        if (values.Hid_PDF instanceof File) {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        } else {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateExamTTById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Exam Timetable:', error);
       }
     },
   });
 
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -231,14 +220,26 @@ const ExamTTEdit = () => {
                     <p>Your Exsisting Time Table File*</p>
                     <div className="  gap-2 relative ">
                       <div className="relative">
-                        <Link to={formik.values.PDF} target="_blank">
-                          <button
-                            type="button"
-                            className="mt-2 bg-blue-600 p-2 rounded border  text-white"
-                          >
-                            Download Syllabus
-                          </button>
-                        </Link>
+                        {imagePreview ? (
+                          getFileExtension(imagePreview) === 'pdf' ? (
+                            <Link to={imagePreview} target="_blank">
+                              <button
+                                type="button"
+                                className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                              >
+                                Download Exam time table
+                              </button>
+                            </Link>
+                          ) : (
+                            <img
+                              src={formik.values.AddressProof}
+                              alt=""
+                              className="rounded border p-2 h-28 w-28"
+                            />
+                          )
+                        ) : (
+                          <p>No Exam time table available</p>
+                        )}
                       </div>
                     </div>
                   </div>

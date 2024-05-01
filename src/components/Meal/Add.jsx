@@ -24,19 +24,8 @@ const MealAdd = () => {
     const fetchData = async () => {
       try {
         if (Id) {
-          const StandardData = await getMealById(Id);
-          formik.setValues({
-            Id: StandardData.Id || '',
-            SchoolId: StandardData.SchoolId || '',
-            Monday: StandardData.Monday || '',
-            Tuesday: StandardData.Tuesday || '',
-            Wednesday: StandardData.Wednesday || '',
-            Thursday: StandardData.Thursday || '',
-            Friday: StandardData.Friday || '',
-            Saturday: StandardData.Saturday || '',
-            Sunday: StandardData.Sunday || '',
-            Status: StandardData.Status || '0',
-          });
+          const MealData = await getMealById(Id);
+          formik.setValues(MealData);
         } else {
           console.log('error');
         }

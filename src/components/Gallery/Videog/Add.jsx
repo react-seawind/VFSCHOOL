@@ -24,12 +24,9 @@ const VideoAdd = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        if (values.Video instanceof File) {
-          formData.append('Video', values.Video);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await AddVideo(formData);
         navigate('/video/listing');
       } catch (error) {

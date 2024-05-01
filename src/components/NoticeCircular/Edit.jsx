@@ -15,29 +15,23 @@ const validationSchema = yup.object().shape({
 const NoticeEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const HolidayData = await getNoticeById(Id);
-          formik.setValues({
-            Id: HolidayData.Id || '',
-            path: HolidayData.path || '',
-            SchoolId: HolidayData.SchoolId || '',
-            Title: HolidayData.Title || '',
-            PDF: HolidayData.PDF || '',
-            Hid_PDF: HolidayData.Hid_PDF || '',
-            Status: HolidayData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const NoticData = await getNoticeById(Id);
+        formik.setValues(NoticData);
+        if (NoticData.PDF) {
+          setImagePreview(NoticData.PDF); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -53,26 +47,25 @@ const NoticeEdit = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        } else {
-          formData.append('PDF', values.PDF);
-        }
-        if (values.Hid_PDF instanceof File) {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        } else {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateNoticeById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
       }
     },
   });
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
 
   const navigate = useNavigate();
 
@@ -145,14 +138,26 @@ const NoticeEdit = () => {
                     <p>Your Exsisting Notice File*</p>
                     <div className="  gap-2 relative ">
                       <div className="relative">
-                        <Link to={formik.values.PDF} target="_blank">
-                          <button
-                            type="button"
-                            className="mt-2 bg-blue-600 p-2 rounded border  text-white"
-                          >
-                            Download Syllabus
-                          </button>
-                        </Link>
+                        {imagePreview ? (
+                          getFileExtension(imagePreview) === 'pdf' ? (
+                            <Link to={imagePreview} target="_blank">
+                              <button
+                                type="button"
+                                className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                              >
+                                Download Notic
+                              </button>
+                            </Link>
+                          ) : (
+                            <img
+                              src={formik.values.AddressProof}
+                              alt=""
+                              className="rounded border p-2 h-28 w-28"
+                            />
+                          )
+                        ) : (
+                          <p>No Notic available</p>
+                        )}
                       </div>
                     </div>
                   </div>

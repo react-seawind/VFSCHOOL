@@ -31,43 +31,31 @@ const validationSchema = Yup.object().shape({
 const TeacherEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const TeacherData = await getTeacherById(Id);
-          formik.setValues({
-            Id: TeacherData.Id || '',
-            SchoolId: TeacherData.SchoolId || '',
-            TeacherName: TeacherData.TeacherName || '',
-            TeacherEmail: TeacherData.TeacherEmail || '',
-            TeacherPhone: TeacherData.TeacherPhone || '',
-
-            Country: TeacherData.Country || '',
-            State: TeacherData.State || '',
-            City: TeacherData.City || '',
-            Area: TeacherData.Area || '',
-            Pincode: TeacherData.Pincode || '',
-            TAddress: TeacherData.TAddress || '',
-            PAddress: TeacherData.PAddress || '',
-            Photo: TeacherData.Photo || '',
-            Hid_Photo: TeacherData.Hid_Photo || '',
-            AddressProof: TeacherData.AddressProof || '',
-            Hid_AddressProof: TeacherData.Hid_AddressProof || '',
-            IdProof: TeacherData.IdProof || '',
-            Hid_IdProof: TeacherData.Hid_IdProof || '',
-
-            Status: TeacherData.Status || 0,
-          });
-        } else {
-          console.log('error');
+  const [PhotoPreview, setPhotoPreview] = useState();
+  const [AddressProofPreview, setAddressProofPreview] = useState();
+  const [IdProofPreview, setIdProofPreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const TeacherData = await getTeacherById(Id);
+        formik.setValues(TeacherData);
+        if (TeacherData.Photo) {
+          setPhotoPreview(TeacherData.Photo); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+        if (TeacherData.AddressProof) {
+          setAddressProofPreview(TeacherData.AddressProof); // Update AddressProof preview if AddressProof exists
+        }
+        if (TeacherData.IdProof) {
+          setIdProofPreview(TeacherData.IdProof); // Update IdProof preview if IdProof exists
+        }
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
 
@@ -101,54 +89,12 @@ const TeacherEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('TeacherName', values.TeacherName);
-        formData.append('TeacherEmail', values.TeacherEmail);
-        formData.append('TeacherPhone', values.TeacherPhone);
-
-        formData.append('Country', values.Country);
-        formData.append('State', values.State);
-        formData.append('City', values.City);
-        formData.append('Area', values.Area);
-        formData.append('Pincode', values.Pincode);
-        formData.append('TAddress', values.TAddress);
-        formData.append('PAddress', values.PAddress);
-
-        if (values.Photo instanceof File) {
-          formData.append('Photo', values.Photo);
-        } else {
-          formData.append('Photo', values.Photo);
-        }
-        if (values.Hid_Photo instanceof File) {
-          formData.append('Hid_Photo', values.Hid_Photo);
-        } else {
-          formData.append('Hid_Photo', values.Hid_Photo);
-        }
-        if (values.AddressProof instanceof File) {
-          formData.append('AddressProof', values.AddressProof);
-        } else {
-          formData.append('AddressProof', values.AddressProof);
-        }
-        if (values.Hid_AddressProof instanceof File) {
-          formData.append('Hid_AddressProof', values.Hid_AddressProof);
-        } else {
-          formData.append('Hid_AddressProof', values.Hid_AddressProof);
-        }
-        if (values.IdProof instanceof File) {
-          formData.append('IdProof', values.IdProof);
-        } else {
-          formData.append('IdProof', values.IdProof);
-        }
-        if (values.Hid_IdProof instanceof File) {
-          formData.append('Hid_IdProof', values.Hid_IdProof);
-        } else {
-          formData.append('Hid_IdProof', values.Hid_IdProof);
-        }
-
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await updateTeacherById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Teacher:', error);
       }
@@ -424,14 +370,14 @@ const TeacherEdit = () => {
                     <p>Your Exsisting Img File</p>
                     <div className="  gap-2 relative">
                       <div className="relative">
-                        {formik.values.Photo ? (
-                          getFileExtension(formik.values.Photo) === 'pdf' ? (
+                        {PhotoPreview ? (
+                          getFileExtension(PhotoPreview) === 'pdf' ? (
                             <button className="rounded border p-2">
                               Download Photo
                             </button>
                           ) : (
                             <img
-                              src={formik.values.Photo}
+                              src={PhotoPreview}
                               alt=""
                               className="rounded border p-2 h-28 w-28"
                             />
@@ -471,13 +417,9 @@ const TeacherEdit = () => {
                     <p>Your Exsisting Img File</p>
                     <div className=" gap-2 relative">
                       <div className="relative">
-                        {formik.values.AddressProof ? (
-                          getFileExtension(formik.values.AddressProof) ===
-                          'pdf' ? (
-                            <Link
-                              to={formik.values.AddressProof}
-                              target="_blank"
-                            >
+                        {AddressProofPreview ? (
+                          getFileExtension(AddressProofPreview) === 'pdf' ? (
+                            <Link to={AddressProofPreview} target="_blank">
                               <button
                                 type="button"
                                 className="mt-2 bg-blue-600 p-2 rounded border  text-white"
@@ -527,9 +469,9 @@ const TeacherEdit = () => {
                     <p>Your Exsisting Img File</p>
                     <div className=" gap-2 relative">
                       <div className="relative">
-                        {formik.values.IdProof ? (
-                          getFileExtension(formik.values.IdProof) === 'pdf' ? (
-                            <Link to={formik.values.IdProof} target="_blank">
+                        {IdProofPreview ? (
+                          getFileExtension(IdProofPreview) === 'pdf' ? (
+                            <Link to={IdProofPreview} target="_blank">
                               <button
                                 type="button"
                                 className="mt-2 bg-blue-600 p-2 rounded border  text-white"

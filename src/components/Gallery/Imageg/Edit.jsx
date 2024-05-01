@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -14,29 +14,25 @@ const validationSchema = yup.object().shape({
 });
 
 const ImageEdit = () => {
+  const [imagePreview, setImagePreview] = useState();
   // ================ Get data by Id============
   const { Id } = useParams();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const PhotoData = await getPhotoById(Id);
-          formik.setValues({
-            Id: PhotoData.Id || '',
-            Title: PhotoData.Title || '',
-            SchoolId: PhotoData.SchoolId || '',
-            Image: PhotoData.Image || '',
-            Hid_Image: PhotoData.Hid_Image || '',
-            Status: PhotoData.Status || '',
-          });
-        } else {
-          console.log('error');
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const PhotoData = await getPhotoById(Id);
+        formik.setValues(PhotoData);
+        if (PhotoData.Image) {
+          setImagePreview(PhotoData.Image); // Update image preview if image exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -52,21 +48,11 @@ const ImageEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        if (values.Hid_Image instanceof File) {
-          formData.append('Hid_Image', values.Hid_Image);
-        } else {
-          formData.append('Hid_Image', values.Hid_Image);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updatePhotoById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
       }
@@ -150,7 +136,7 @@ const ImageEdit = () => {
                     <div className="grid grid-cols-4 gap-2 relative">
                       <div className="relative">
                         <img
-                          src={formik.values.Image}
+                          src={imagePreview}
                           alt=""
                           className="rounded border p-2 h-28 w-28  "
                         />

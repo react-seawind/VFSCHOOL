@@ -30,15 +30,9 @@ const NoticeAdd = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        } else {
-          formData.append('PDF', values.PDF);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await AddNotice(formData);
         navigate('/notice/listing');
       } catch (error) {

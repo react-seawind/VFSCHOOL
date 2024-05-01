@@ -21,30 +21,19 @@ const TransporationEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const TransportationData = await getTransportationById(Id);
-          formik.setValues({
-            Id: TransportationData.Id || '',
-            SchoolId: TransportationData.SchoolId || '',
-            StudentId: TransportationData.StudentId || '',
-            DriverName: TransportationData.DriverName || '',
-            DriverPhone: TransportationData.DriverPhone || '',
-            ConductorName: TransportationData.ConductorName || '',
-            ConductorPhone: TransportationData.ConductorPhone || '',
-            BusNo: TransportationData.BusNo || '',
-            Status: TransportationData.Status || '0',
-          });
-        } else {
-          console.log('error');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const TransportationData = await getTransportationById(Id);
+        formik.setValues(TransportationData);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   // ------------Student DATA-------------------

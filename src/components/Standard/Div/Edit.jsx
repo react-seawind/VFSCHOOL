@@ -38,13 +38,7 @@ const DivEdit = () => {
       try {
         if (Id) {
           const StandardData = await getDivisionById(Id);
-          formik.setValues({
-            Id: StandardData.Id || '',
-            SchoolStandardId: StandardData.SchoolStandardId || '',
-            SchoolId: StandardData.SchoolId || '',
-            Title: StandardData.Title || '',
-            Status: StandardData.Status || '0',
-          });
+          formik.setValues(StandardData);
         } else {
           console.log('error');
         }

@@ -45,31 +45,23 @@ const ClassTimetableEdit = () => {
 
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const ClassTTData = await getClassTTById(Id);
-          formik.setValues({
-            Id: ClassTTData.Id || '',
-            path: ClassTTData.path || '',
-            SchoolId: ClassTTData.SchoolId || '',
-            StandardId: ClassTTData.StandardId || '',
-            DivisionId: ClassTTData.DivisionId || '',
-            Title: ClassTTData.Title || '',
-            PDF: ClassTTData.PDF || '',
-            Hid_PDF: ClassTTData.Hid_PDF || '',
-            Status: ClassTTData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const ClassTTData = await getClassTTById(Id);
+        formik.setValues(ClassTTData);
+        if (ClassTTData.PDF) {
+          setImagePreview(ClassTTData.PDF); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -87,27 +79,26 @@ const ClassTimetableEdit = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('StandardId', values.StandardId);
-        formData.append('DivisionId', values.DivisionId);
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        }
-        if (values.Hid_PDF instanceof File) {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        } else {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateClassTTById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
       }
     },
   });
 
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -228,14 +219,26 @@ const ClassTimetableEdit = () => {
                     <p>Your Exsisting Time Table File*</p>
                     <div className="  gap-2 relative ">
                       <div className="relative">
-                        <Link to={formik.values.PDF} target="_blank">
-                          <button
-                            type="button"
-                            className="mt-2 bg-blue-600 p-2 rounded border  text-white"
-                          >
-                            Download Syllabus
-                          </button>
-                        </Link>
+                        {imagePreview ? (
+                          getFileExtension(imagePreview) === 'pdf' ? (
+                            <Link to={imagePreview} target="_blank">
+                              <button
+                                type="button"
+                                className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                              >
+                                Download Time Table
+                              </button>
+                            </Link>
+                          ) : (
+                            <img
+                              src={formik.values.AddressProof}
+                              alt=""
+                              className="rounded border p-2 h-28 w-28"
+                            />
+                          )
+                        ) : (
+                          <p>No Time Table available</p>
+                        )}
                       </div>
                     </div>
                   </div>

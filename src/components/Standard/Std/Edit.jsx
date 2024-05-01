@@ -21,12 +21,7 @@ const StdEdit = () => {
       try {
         if (Id) {
           const StandardData = await getStandardById(Id);
-          formik.setValues({
-            Id: StandardData.Id || '',
-            Title: StandardData.Title || '',
-            SchoolId: StandardData.SchoolId || '',
-            Status: StandardData.Status || '0',
-          });
+          formik.setValues(StandardData);
         } else {
           console.log('error');
         }

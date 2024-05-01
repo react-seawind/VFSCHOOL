@@ -61,37 +61,9 @@ const TeacherAdd = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('TeacherName', values.TeacherName);
-        formData.append('TeacherEmail', values.TeacherEmail);
-        formData.append('TeacherPhone', values.TeacherPhone);
-
-        formData.append('Country', values.Country);
-        formData.append('State', values.State);
-        formData.append('City', values.City);
-        formData.append('Area', values.Area);
-        formData.append('Pincode', values.Pincode);
-        formData.append('TAddress', values.TAddress);
-        formData.append('PAddress', values.PAddress);
-
-        if (values.Photo instanceof File) {
-          formData.append('Photo', values.Photo);
-        } else {
-          formData.append('Photo', values.Photo);
-        }
-        if (values.AddressProof instanceof File) {
-          formData.append('AddressProof', values.AddressProof);
-        } else {
-          formData.append('AddressProof', values.AddressProof);
-        }
-        if (values.IdProof instanceof File) {
-          formData.append('IdProof', values.IdProof);
-        } else {
-          formData.append('IdProof', values.IdProof);
-        }
-        formData.append('Password', values.Password);
-
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await AddTeacher(formData);
         actions.resetForm();

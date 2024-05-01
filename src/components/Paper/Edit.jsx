@@ -60,32 +60,23 @@ const PaperEdit = () => {
 
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const HolidayData = await getExamPaperById(Id);
-          formik.setValues({
-            Id: HolidayData.Id || '',
-            path: HolidayData.path || '',
-            SchoolId: HolidayData.SchoolId || '',
-            StandardId: HolidayData.StandardId || '',
-            SubjectId: HolidayData.SubjectId || '',
-            DivisionId: HolidayData.DivisionId || '',
-            Title: HolidayData.Title || '',
-            PDF: HolidayData.PDF || '',
-            Hid_PDF: HolidayData.Hid_PDF || '',
-            Status: HolidayData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const HolidayData = await getExamPaperById(Id);
+        formik.setValues(HolidayData);
+        if (HolidayData.PDF) {
+          setImagePreview(HolidayData.PDF); // Update Photo preview if Photo exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
   const formik = useFormik({
@@ -104,29 +95,25 @@ const PaperEdit = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('Title', values.Title);
-        formData.append('SchoolId', values.SchoolId);
-        formData.append('StandardId', values.StandardId);
-        formData.append('SubjectId', values.SubjectId);
-        formData.append('DivisionId', values.DivisionId);
-        if (values.PDF instanceof File) {
-          formData.append('PDF', values.PDF);
-        } else {
-          formData.append('PDF', values.PDF);
-        }
-        if (values.Hid_PDF instanceof File) {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        } else {
-          formData.append('Hid_PDF', values.Hid_PDF);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         await updateExamPaperById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
       }
     },
   });
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
 
   const navigate = useNavigate();
 
@@ -273,14 +260,26 @@ const PaperEdit = () => {
                   <p>Your Exsisting Time Table File*</p>
                   <div className="  gap-2 relative ">
                     <div className="relative">
-                      <Link to={formik.values.PDF} target="_blank">
-                        <button
-                          type="button"
-                          className="mt-2 bg-blue-600 p-2 rounded border  text-white"
-                        >
-                          Download Syllabus
-                        </button>
-                      </Link>
+                      {imagePreview ? (
+                        getFileExtension(imagePreview) === 'pdf' ? (
+                          <Link to={imagePreview} target="_blank">
+                            <button
+                              type="button"
+                              className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                            >
+                              Download Paper
+                            </button>
+                          </Link>
+                        ) : (
+                          <img
+                            src={formik.values.AddressProof}
+                            alt=""
+                            className="rounded border p-2 h-28 w-28"
+                          />
+                        )
+                      ) : (
+                        <p>No Paper available</p>
+                      )}
                     </div>
                   </div>
                 </div>
