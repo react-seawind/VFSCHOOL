@@ -281,17 +281,17 @@ const TeacherView = () => {
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                           <h5 className="font-medium text-black dark:text-white">
-                            {val.StandardId}
+                            {val.StandardTitle}
                           </h5>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {val.DivisionId}
+                            {val.DivisionTitle}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {val.SubjectId}
+                            {val.SubjectTitles}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

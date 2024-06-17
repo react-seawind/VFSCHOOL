@@ -151,4 +151,5 @@
 
 .dark .p-dropdown-label {
   color: white !important;
+  border: 0 !important
 }
