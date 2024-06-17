@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-40 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
@@ -142,7 +142,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                 </NavLink>
               </li>
 
-              {/* ===============Standard MANAGER============== */}
+              {/* ===============Class MANAGER============== */}
               <SidebarLinkGroup>
                 {(handleClick, open) => {
                   return (
@@ -158,7 +158,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                         }}
                       >
                         <FaChild />
-                        Standard Manager
+                        Class Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                             open && 'rotate-180'
@@ -284,6 +284,72 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                                         <li>
                                           <NavLink
                                             to="/div/add"
+                                            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                          >
+                                            <FaEdit />
+                                            Add
+                                          </NavLink>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    {/* <!-- Dropdown Menu End --> */}
+                                  </React.Fragment>
+                                );
+                              }}
+                            </SidebarLinkGroup>
+                          </li>
+                        </ul>
+                      </div>
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <SidebarLinkGroup>
+                              {(handleClick, open) => {
+                                return (
+                                  <React.Fragment>
+                                    <NavLink
+                                      to="#"
+                                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        sidebarExpanded
+                                          ? handleClick()
+                                          : setSidebarExpanded(true);
+                                      }}
+                                    >
+                                      <FaBook />
+                                      Subject
+                                      <span
+                                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                                          open && 'rotate-180'
+                                        }`}
+                                      >
+                                        <FaChevronDown />
+                                      </span>
+                                    </NavLink>
+                                    {/* <!-- Dropdown Menu Start --> */}
+                                    <div
+                                      className={`translate transform overflow-hidden ${
+                                        !open && 'hidden'
+                                      }`}
+                                    >
+                                      <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                                        <li>
+                                          <NavLink
+                                            to="/subject/listing"
+                                            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                          >
+                                            <FaClipboardList />
+                                            Listing
+                                          </NavLink>
+                                        </li>
+                                        <li>
+                                          <NavLink
+                                            to="/subject/add"
                                             className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                                           >
                                             <FaEdit />
@@ -468,66 +534,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                 }}
               </SidebarLinkGroup>
 
-              {/* ===============Subject Manager============== */}
-              <SidebarLinkGroup>
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <NavLink
-                        to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                        <FaBook />
-                        Subject Manager
-                        <div
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                            open && 'rotate-180'
-                          }`}
-                        >
-                          <FaChevronDown />
-                        </div>
-                      </NavLink>
-
-                      <div
-                        className={`translate transform overflow-hidden ${
-                          !open && 'hidden'
-                        }`}
-                      >
-                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
-                          <li>
-                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
-                              <li>
-                                <NavLink
-                                  to="/subject/listing"
-                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                                >
-                                  <FaClipboardList />
-                                  Listing
-                                </NavLink>
-                              </li>
-                              <li>
-                                <NavLink
-                                  to="/subject/add"
-                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
-                                >
-                                  <IoMdAdd />
-                                  Add
-                                </NavLink>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </div>
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>
               {/* ===============Teacher Manager============== */}
               <SidebarLinkGroup>
                 {(handleClick, open) => {

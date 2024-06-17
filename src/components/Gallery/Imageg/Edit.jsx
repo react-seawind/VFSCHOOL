@@ -7,6 +7,7 @@ import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPhotoById, updatePhotoById } from '../../../API/PhotoAPI';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -15,6 +16,7 @@ const validationSchema = yup.object().shape({
 
 const ImageEdit = () => {
   const [imagePreview, setImagePreview] = useState();
+  const [isFormLoading, setIsFormLoading] = useState(false);
   // ================ Get data by Id============
   const { Id } = useParams();
   const fetchData = async () => {
@@ -46,6 +48,7 @@ const ImageEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -55,6 +58,8 @@ const ImageEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -66,6 +71,7 @@ const ImageEdit = () => {
 
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Image Edit" />
 
       <div className="grid grid-cols-1 gap-9 ">

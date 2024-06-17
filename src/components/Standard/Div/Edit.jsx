@@ -8,6 +8,7 @@ import { IoMdClose } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllStandard } from '../../../API/StandardApi';
 import { getDivisionById, updateDivisionById } from '../../../API/DivisionApi';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Division Name is required'),
@@ -50,6 +51,7 @@ const DivEdit = () => {
     fetchData();
   }, [Id]);
 
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: '',
@@ -60,10 +62,13 @@ const DivEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await updateDivisionById(values);
       } catch (error) {
         console.error('Error adding standard:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -76,7 +81,7 @@ const DivEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Division Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* Input Fields */}

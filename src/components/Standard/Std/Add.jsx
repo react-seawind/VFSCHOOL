@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -6,20 +6,24 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { AddStandard } from '../../../API/StandardApi';
 import Config from '../../../API/Config';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Standard Name is required'),
+  Status: yup.string().required('Status is required'),
 });
 const StdAdd = () => {
   const Id = Config.getId();
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       Title: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await AddStandard(values);
         actions.resetForm();
@@ -27,6 +31,7 @@ const StdAdd = () => {
       } catch (error) {
         console.error('Error adding standard:', error);
       }
+      setIsFormLoading(true);
     },
   });
 
@@ -37,6 +42,7 @@ const StdAdd = () => {
   };
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Standard Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -103,6 +109,11 @@ const StdAdd = () => {
                     />
                     In Active
                   </div>
+                  {formik.touched.Status && formik.errors.Status && (
+                    <small className="text-red-500">
+                      {formik.errors.Status}
+                    </small>
+                  )}
                 </div>
               </div>
 

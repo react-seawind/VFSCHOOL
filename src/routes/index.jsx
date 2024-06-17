@@ -10,9 +10,6 @@ import DivEdit from '../components/Standard/Div/Edit';
 import StdListing from '../components/Standard/Std/Listing';
 import StdAdd from '../components/Standard/Std/Add';
 import StdEdit from '../components/Standard/Std/Edit';
-import SubjectListing from '../components/Subject/Listing';
-import SubjectAdd from '../components/Subject/Add';
-import SubjectEdit from '../components/Subject/Edit';
 import TeacherListing from '../components/Teacher/Listing';
 import TeacherAdd from '../components/Teacher/Add';
 import TeacherEdit from '../components/Teacher/Edit';
@@ -58,6 +55,9 @@ import ChangePassword from '../components/Student/ChangePassword';
 import TeacherChangePwd from '../components/Teacher/ChangePassword';
 import StudentDataManager from '../components/Datamanager/StudentDataManager';
 import TeacherDataManager from '../components/Datamanager/Teacherreport';
+import SubjectListing from '../components/Standard/Subject/Listing';
+import SubjectAdd from '../components/Standard/Subject/Add';
+import SubjectEdit from '../components/Standard/Subject/Edit';
 // import MainForm from '../components/TINY';
 
 const coreRoutes = [

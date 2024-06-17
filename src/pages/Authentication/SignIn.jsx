@@ -1,19 +1,21 @@
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo.jpg';
 import Logo from '../../images/logo.jpg';
 import { FaEnvelope, FaKey } from 'react-icons/fa6';
-import { useEffect, useState } from 'react';
 import Loader from '../../common/Loader/index';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { AdminLogin } from '../../API/AdminApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Email: yup.string().required('Email is required'),
   Password: yup.string().required('Password is required'),
 });
 const SignIn = () => {
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const [loginbutton, setloginbutton] = useState(false);
   const navigate = useNavigate();
 
@@ -25,25 +27,30 @@ const SignIn = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setloginbutton(true);
-      await AdminLogin(values);
+      setIsFormLoading(true);
+      try {
+        await AdminLogin(values);
+        const sessiondata = sessionStorage.getItem('schoollogindata');
+        const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
+        const token = parsedSessionData?.token;
 
-      const sessiondata = sessionStorage.getItem('schoollogindata');
-      const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
-      const token = parsedSessionData.token;
-
-      if (token) {
-        navigate('/dashboard');
-        window.location.reload();
-      } else {
-        navigate('/login');
-        toast.error('Invalid email or password');
+        if (token) {
+          navigate('/dashboard');
+          window.location.reload();
+        } else {
+          throw new Error('Invalid email or password');
+        }
+      } catch (error) {
         setloginbutton(false);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
 
   return (
     <div className="px-4">
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="rounded-sm border my-[9%]  border-stroke  container mx-auto  bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center ">
           <div className="w-full  block xl:w-1/2">

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 import ContentEditor from '../EDITOR/NewEditor';
 import { getEventById, updateEventById } from '../../API/EventApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Event Name is required'),
@@ -55,6 +56,7 @@ const EventEdit = () => {
 
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: '',
@@ -66,10 +68,13 @@ const EventEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         await updateEventById(values);
       } catch (error) {
         console.error('Error adding standard:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -83,7 +88,7 @@ const EventEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Event Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

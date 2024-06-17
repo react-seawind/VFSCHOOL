@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumb from '../Breadcrumb';
+import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { BsChevronDown } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-import Multiselect from 'multiselect-react-dropdown';
-import Config from '../../API/Config';
-import { AddSubject } from '../../API/SubjectAPI';
-import { getAllDivision } from '../../API/DivisionApi';
-import { getAllStandard } from '../../API/StandardApi';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getSubjectById, updateSubjectById } from '../../../API/SubjectAPI';
+import { getAllDivision } from '../../../API/DivisionApi';
+import { getAllStandard } from '../../../API/StandardApi';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
-  Title: yup.string().required('Division Name is required'),
-  SchoolStandardId: yup.string().required('School is required'),
+  Title: yup.string().required('Subject Name is required'),
+  SchoolStandardId: yup.string().required('Standard is required'),
   SchoolDivisionId: yup.string().required('Division is required'),
 });
-const SubjectAdd = () => {
-  const Id = Config.getId();
-
+const SubjectEdit = () => {
   // ------------Standard DATA-------------------
   const [std, setstd] = useState([]);
 
@@ -47,6 +43,26 @@ const SubjectAdd = () => {
     fetchDivision();
   }, []);
 
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const StandardData = await getSubjectById(Id);
+          formik.setValues(StandardData);
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
@@ -56,13 +72,14 @@ const SubjectAdd = () => {
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async (values, actions) => {
+    onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
-        await AddSubject(values);
-        actions.resetForm();
-        navigate('/subject/listing');
+        await updateSubjectById(values);
       } catch (error) {
         console.error('Error adding standard:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -72,20 +89,21 @@ const SubjectAdd = () => {
   const handleGoBack = () => {
     navigate('/subject/listing');
   };
+
   return (
     <div>
-      <Breadcrumb pageName="Subject Add " />
-
+      <Breadcrumb pageName="Subject Edit" />
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Subject Add
+                Subject Edit
               </h3>
               <p>
-                Please fill all detail and add new Subject in your Subject
+                Please fill all detail and Edit new Subject in your Subject
                 directory
               </p>
             </div>
@@ -100,6 +118,7 @@ const SubjectAdd = () => {
                     type="text"
                     name="Title"
                     onChange={formik.handleChange}
+                    value={formik.values.Title}
                     placeholder="Enter Your Subject Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
@@ -118,9 +137,9 @@ const SubjectAdd = () => {
                   <select
                     name="SchoolStandardId"
                     onChange={formik.handleChange}
+                    value={formik.values.SchoolStandardId}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Standard</option>
                     {std.map((std) => (
                       <option key={std.Id} value={std.Id}>
                         {std.Title}
@@ -144,9 +163,9 @@ const SubjectAdd = () => {
                   <select
                     name="SchoolDivisionId"
                     onChange={formik.handleChange}
+                    value={formik.values.SchoolDivisionId}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Division</option>
                     {div.map((div) => (
                       <option key={div.Id} value={div.Id}>
                         {div.Title}
@@ -216,4 +235,4 @@ const SubjectAdd = () => {
   );
 };
 
-export default SubjectAdd;
+export default SubjectEdit;

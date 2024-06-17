@@ -8,6 +8,7 @@ import Config from '../../API/Config';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getAllTeacher } from '../../API/TeacherApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -19,13 +20,13 @@ const validationSchema = Yup.object().shape({
     .min(10, 'Student Phone must be at least 10 characters')
     .max(10, 'Student Phone must be at most 10 characters')
     .required('Student Phone is required'),
-  ParentName: Yup.string().required('Name is required'),
-  ParentEmail: Yup.string().email().required('Email is required'),
+  ParentName: Yup.string().required('Parent Name is required'),
+  ParentEmail: Yup.string().email().required('Parent Email is required'),
   ParentPhone: Yup.string()
     .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
     .min(10, 'User Phone must be at least 10 characters')
     .max(10, 'User Phone must be at most 10 characters')
-    .required('Phone is required'),
+    .required('Parent Phone is required'),
   Country: Yup.string().required('Country is required'),
   State: Yup.string().required('State is required'),
   City: Yup.string().required('City is required'),
@@ -91,6 +92,7 @@ const StudentAdd = () => {
     };
     fetchTeacher();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
@@ -114,10 +116,11 @@ const StudentAdd = () => {
       StandardId: '',
       DivisionId: '',
       TeacherId: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -129,6 +132,8 @@ const StudentAdd = () => {
         navigate('/student/listing');
       } catch (error) {
         console.error('Error adding student:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -140,7 +145,7 @@ const StudentAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Student Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -561,7 +566,7 @@ const StudentAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Division</option>
+                    <option>Select Teacher</option>
                     {teacher.map((teacher) => (
                       <option key={teacher.Id} value={teacher.Id}>
                         {teacher.TeacherName}

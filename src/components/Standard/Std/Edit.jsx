@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,6 +7,7 @@ import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getStandardById, updateStandardById } from '../../../API/StandardApi';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Standard Name is required'),
@@ -32,7 +33,7 @@ const StdEdit = () => {
 
     fetchData();
   }, [Id]);
-
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: '',
@@ -41,10 +42,13 @@ const StdEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await updateStandardById(values);
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -57,7 +61,7 @@ const StdEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Standard Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

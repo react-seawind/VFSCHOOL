@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -6,22 +6,26 @@ import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { AddVideo } from '../../../API/VideoAPI';
 import Config from '../../../API/Config';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
   Video: yup.string().required('Video is required'),
+  Status: yup.string().required('Status is required'),
 });
 const VideoAdd = () => {
   const Id = Config.getId();
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Title: '',
       SchoolId: Id,
       Video: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -31,6 +35,8 @@ const VideoAdd = () => {
         navigate('/video/listing');
       } catch (error) {
         console.error('Error adding Video:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -41,6 +47,7 @@ const VideoAdd = () => {
   };
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Video Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -127,6 +134,11 @@ const VideoAdd = () => {
                     />
                     In Active
                   </div>
+                  {formik.touched.Status && formik.errors.Status && (
+                    <small className="text-red-500">
+                      {formik.errors.Status}
+                    </small>
+                  )}
                 </div>
               </div>
 

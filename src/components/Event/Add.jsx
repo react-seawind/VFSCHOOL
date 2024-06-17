@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import ContentEditor from '../EDITOR/NewEditor';
 import { AddEvent } from '../../API/EventApi';
 import Config from '../../API/Config';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Event Name is required'),
@@ -14,22 +15,27 @@ const validationSchema = yup.object().shape({
 });
 const EventAdd = () => {
   const Id = Config.getId();
+  const [isFormLoading, setIsFormLoading] = useState(false);
+  const currentdate = Date.now();
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       Title: '',
-      EventDate: '',
+      EventDate: new Date().toISOString().substring(0, 16),
       Content: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await AddEvent(values);
         actions.resetForm();
         navigate('/event/listing');
       } catch (error) {
         console.error('Error adding standard:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -43,7 +49,7 @@ const EventAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Event Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -83,6 +89,7 @@ const EventAdd = () => {
                   <input
                     type="datetime-local"
                     name="EventDate"
+                    value={formik.values.EventDate}
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />

@@ -11,6 +11,7 @@ import { getAllDivision } from '../../API/DivisionApi';
 import { getAllStandard } from '../../API/StandardApi';
 import { getStudentById, updateStudentById } from '../../API/StudentApi';
 import { getAllTeacher } from '../../API/TeacherApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -22,13 +23,13 @@ const validationSchema = Yup.object().shape({
     .min(10, 'Student Phone must be at least 10 characters')
     .max(10, 'Student Phone must be at most 10 characters')
     .required('Student Phone is required'),
-  ParentName: Yup.string().required('Name is required'),
-  ParentEmail: Yup.string().email().required('Email is required'),
+  ParentName: Yup.string().required('Parent Name is required'),
+  ParentEmail: Yup.string().email().required('Parent Email is required'),
   ParentPhone: Yup.string()
     .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
     .min(10, 'User Phone must be at least 10 characters')
     .max(10, 'User Phone must be at most 10 characters')
-    .required('Phone is required'),
+    .required('Parent Phone is required'),
   Country: Yup.string().required('Country is required'),
   State: Yup.string().required('State is required'),
   City: Yup.string().required('City is required'),
@@ -120,6 +121,7 @@ const StudentEdit = () => {
     };
     fetchTeacher();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -149,6 +151,7 @@ const StudentEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -159,6 +162,8 @@ const StudentEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding student:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -179,7 +184,7 @@ const StudentEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Student Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Config from '../../API/Config';
 import { AddReportcard } from '../../API/ReportcardApi';
 import { getAllStudent } from '../../API/StudentApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -29,16 +30,18 @@ const ReportCardAdd = () => {
     };
     fetchStudent();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       Title: '',
       StudentId: '',
       PDF: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -48,6 +51,8 @@ const ReportCardAdd = () => {
         navigate('/reportcard/listing');
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -61,7 +66,7 @@ const ReportCardAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Report Card Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

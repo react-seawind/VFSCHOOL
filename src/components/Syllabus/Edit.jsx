@@ -9,6 +9,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 import { getAllStandard } from '../../API/StandardApi';
 import { getSyllabusById, updateSyllabusById } from '../../API/SyllabusApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -50,6 +51,7 @@ const SyllabusEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
@@ -61,6 +63,7 @@ const SyllabusEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -70,6 +73,8 @@ const SyllabusEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -91,8 +96,8 @@ const SyllabusEdit = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Syllabus Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
+      <Breadcrumb pageName="Syllabus Edit" />v
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

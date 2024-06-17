@@ -7,10 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import Config from '../../../API/Config';
 import { AddDivision } from '../../../API/DivisionApi';
 import { getAllStandard } from '../../../API/StandardApi';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Division Name is required'),
-  SchoolStandardId: yup.string().required('School Name is required'),
+  SchoolStandardId: yup.string().required('Standard Name is required'),
+  Status: yup.string().required('Status is required'),
 });
 const DivAdd = () => {
   const Id = Config.getId();
@@ -29,22 +31,26 @@ const DivAdd = () => {
     };
     fetchStandard();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       SchoolStandardId: '',
       Title: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await AddDivision(values);
         actions.resetForm();
         navigate('/div/listing');
       } catch (error) {
         console.error('Error adding standard:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -56,6 +62,7 @@ const DivAdd = () => {
   };
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Div Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -108,11 +115,12 @@ const DivAdd = () => {
                     ))}
                   </select>
 
-                  {formik.touched.stdname && formik.errors.stdname && (
-                    <small className="text-red-500">
-                      {formik.errors.stdname}
-                    </small>
-                  )}
+                  {formik.touched.SchoolStandardId &&
+                    formik.errors.SchoolStandardId && (
+                      <small className="text-red-500">
+                        {formik.errors.SchoolStandardId}
+                      </small>
+                    )}
                 </div>
               </div>
 
@@ -143,6 +151,11 @@ const DivAdd = () => {
                     />
                     In Active
                   </div>
+                  {formik.touched.Status && formik.errors.Status && (
+                    <small className="text-red-500">
+                      {formik.errors.Status}
+                    </small>
+                  )}
                 </div>
               </div>
 

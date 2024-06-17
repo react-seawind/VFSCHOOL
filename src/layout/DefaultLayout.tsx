@@ -27,7 +27,7 @@ const DefaultLayout = () => {
             </div>
           </main>
 
-          <div className="py-6 bg-white w-full text-center mx-auto mt-auto">
+          <div className="py-6 bg-white dark:bg-boxdark w-full text-center mx-auto mt-auto">
             <p>Admin @ Virtual filament</p>
           </div>
           {/* <!-- ===== Main Content End ===== --> */}

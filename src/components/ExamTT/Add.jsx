@@ -8,12 +8,14 @@ import { getAllDivision } from '../../API/DivisionApi';
 import { AddClassTT } from '../../API/ClasstimetableApi';
 import { getAllStandard } from '../../API/StandardApi';
 import { AddExamTT } from '../../API/ExamtimetableApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
   StandardId: yup.string().required('Standard is required'),
   DivisionId: yup.string().required('Division is required'),
-  PDF: yup.string().required('Timetable is required'),
+  PDF: yup.string().required('Exam table is required'),
+  Status: yup.string().required('Status is required'),
 });
 const ExamTTAdd = () => {
   const Id = Config.getId();
@@ -46,6 +48,7 @@ const ExamTTAdd = () => {
     };
     fetchDivision();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
@@ -53,10 +56,11 @@ const ExamTTAdd = () => {
       DivisionId: '',
       Title: '',
       PDF: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -66,6 +70,8 @@ const ExamTTAdd = () => {
         navigate('/examtimetable/listing');
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -78,7 +84,7 @@ const ExamTTAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Exam Timetable Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -210,6 +216,11 @@ const ExamTTAdd = () => {
                     />
                     In Active
                   </div>
+                  {formik.touched.Status && formik.errors.Status && (
+                    <small className="text-red-500">
+                      {formik.errors.Status}
+                    </small>
+                  )}
                 </div>
               </div>
 

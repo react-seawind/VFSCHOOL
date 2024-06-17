@@ -13,6 +13,7 @@ import {
   getAllTeacherAssign,
 } from '../../API/TeacherApi';
 import { useFormik } from 'formik';
+import FormLoader from '../../common/FormLoader';
 
 const TeacherView = () => {
   const schoolId1 = Config.getId();
@@ -25,60 +26,57 @@ const TeacherView = () => {
   const [std, setStd] = useState([]);
   const [div, setDiv] = useState([]);
   const [sub, setSub] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getAllTeacherAssign(Id);
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const result = await getAllTeacherAssign(Id);
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  const fetchStandard = async () => {
+    try {
+      const StandardData = await getAllStandard();
+      setStd(StandardData);
+    } catch (error) {
+      console.error('Error fetching Standard:', error);
+    }
+  };
+
+  const fetchDivision = async () => {
+    try {
+      const DivisionData = await getAllDivision();
+      setDiv(DivisionData);
+    } catch (error) {
+      console.error('Error fetching Division:', error);
+    }
+  };
+
+  const fetchSubject = async () => {
+    try {
+      const SubjectData = await getAllSubject();
+      setSub(SubjectData);
+    } catch (error) {
+      console.error('Error fetching Subject:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchStandard = async () => {
-      try {
-        const StandardData = await getAllStandard();
-        setStd(StandardData);
-      } catch (error) {
-        console.error('Error fetching Standard:', error);
-      }
-    };
     fetchStandard();
-  }, []);
-
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setDiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
     fetchDivision();
-  }, []);
-
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setSub(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
     fetchSubject();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const handleDelete = async (row) => {
+    setIsFormLoading(true);
     try {
       await deleteTeacherAssign(row.Id);
       setData((prevData) => prevData.filter((item) => item.Id !== row.Id));
     } catch (error) {
       console.error('Error deleting assignment:', error);
+    } finally {
+      setIsFormLoading(false); // Set loading state to false when submission ends
     }
   };
   const [selectedStd, setSelectedStd] = useState([]);
@@ -97,14 +95,17 @@ const TeacherView = () => {
       DivisionId: '',
       StandardId: '',
       SubjectId: '',
-      Status: '',
+      Status: '1',
     },
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await AddTeacherAssign(values);
-        window.location.reload();
+        fetchData();
       } catch (error) {
         console.error('Error adding Teacher:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -116,6 +117,7 @@ const TeacherView = () => {
   return (
     <div>
       <Breadcrumb pageName="Assign Standard" />
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

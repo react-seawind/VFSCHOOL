@@ -7,6 +7,7 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getClassTTById } from '../../API/ClasstimetableApi';
 import { getExamTTById, updateExamTTById } from '../../API/ExamtimetableApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -65,6 +66,7 @@ const ExamTTEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -78,6 +80,7 @@ const ExamTTEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -87,6 +90,8 @@ const ExamTTEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding Exam Timetable:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -109,7 +114,7 @@ const ExamTTEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Exam Timetable Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getClassTTById, updateClassTTById } from '../../API/ClasstimetableApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -64,6 +65,7 @@ const ClassTimetableEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -77,6 +79,7 @@ const ClassTimetableEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -86,6 +89,8 @@ const ClassTimetableEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -108,7 +113,7 @@ const ClassTimetableEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="ClassTimetable Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

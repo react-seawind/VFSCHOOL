@@ -7,6 +7,7 @@ import { AddTeacher } from '../../API/TeacherApi';
 import Config from '../../API/Config';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = Yup.object().shape({
   TeacherName: Yup.string().required('Teacher Name is required'),
@@ -30,10 +31,12 @@ const validationSchema = Yup.object().shape({
   Photo: Yup.string().required('Photo is required'),
   AddressProof: Yup.string().required('AddressProof is required'),
   IdProof: Yup.string().required('Id Proof is required'),
+  Password: Yup.string().required('Password is required'),
+  Role: Yup.string().required('Role is required'),
 });
 const TeacherAdd = () => {
   const Id = Config.getId();
-
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
@@ -55,10 +58,11 @@ const TeacherAdd = () => {
       IdProof: '',
       Password: '',
       Role: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -70,6 +74,8 @@ const TeacherAdd = () => {
         navigate('/teacher/listing');
       } catch (error) {
         console.error('Error adding Teacher:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -81,7 +87,7 @@ const TeacherAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Teacher Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -373,7 +379,7 @@ const TeacherAdd = () => {
                     Password <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="password"
                     name="Password"
                     value={formik.values.Password}
                     onChange={formik.handleChange}
@@ -398,8 +404,8 @@ const TeacherAdd = () => {
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Role</option>
-                    <option value="class">Class teacher</option>
-                    <option value="subject">Subject teacher</option>
+                    <option value="0">Class teacher</option>
+                    <option value="1">Subject teacher</option>
                   </select>
                   {formik.touched.Role && formik.errors.Role && (
                     <small className="text-red-500">{formik.errors.Role}</small>

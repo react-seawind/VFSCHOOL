@@ -7,6 +7,7 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { getExamPaperById, updateExamPaperById } from '../../API/ExampaperApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -79,6 +80,7 @@ const PaperEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -93,6 +95,7 @@ const PaperEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -102,6 +105,8 @@ const PaperEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -123,6 +128,7 @@ const PaperEdit = () => {
 
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Exam Paper Edit" />
 
       <div className="grid grid-cols-1 gap-9 ">

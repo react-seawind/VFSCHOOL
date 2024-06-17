@@ -8,14 +8,22 @@ import {
   updateTransportationById,
 } from '../../API/TransportationAPI';
 import { getAllStudent } from '../../API/StudentApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   StudentId: yup.string().required('Student Name is required'),
   DriverName: yup.string().required('Driver Name is required'),
-  DriverPhone: yup.string().required('Driver Number is required'),
+  DriverPhone: yup
+    .string()
+    .required('Driver Number is required')
+    .matches(/^[0-9]{10}$/, 'Driver Number must be exactly 10 digits'),
   ConductorName: yup.string().required('Conductor Name is required'),
-  ConductorPhone: yup.string().required('Conductor Number is required'),
+  ConductorPhone: yup
+    .string()
+    .required('Conductor Number is required')
+    .matches(/^[0-9]{10}$/, 'Conductor Number must be exactly 10 digits'),
   BusNo: yup.string().required('Vehicle Name is required'),
+  Status: yup.string().required('Status is required'),
 });
 const TransporationEdit = () => {
   // ================ Get data by Id============
@@ -50,6 +58,7 @@ const TransporationEdit = () => {
     };
     fetchStudent();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -64,10 +73,13 @@ const TransporationEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await updateTransportationById(values);
       } catch (error) {
         console.error('Error updating transportation:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -81,7 +93,7 @@ const TransporationEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Transporation Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

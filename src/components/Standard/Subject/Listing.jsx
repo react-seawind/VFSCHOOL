@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FaChevronDown } from 'react-icons/fa6';
-import { deleteVideo, getAllVideo } from '../../../API/VideoAPI';
+import { deleteSubject, getAllSubject } from '../../../API/SubjectAPI';
 import { format } from 'date-fns';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
@@ -12,11 +11,10 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 
-const VideoListing = () => {
-  const [video, setvideo] = useState([]);
-  const [search, setsearch] = useState('');
+const SubjectListing = () => {
+  const [chapter, setchapter] = useState([]);
+  const [search, setSearch] = useState('');
   const [filterData, setfilterData] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -24,8 +22,8 @@ const VideoListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllVideo();
-        setvideo(result);
+        const result = await getAllSubject();
+        setchapter(result);
         setfilterData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -39,24 +37,26 @@ const VideoListing = () => {
 
   // -----------------------filter--------------------
   useEffect(() => {
-    const mySearch = video.filter((item) =>
+    const mySearch = chapter.filter((item) =>
       item.Title && item.Title
         ? item.Title.toLowerCase().includes(search.toLowerCase())
         : false,
     );
     setfilterData(mySearch);
-  }, [search, video]);
+  }, [search, chapter]);
 
-  // -------------------delete video------------------
+  // -------------------delete chapter------------------
   const handleDelete = async (row) => {
     try {
-      await deleteVideo(row.Id);
-      setvideo((prevvideo) => prevvideo.filter((item) => item.Id !== row.Id));
+      await deleteSubject(row.Id);
+      setchapter((prevchapter) =>
+        prevchapter.filter((item) => item.Id !== row.Id),
+      );
       setfilterData((prevFilterData) =>
         prevFilterData.filter((item) => item.Id !== row.Id),
       );
     } catch (error) {
-      console.error('Error deleting video:', error);
+      console.error('Error deleting chapter:', error);
     }
   };
 
@@ -67,7 +67,7 @@ const VideoListing = () => {
           icon={<FaPencilAlt />}
           className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
           onClick={() => {
-            navigate(`/video/edit/${rowData.Id}`);
+            navigate(`/subject/edit/${rowData.Id}`);
           }}
         />
         <Button
@@ -97,17 +97,9 @@ const VideoListing = () => {
       </div>
     );
   };
-
-  const videoBodyTemplate = (rowData) => {
-    return (
-      <video width="130" controls className="shadow-2 border-round mx-auto">
-        <source src={rowData.Video} type="video/mp4" />
-      </video>
-    );
-  };
   return (
     <div>
-      <Breadcrumb pageName="Video Gallary Listing" />
+      <Breadcrumb pageName="Subject Listing" />
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -135,12 +127,12 @@ const VideoListing = () => {
                         <InputText
                           type="text"
                           className="text-start me-auto text-sm border-2 py-2 mt-2 pl-2 md:pr-20 pr-5"
-                          onInput={(e) => setsearch(e.target.value)}
+                          onInput={(e) => setSearch(e.target.value)}
                           placeholder="Search"
                         />
                       </span>
                       <Link
-                        to="/video/add"
+                        to="/subject/add"
                         className="bg-blue-500 text-white p-3 px-10 text-sm"
                       >
                         Add
@@ -161,11 +153,15 @@ const VideoListing = () => {
                     className="border border-stroke"
                   />
                   <Column
-                    field="Video"
-                    header="Video"
+                    field="SchoolStandardId"
+                    header="Standard"
                     className="border border-stroke"
-                    body={videoBodyTemplate}
-                  ></Column>
+                  />
+                  <Column
+                    field="SchoolDivisionId"
+                    header="Division"
+                    className="border border-stroke"
+                  />
                   <Column
                     field="Status"
                     header="Status"
@@ -205,4 +201,4 @@ const VideoListing = () => {
   );
 };
 
-export default VideoListing;
+export default SubjectListing;

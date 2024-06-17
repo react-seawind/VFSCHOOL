@@ -352,7 +352,7 @@ const Profile = () => {
                             val.WhatsApp,
                           )}?text=${encodeURIComponent('Your message here')}`}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaWhatsapp />
                           Whatsapp
@@ -360,7 +360,7 @@ const Profile = () => {
                         <Link
                           to={val.Facebook}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaFacebook />
                           Facebook
@@ -368,7 +368,7 @@ const Profile = () => {
                         <Link
                           to={val.Twitter}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <BsTwitterX />
                           Twitter
@@ -376,7 +376,7 @@ const Profile = () => {
                         <Link
                           to={val.LinkedIn}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaLinkedin />
                           LinkedIn
@@ -384,7 +384,7 @@ const Profile = () => {
                         <Link
                           to={val.Instagram}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaInstagram />
                           Instagram
@@ -392,7 +392,7 @@ const Profile = () => {
                         <Link
                           to={val.Telegram}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaTelegram />
                           Telegram
@@ -400,7 +400,7 @@ const Profile = () => {
                         <Link
                           to={val.Youtube}
                           target="_blank"
-                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
+                          class="inline-flex items-center gap-3 rounded-md border py-2 px-4.5 font-medium hover:border-primary dark:text-white dark:border-white hover:bg-primary/[0.08] hover:text-primary bg-primary/[0.08] text-primary border-primary"
                         >
                           <FaYoutube />
                           Youtube

@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getTeacherById, updateTeacherById } from '../../API/TeacherApi';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = Yup.object().shape({
   TeacherName: Yup.string().required('Teacher Name is required'),
@@ -58,7 +59,7 @@ const TeacherEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
-
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: '',
@@ -87,6 +88,7 @@ const TeacherEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -97,6 +99,8 @@ const TeacherEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error adding Teacher:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -117,7 +121,7 @@ const TeacherEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Teacher Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -348,7 +352,9 @@ const TeacherEdit = () => {
                   </label>
                   <select
                     name="Role"
+                    value={formik.values.Role}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Role</option>

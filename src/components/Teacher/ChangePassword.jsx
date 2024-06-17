@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { useEffect } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { TeacherChangePassword, getTeacherById } from '../../API/TeacherApi';
+import FormLoader from '../../common/FormLoader';
 const validateSchema = Yup.object().shape({
   OldPassword: Yup.string().required('Old Password is required.'),
   NewPassword: Yup.string().required('New Password is required.'),
@@ -30,6 +31,7 @@ const TeacherChangePwd = () => {
 
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -38,10 +40,13 @@ const TeacherChangePwd = () => {
     },
     validationSchema: validateSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await TeacherChangePassword(values);
       } catch (error) {
         console.error('Error updating Password:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -55,7 +60,7 @@ const TeacherChangePwd = () => {
     <>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Change Password" />
-
+        {isFormLoading && <FormLoader loading={isFormLoading} />}
         <div className=" ">
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

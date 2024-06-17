@@ -1,26 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { AddPhoto } from '../../../API/PhotoAPI';
 import Config from '../../../API/Config';
+import FormLoader from '../../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
   Image: yup.string().required('Image is required'),
+  Status: yup.string().required('Status is required'),
 });
 const ImageAdd = () => {
   const Id = Config.getId();
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       Title: '',
       Image: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -30,6 +34,8 @@ const ImageAdd = () => {
         navigate('/image/listing');
       } catch (error) {
         console.error('Error adding Photo:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -41,6 +47,7 @@ const ImageAdd = () => {
   };
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Image Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -127,6 +134,11 @@ const ImageAdd = () => {
                     />
                     In Active
                   </div>
+                  {formik.touched.Status && formik.errors.Status && (
+                    <small className="text-red-500">
+                      {formik.errors.Status}
+                    </small>
+                  )}
                 </div>
               </div>
 
