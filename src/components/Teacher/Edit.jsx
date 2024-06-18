@@ -358,8 +358,8 @@ const TeacherEdit = () => {
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option>Select Role</option>
-                    <option value="class">Class teacher</option>
-                    <option value="subject">Subject teacher</option>
+                    <option value="0">Class teacher</option>
+                    <option value="1">Subject teacher</option>
                   </select>
                   {formik.touched.Role && formik.errors.Role && (
                     <small className="text-red-500">{formik.errors.Role}</small>
