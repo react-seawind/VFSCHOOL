@@ -268,6 +268,7 @@ const TeacherEdit = () => {
                     <small className="text-red-500">{formik.errors.City}</small>
                   )}
                 </div>
+
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Area <span className="text-danger">*</span>

@@ -12,6 +12,7 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getStudentById, updateStudentById } from '../../API/StudentApi';
 import { getAllTeacher } from '../../API/TeacherApi';
 import FormLoader from '../../common/FormLoader';
+import { format } from 'date-fns';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -30,6 +31,12 @@ const validationSchema = Yup.object().shape({
     .min(10, 'User Phone must be at least 10 characters')
     .max(10, 'User Phone must be at most 10 characters')
     .required('Parent Phone is required'),
+  RollNo: Yup.string().required('RollNo is required'),
+  GrNo: Yup.string().required('GrNo is required'),
+  MotherName: Yup.string().required('Mother Name is required'),
+  DOB: Yup.string().required('Date Of Birth is required'),
+  BloodGroup: Yup.string().required('BloodGroup is required'),
+  Gender: Yup.string().required('Gender is required'),
   Country: Yup.string().required('Country is required'),
   State: Yup.string().required('State is required'),
   City: Yup.string().required('City is required'),
@@ -55,6 +62,7 @@ const StudentEdit = () => {
   const [PhotoPreview, setPhotoPreview] = useState();
   const [AddressProofPreview, setAddressProofPreview] = useState();
   const [IdProofPreview, setIdProofPreview] = useState();
+  const [DOB, setDOB] = useState();
   const fetchData = async () => {
     try {
       if (Id) {
@@ -69,6 +77,12 @@ const StudentEdit = () => {
         if (SchoolData.IdProof) {
           setIdProofPreview(SchoolData.IdProof); // Update IdProof preview if IdProof exists
         }
+        const DOB = format(new Date(SchoolData.DOB), 'yyyy-MM-dd');
+        formik.setValues({
+          ...SchoolData,
+          DOB: DOB,
+        });
+        const formattedDOB = format(new Date(SchoolData.DOB), 'yyyy-MM-dd'); // Use 'yyyy-MM-dd' format for HTML date input
       } else {
         console.log('error');
       }
@@ -148,7 +162,15 @@ const StudentEdit = () => {
       DivisionId: '',
       TeacherId: '',
       Status: '',
+
+      RollNo: '',
+      GrNo: '',
+      MotherName: '',
+      DOB: '',
+      BloodGroup: '',
+      Gender: '',
     },
+
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       setIsFormLoading(true);
@@ -181,6 +203,7 @@ const StudentEdit = () => {
   const handleGoBack = () => {
     navigate('/student/listing');
   };
+
   return (
     <div>
       <Breadcrumb pageName="Student Edit" />
@@ -216,6 +239,42 @@ const StudentEdit = () => {
                 value={formik.values.Hid_IdProof}
               />
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Roll No <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="RollNo"
+                    value={formik.values.RollNo}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Student Roll No"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.RollNo && formik.errors.RollNo && (
+                    <small className="text-red-500">
+                      {formik.errors.RollNo}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Gr No <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="GrNo"
+                    value={formik.values.GrNo}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Student Gr No"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.GrNo && formik.errors.GrNo && (
+                    <small className="text-red-500">{formik.errors.GrNo}</small>
+                  )}
+                </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Student Name <span className="text-danger">*</span>
@@ -331,6 +390,103 @@ const StudentEdit = () => {
                       {formik.errors.ParentPhone}
                     </small>
                   )}
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Mother Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="MotherName"
+                    value={formik.values.MotherName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Your Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transMother py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.MotherName && formik.errors.MotherName && (
+                    <small className="text-red-500">
+                      {formik.errors.MotherName}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Date Of Birth <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="DOB"
+                    value={formik.values.DOB}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Your Email"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.DOB && formik.errors.DOB && (
+                    <small className="text-red-500">{formik.errors.DOB}</small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Select Blood Group <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    name="BloodGroup"
+                    value={formik.values.BloodGroup}
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Blood Group</option>
+                    <option value="O-">O-</option>
+                    <option value="O+">O+</option>
+                    <option value="A-">A-</option>
+                    <option value="A+">A+</option>
+                    <option value="B-">B-</option>
+                    <option value="B+">B+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="AB+">AB+</option>
+                  </select>
+
+                  {formik.touched.BloodGroup && formik.errors.BloodGroup && (
+                    <small className="text-red-500">
+                      {formik.errors.BloodGroup}
+                    </small>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
+                  <label className="block text-black dark:text-white">
+                    Gender <span className="text-danger">*</span>
+                  </label>
+                  <div className="relative">
+                    <div>
+                      <input
+                        type="radio"
+                        onChange={formik.handleChange}
+                        name="Gender"
+                        className="mr-2"
+                        value="Male"
+                        checked={formik.values.Gender == 'Male'}
+                      />
+                      Male
+                      <input
+                        type="radio"
+                        onChange={formik.handleChange}
+                        name="Gender"
+                        className="mx-2"
+                        value="Female"
+                        checked={formik.values.Gender == 'Female'}
+                      />
+                      Female
+                    </div>
+                    {formik.touched.Gender && formik.errors.Gender && (
+                      <small className="text-red-500">
+                        {formik.errors.Gender}
+                      </small>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
