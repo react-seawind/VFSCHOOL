@@ -30,12 +30,19 @@ const StudentDataManager = () => {
         setfilterData(result);
         setCsvData(
           result.map((item) => ({
+            SchoolId: item.SchoolId,
+            Id: item.Id,
+            RollNo: item.RollNo,
+            GrNo: item.GrNo,
             StudentName: item.StudentName,
             StudentEmail: item.StudentEmail,
             StudentPhone: item.StudentPhone,
             ParentName: item.ParentName,
             ParentEmail: item.ParentEmail,
             ParentPhone: item.ParentPhone,
+            MotherName: item.MotherName,
+            DOB: item.DOB,
+            BloodGroup: item.BloodGroup,
             Country: item.Country,
             State: item.State,
             City: item.City,
@@ -47,9 +54,13 @@ const StudentDataManager = () => {
             AddressProof: item.AddressProof,
             IdProof: item.IdProof,
             StandardId: item.StandardId,
+            StandardName: item.StandardName,
             DivisionId: item.DivisionId,
+            DivisionName: item.DivisionName,
             TeacherId: item.TeacherId,
+            TeacherName: item.TeacherName,
             Status: item.Status,
+            EntDt: item.EntDt,
           })),
         );
       } catch (error) {
@@ -165,12 +176,19 @@ const StudentDataManager = () => {
                       <CSVLink
                         data={csvData}
                         headers={[
+                          { label: 'School Id', key: 'SchoolId' },
+                          { label: 'Id', key: 'Id' },
+                          { label: 'Roll No', key: 'RollNo' },
+                          { label: 'Gr No', key: 'GrNo' },
                           { label: 'Student Name', key: 'StudentName' },
                           { label: 'Student Email', key: 'StudentEmail' },
                           { label: 'Student Phone', key: 'StudentPhone' },
                           { label: 'Parent Name', key: 'ParentName' },
                           { label: 'Parent Email', key: 'ParentEmail' },
                           { label: 'Parent Phone', key: 'ParentPhone' },
+                          { label: 'Mother Name', key: 'MotherName' },
+                          { label: 'DOB', key: 'DOB' },
+                          { label: 'Blood Group', key: 'BloodGroup' },
                           { label: 'Country', key: 'Country' },
                           { label: 'State', key: 'State' },
                           { label: 'City', key: 'City' },
@@ -182,9 +200,13 @@ const StudentDataManager = () => {
                           { label: 'Address Proof', key: 'AddressProof' },
                           { label: 'Id Proof', key: 'IdProof' },
                           { label: 'Standard Id', key: 'StandardId' },
+                          { label: 'Standard Name', key: 'StandardName' },
                           { label: 'Division Id', key: 'DivisionId' },
+                          { label: 'Division Name', key: 'DivisionName' },
                           { label: 'Teacher Id', key: 'TeacherId' },
+                          { label: 'Teacher Name', key: 'TeacherName' },
                           { label: 'Status', key: 'Status' },
+                          { label: 'EntDt', key: 'EntDt' },
                         ]}
                         filename={'students.csv'}
                         className="bg-blue-500 text-white p-3 px-10 text-sm"
@@ -195,9 +217,23 @@ const StudentDataManager = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
+                    className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
+                  />
+                  <Column
+                    field="GrNo"
+                    header="GrNo"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="RollNo"
+                    header="RollNo"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="StandardName"
+                    header="Standard Name"
                     className="border border-stroke"
                   />
                   <Column
@@ -207,11 +243,46 @@ const StudentDataManager = () => {
                     className="border border-stroke"
                   />
                   <Column
-                    field="image"
-                    header="Image"
+                    field="StudentEmail"
+                    header="Student Email"
                     className="border border-stroke"
-                    body={imageBodyTemplate}
                   />
+                  <Column
+                    field="StudentPhone"
+                    header="Student Phone"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="ParentName"
+                    header="Parent Name"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="ParentEmail"
+                    header="Parent Email"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="ParentPhone"
+                    header="Parent Phone"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="Country"
+                    header="Country"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="State"
+                    header="State"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="City"
+                    header="City"
+                    className="border border-stroke"
+                  />
+
                   <Column
                     field="Status"
                     header="Status"
@@ -233,13 +304,8 @@ const StudentDataManager = () => {
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
-                  />
-                  <Column
-                    header="Action"
-                    className="border border-stroke"
-                    body={actionTemplate}
                   />
                 </DataTable>
               )}

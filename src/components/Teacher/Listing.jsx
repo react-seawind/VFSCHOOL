@@ -65,7 +65,7 @@ const TeacherListing = () => {
       <div>
         <Button
           icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
+          className="border border-blue-600 text-blue-600 mr-2 rounded-full mt-2 py-2.5"
           onClick={() => {
             navigate(`/teacher/edit/${rowData.Id}`);
           }}
@@ -74,7 +74,7 @@ const TeacherListing = () => {
 
         <Button
           icon={<FaTrash />}
-          className="border border-red-600 text-red-600 mr-2 rounded-full py-2.5"
+          className="border border-red-600 text-red-600 mr-2 rounded-full mt-2 py-2.5"
           title="Delete"
           onClick={() => {
             Swal.fire({
@@ -99,7 +99,7 @@ const TeacherListing = () => {
         />
         <Button
           icon={<FaLock />}
-          className="border border-green-600 text-green-600 rounded-full py-2.5"
+          className="border border-green-600 text-green-600 rounded-full mt-2 py-2.5"
           onClick={() => {
             navigate(`/teacher/changepassword/${rowData.Id}`);
           }}
@@ -179,10 +179,9 @@ const TeacherListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="TeacherName"
@@ -217,7 +216,7 @@ const TeacherListing = () => {
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
                   />
                   <Column

@@ -5,7 +5,7 @@ import Config from './Config';
 const { API_BASE_URL } = Config; // Destructure the values from the config file
 
 const TOKEN = Config.getToken();
-const Id = Config.getId();
+const SId = Config.getId();
 
 const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
@@ -15,7 +15,7 @@ const headers = {
 // =========================Get All HolidayHW=========================
 export const getAllHolidayHW = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/holidayhomework`, {
+    const response = await axios.get(`${API_BASE_URL}/holidayhomework/${SId}`, {
       headers,
     });
     return response.data.responsedata;
@@ -27,9 +27,12 @@ export const getAllHolidayHW = async () => {
 // ----------------------getHolidayHWbyId----------------
 export const getHolidayHWById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/holidayhomework/${Id}`, {
-      headers,
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}/holidayhomework/${SId}/${Id}`,
+      {
+        headers,
+      },
+    );
 
     if (response.data.status === true) {
       return response.data.responseData;

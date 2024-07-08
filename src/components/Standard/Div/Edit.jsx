@@ -58,7 +58,6 @@ const DivEdit = () => {
       Id: Id,
       SchoolStandardId: '',
       Title: '',
-      Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
@@ -100,24 +99,6 @@ const DivEdit = () => {
               <div className="grid md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Division Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="Title"
-                    onChange={formik.handleChange}
-                    value={formik.values.Title}
-                    placeholder="Enter Your Division Name"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {formik.touched.Title && formik.errors.Title && (
-                    <small className="text-red-500">
-                      {formik.errors.Title}
-                    </small>
-                  )}
-                </div>
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
                     Select Standard <span className="text-danger">*</span>
                   </label>
 
@@ -140,34 +121,23 @@ const DivEdit = () => {
                     </small>
                   )}
                 </div>
-              </div>
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Division Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Title"
+                    onChange={formik.handleChange}
+                    value={formik.values.Title}
+                    placeholder="Enter Your Division Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Title && formik.errors.Title && (
+                    <small className="text-red-500">
+                      {formik.errors.Title}
+                    </small>
+                  )}
                 </div>
               </div>
 
@@ -179,7 +149,7 @@ const DivEdit = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

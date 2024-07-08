@@ -153,3 +153,31 @@
   color: white !important;
   border: 0 !important
 }
+
+
+
+.loader-first1 img {
+  width: 20px;
+  display: inline;
+  margin: 0 0 0 5px;
+}
+
+.loader-first1 .copyright {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-first1 img {
+  animation: rotateAnimation 2s linear infinite;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

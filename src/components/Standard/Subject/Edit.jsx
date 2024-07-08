@@ -7,6 +7,7 @@ import { getSubjectById, updateSubjectById } from '../../../API/SubjectAPI';
 import { getAllDivision } from '../../../API/DivisionApi';
 import { getAllStandard } from '../../../API/StandardApi';
 import FormLoader from '../../../common/FormLoader';
+import { getDivisionByStandardId } from '../../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Subject Name is required'),
@@ -69,7 +70,6 @@ const SubjectEdit = () => {
       Title: '',
       SchoolStandardId: '',
       SchoolDivisionId: '',
-      Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -85,6 +85,22 @@ const SubjectEdit = () => {
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.SchoolStandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.SchoolStandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.SchoolStandardId]);
 
   const handleGoBack = () => {
     navigate('/subject/listing');
@@ -110,25 +126,6 @@ const SubjectEdit = () => {
 
             <form onSubmit={formik.handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Subject Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="Title"
-                    onChange={formik.handleChange}
-                    value={formik.values.Title}
-                    placeholder="Enter Your Subject Name"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {formik.touched.Title && formik.errors.Title && (
-                    <small className="text-red-500">
-                      {formik.errors.Title}
-                    </small>
-                  )}
-                </div>
-
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Select Standard <span className="text-danger">*</span>
@@ -180,35 +177,23 @@ const SubjectEdit = () => {
                       </small>
                     )}
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Subject Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Title"
+                    onChange={formik.handleChange}
+                    value={formik.values.Title}
+                    placeholder="Enter Your Subject Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Title && formik.errors.Title && (
+                    <small className="text-red-500">
+                      {formik.errors.Title}
+                    </small>
+                  )}
                 </div>
               </div>
 
@@ -220,7 +205,7 @@ const SubjectEdit = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

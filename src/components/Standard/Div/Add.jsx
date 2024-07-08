@@ -12,7 +12,6 @@ import FormLoader from '../../../common/FormLoader';
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Division Name is required'),
   SchoolStandardId: yup.string().required('Standard Name is required'),
-  Status: yup.string().required('Status is required'),
 });
 const DivAdd = () => {
   const Id = Config.getId();
@@ -38,7 +37,6 @@ const DivAdd = () => {
       SchoolId: Id,
       SchoolStandardId: '',
       Title: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
@@ -82,23 +80,6 @@ const DivAdd = () => {
               <div className="grid md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Division Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="Title"
-                    onChange={formik.handleChange}
-                    placeholder="Enter Your Division Name"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {formik.touched.Title && formik.errors.Title && (
-                    <small className="text-red-500">
-                      {formik.errors.Title}
-                    </small>
-                  )}
-                </div>
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
                     Select Standard <span className="text-danger">*</span>
                   </label>
 
@@ -122,38 +103,20 @@ const DivAdd = () => {
                       </small>
                     )}
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                  {formik.touched.Status && formik.errors.Status && (
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Division Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Title"
+                    onChange={formik.handleChange}
+                    placeholder="Enter Your Division Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.Status}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -167,7 +130,7 @@ const DivAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

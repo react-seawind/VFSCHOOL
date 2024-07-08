@@ -7,6 +7,7 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import { getClassTTById, updateClassTTById } from '../../API/ClasstimetableApi';
 import FormLoader from '../../common/FormLoader';
+import { getDivisionByStandardId } from '../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -75,7 +76,6 @@ const ClassTimetableEdit = () => {
       Title: '',
       PDF: '',
       Hid_PDF: '',
-      Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -94,6 +94,22 @@ const ClassTimetableEdit = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
 
   function getFileExtension(filename) {
     if (typeof filename !== 'string') {
@@ -250,36 +266,6 @@ const ClassTimetableEdit = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -288,7 +274,7 @@ const ClassTimetableEdit = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

@@ -8,6 +8,10 @@ import { getAllDivision } from '../../API/DivisionApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { getExamPaperById, updateExamPaperById } from '../../API/ExampaperApi';
 import FormLoader from '../../common/FormLoader';
+import {
+  getDivisionByStandardId,
+  getSubjectByDivisionId,
+} from '../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -33,31 +37,8 @@ const PaperEdit = () => {
   // ------------Division DATA-------------------
   const [div, setdiv] = useState([]);
 
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setdiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
-    fetchDivision();
-  }, []);
   // ------------Subject DATA-------------------
   const [subject, setsubject] = useState([]);
-
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
 
   // ================ Get data by Id============
   const { Id } = useParams();
@@ -91,7 +72,6 @@ const PaperEdit = () => {
       Title: '',
       PDF: '',
       Hid_PDF: '',
-      Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -110,6 +90,40 @@ const PaperEdit = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      if (formik.values.StandardId && formik.values.DivisionId) {
+        try {
+          const subjectData = await getSubjectByDivisionId(
+            formik.values.StandardId,
+            formik.values.DivisionId,
+          );
+          setsubject(subjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      }
+    };
+    fetchSubject();
+  }, [formik.values.StandardId, formik.values.DivisionId]);
+
   function getFileExtension(filename) {
     if (typeof filename !== 'string') {
       return 'Invalid filename';
@@ -291,36 +305,6 @@ const PaperEdit = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -329,7 +313,7 @@ const PaperEdit = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

@@ -8,6 +8,11 @@ import Config from '../../API/Config';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllDivision } from '../../API/DivisionApi';
 import FormLoader from '../../common/FormLoader';
+import {
+  getDivisionByStandardId,
+  getStandardByTeacherId,
+  getSubjectByDivisionId,
+} from '../../API/GetStdDivSub';
 
 const validationSchema = Yup.object().shape({
   TeacherName: Yup.string().required('Teacher Name is required'),
@@ -58,6 +63,8 @@ const TeacherAdd = () => {
       IdProof: '',
       Password: '',
       Role: '',
+      StandardId: '',
+      DivisionId: '',
       Status: '1',
     },
     validationSchema: validationSchema,
@@ -69,9 +76,11 @@ const TeacherAdd = () => {
           formData.append(key, value);
         });
 
-        await AddTeacher(formData);
-        actions.resetForm();
-        navigate('/teacher/listing');
+        const result = await AddTeacher(formData);
+        if (result.status === true) {
+          actions.resetForm();
+          navigate('/teacher/listing');
+        }
       } catch (error) {
         console.error('Error adding Teacher:', error);
       } finally {
@@ -79,6 +88,41 @@ const TeacherAdd = () => {
       }
     },
   });
+
+  // --------------------------get std/suv/div--------------------
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getAllStandard();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+  // ------------Division DATA-------------------
+  const [div, setdiv] = useState([]);
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
+
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate('/teacher/listing');
@@ -411,6 +455,56 @@ const TeacherAdd = () => {
                     <small className="text-red-500">{formik.errors.Role}</small>
                   )}
                 </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Select Standard <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    name="StandardId"
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Standard</option>
+                    {std.map((std) => (
+                      <option key={std.Id} value={std.Id}>
+                        {std.Title}
+                      </option>
+                    ))}
+                  </select>
+
+                  {formik.touched.StandardId && formik.errors.StandardId && (
+                    <small className="text-red-500">
+                      {formik.errors.StandardId}
+                    </small>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Select Division <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    name="DivisionId"
+                    onChange={formik.handleChange}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option>Select Division</option>
+                    {div.map((div) => (
+                      <option key={div.Id} value={div.Id}>
+                        {div.Title}
+                      </option>
+                    ))}
+                  </select>
+
+                  {formik.touched.DivisionId && formik.errors.DivisionId && (
+                    <small className="text-red-500">
+                      {formik.errors.DivisionId}
+                    </small>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
@@ -452,7 +546,7 @@ const TeacherAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

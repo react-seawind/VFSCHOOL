@@ -65,7 +65,7 @@ const StudentListing = () => {
       <div>
         <Button
           icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
+          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5 my-1"
           onClick={() => {
             navigate(`/student/edit/${rowData.Id}`);
           }}
@@ -74,7 +74,7 @@ const StudentListing = () => {
 
         <Button
           icon={<FaTrash />}
-          className="border border-red-600 text-red-600 mr-2 rounded-full py-2.5"
+          className="border border-red-600 text-red-600 mr-2 rounded-full py-2.5 my-1"
           title="Delete"
           onClick={() => {
             Swal.fire({
@@ -99,7 +99,7 @@ const StudentListing = () => {
         />
         <Button
           icon={<FaLock />}
-          className="border border-green-600 text-green-600 rounded-full py-2.5"
+          className="border border-green-600 text-green-600 rounded-full py-2.5 my-1"
           onClick={() => {
             navigate(`/student/changepassword/${rowData.Id}`);
           }}
@@ -164,14 +164,43 @@ const StudentListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="StudentName"
                     header="StudentName"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="StudentEmail"
+                    header="StudentEmail"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="StudentPhone"
+                    header="StudentPhone"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="StandardName"
+                    header="Standard Name"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="DivisionName"
+                    header="Division Name"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="TeacherName"
+                    header="Teacher Name"
                     sortable
                     className="border border-stroke"
                   />
@@ -202,7 +231,7 @@ const StudentListing = () => {
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
                   />
                   <Column

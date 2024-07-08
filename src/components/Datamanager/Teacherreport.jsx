@@ -30,9 +30,12 @@ const TeacherDataManager = () => {
         setfilterData(result);
         setCsvData(
           result.map((item) => ({
+            SchoolId: item.SchoolId,
+            Id: item.Id,
             TeacherName: item.TeacherName,
             TeacherEmail: item.TeacherEmail,
             TeacherPhone: item.TeacherPhone,
+            Role: item.Role,
             Country: item.Country,
             State: item.State,
             City: item.City,
@@ -44,6 +47,7 @@ const TeacherDataManager = () => {
             AddressProof: item.AddressProof,
             IdProof: item.IdProof,
             Status: item.Status,
+            EntDt: item.EntDt,
           })),
         );
       } catch (error) {
@@ -159,10 +163,12 @@ const TeacherDataManager = () => {
                       <CSVLink
                         data={csvData}
                         headers={[
+                          { label: 'SchoolId', key: 'SchoolId' },
+                          { label: 'Id', key: 'Id' },
                           { label: 'TeacherName', key: 'TeacherName' },
                           { label: 'TeacherEmail', key: 'TeacherEmail' },
                           { label: 'TeacherPhone', key: 'TeacherPhone' },
-
+                          { label: 'Role', key: 'Role' },
                           { label: 'Country', key: 'Country' },
                           { label: 'State', key: 'State' },
                           { label: 'City', key: 'City' },
@@ -173,8 +179,8 @@ const TeacherDataManager = () => {
                           { label: 'Photo', key: 'Photo' },
                           { label: 'AddressProof', key: 'AddressProof' },
                           { label: 'IdProof', key: 'IdProof' },
-
                           { label: 'Status', key: 'Status' },
+                          { label: 'EntDt', key: 'EntDt' },
                         ]}
                         filename={'teacher.csv'}
                         className="bg-blue-500 text-white p-3 px-10 text-sm"
@@ -185,23 +191,50 @@ const TeacherDataManager = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="TeacherName"
-                    header="Student Name"
+                    header="Teacher Name"
                     sortable
                     className="border border-stroke"
                   />
                   <Column
-                    field="image"
-                    header="Image"
+                    field="TeacherEmail"
+                    header="TeacherEmail"
                     className="border border-stroke"
-                    body={imageBodyTemplate}
                   />
+                  <Column
+                    field="TeacherPhone"
+                    header="TeacherPhone"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="Role"
+                    header="Role"
+                    body={(rowData) =>
+                      rowData.Role === 0 ? 'Class Teacher' : 'Subject Teacher'
+                    }
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="Country"
+                    header="Country"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="State"
+                    header="State"
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="City"
+                    header="City"
+                    className="border border-stroke"
+                  />
+
                   <Column
                     field="Status"
                     header="Status"
@@ -223,13 +256,8 @@ const TeacherDataManager = () => {
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
-                  />
-                  <Column
-                    header="Action"
-                    className="border border-stroke"
-                    body={actionTemplate}
                   />
                 </DataTable>
               )}

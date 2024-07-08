@@ -39,7 +39,7 @@ const ClassTimetableListing = () => {
   useEffect(() => {
     const mySearch = classtt.filter((item) =>
       item.Title
-        ? item.Title.toLowerCase().includes(search.toLowerCase())
+        ? item.Title?.toLowerCase().includes(search.toLowerCase())
         : false,
     );
     setFilterData(mySearch);
@@ -64,14 +64,14 @@ const ClassTimetableListing = () => {
       <div>
         <Button
           icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
+          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5 my-1"
           onClick={() => {
             navigate(`/classtimetable/edit/${rowData.Id}`);
           }}
         />
         <Button
           icon={<FaTrash />}
-          className="border border-red-600 text-red-600 rounded-full py-2.5"
+          className="border border-red-600 text-red-600 rounded-full py-2.5 my-1"
           onClick={() => {
             Swal.fire({
               title: 'Are you sure?',
@@ -94,6 +94,19 @@ const ClassTimetableListing = () => {
           }}
         />
       </div>
+    );
+  };
+
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <Link to={rowData.PDF} target="_blank">
+        <button
+          type="button"
+          className="mt-2 bg-blue-600 p-2 px-5 rounded border  text-white"
+        >
+          View
+        </button>
+      </Link>
     );
   };
 
@@ -141,40 +154,39 @@ const ClassTimetableListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="Title"
-                    header="Title"
+                    header="Time Table"
                     sortable
                     className="border border-stroke"
                   />
-
                   <Column
-                    field="Status"
-                    header="Status"
+                    field="StandardName"
+                    header="Standard Name"
+                    sortable
                     className="border border-stroke"
-                    body={(rowData) => (
-                      <span
-                        className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                          rowData.Status === 1
-                            ? 'bg-green-600 text-white'
-                            : 'bg-red-600 text-white'
-                        }`}
-                      >
-                        {rowData.Status === 1 ? 'Active' : 'Inactive'}
-                      </span>
-                    )}
                   />
+                  <Column
+                    field="DivisionName"
+                    header="Division Name"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    header="Time-Table"
+                    className="border border-stroke"
+                    body={imageBodyTemplate}
+                  ></Column>
                   <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
                   />
                   <Column

@@ -5,7 +5,7 @@ import Config from './Config';
 const { API_BASE_URL } = Config; // Destructure the values from the config file
 
 const TOKEN = Config.getToken();
-const Id = Config.getId();
+const SId = Config.getId();
 
 const headers = {
   Authorization: `Bearer ${TOKEN}`, // Corrected typo from "Bareer" to "Bearer"
@@ -15,7 +15,7 @@ const headers = {
 // =========================Get All Syllabus=========================
 export const getAllSyllabus = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/syllabus`, {
+    const response = await axios.get(`${API_BASE_URL}/syllabus/${SId}`, {
       headers,
     });
     return response.data.responsedata;
@@ -27,7 +27,7 @@ export const getAllSyllabus = async () => {
 // ----------------------getSyllabusbyId----------------
 export const getSyllabusById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/syllabus/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/syllabus/${SId}/${Id}`, {
       headers,
     });
 

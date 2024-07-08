@@ -14,6 +14,11 @@ import {
 } from '../../API/TeacherApi';
 import { useFormik } from 'formik';
 import FormLoader from '../../common/FormLoader';
+import {
+  getDivisionByStandardId,
+  getStandardByTeacherId,
+  getSubjectByDivisionId,
+} from '../../API/GetStdDivSub';
 
 const TeacherView = () => {
   const schoolId1 = Config.getId();
@@ -23,9 +28,6 @@ const TeacherView = () => {
 
   // -------------------------------------------
   const { Id } = useParams();
-  const [std, setStd] = useState([]);
-  const [div, setDiv] = useState([]);
-  const [sub, setSub] = useState([]);
   const fetchData = async () => {
     try {
       const result = await getAllTeacherAssign(Id);
@@ -35,38 +37,6 @@ const TeacherView = () => {
     }
   };
 
-  const fetchStandard = async () => {
-    try {
-      const StandardData = await getAllStandard();
-      setStd(StandardData);
-    } catch (error) {
-      console.error('Error fetching Standard:', error);
-    }
-  };
-
-  const fetchDivision = async () => {
-    try {
-      const DivisionData = await getAllDivision();
-      setDiv(DivisionData);
-    } catch (error) {
-      console.error('Error fetching Division:', error);
-    }
-  };
-
-  const fetchSubject = async () => {
-    try {
-      const SubjectData = await getAllSubject();
-      setSub(SubjectData);
-    } catch (error) {
-      console.error('Error fetching Subject:', error);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-    fetchStandard();
-    fetchDivision();
-    fetchSubject();
-  }, []);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const handleDelete = async (row) => {
     setIsFormLoading(true);
@@ -79,13 +49,10 @@ const TeacherView = () => {
       setIsFormLoading(false); // Set loading state to false when submission ends
     }
   };
-  const [selectedStd, setSelectedStd] = useState([]);
-  const handleSelectStd = (selectedList) => {
-    const selectedSubjectIds = selectedList.map((subject) => subject.Id); // Extract IDs from selected subjects
-    setSelectedStd(selectedList);
-    formik.setFieldValue('SubjectId', selectedSubjectIds.join(',')); // Set only IDs to the formik field
-  };
 
+  useEffect(() => {
+    fetchData();
+  }, [Id]);
   // -------------------delete/print over-------------
 
   const formik = useFormik({
@@ -95,7 +62,6 @@ const TeacherView = () => {
       DivisionId: '',
       StandardId: '',
       SubjectId: '',
-      Status: '1',
     },
     onSubmit: async (values, actions) => {
       setIsFormLoading(true);
@@ -109,6 +75,74 @@ const TeacherView = () => {
       }
     },
   });
+
+  // ------------Standard DATA-------------------
+  const [std, setstd] = useState([]);
+
+  useEffect(() => {
+    const fetchStandard = async () => {
+      try {
+        const StandardData = await getStandardByTeacherId();
+        setstd(StandardData);
+      } catch (error) {
+        console.error('Error fetching Standard:', error);
+      }
+    };
+    fetchStandard();
+  }, []);
+  // ------------Division DATA-------------------
+  const [div, setdiv] = useState([]);
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
+  // ------------Subject DATA-------------------
+  const [sub, setSub] = useState([]);
+  const [selectedStd, setSelectedStd] = useState([]);
+  useEffect(() => {
+    const fetchSubject = async () => {
+      if (formik.values.StandardId && formik.values.DivisionId) {
+        try {
+          const subjectData = await getSubjectByDivisionId(
+            formik.values.StandardId,
+            formik.values.DivisionId,
+          );
+
+          console.log('subjectData', subjectData);
+          const combinedArray = subjectData.map((obj) => ({
+            SubjectId: obj.Id.toString(),
+            SubjectTitles: obj.Title,
+          }));
+
+          setSub(combinedArray);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      }
+    };
+    fetchSubject();
+  }, [formik.values.StandardId, formik.values.DivisionId]);
+
+  const handleSelectStd = (selectedList) => {
+    const selectedSubjectIds = selectedList.map((subject) => subject.SubjectId); // Extract IDs from selected subjects
+    console.log('Selected List:', selectedList);
+    console.log('Selected Subject IDs:', selectedSubjectIds);
+
+    setSelectedStd(selectedList);
+    formik.setFieldValue('SubjectId', selectedSubjectIds.join(',')); // Set only IDs to the formik field
+  };
 
   const handleGoBack = () => {
     navigate('/teacher/listing');
@@ -155,10 +189,10 @@ const TeacherView = () => {
                           </option>
                         ))}
                       </select>
-                      {formik.touched.TeacherName &&
-                        formik.errors.TeacherName && (
+                      {formik.touched.StandardId &&
+                        formik.errors.StandardId && (
                           <small className="text-red-500">
-                            {formik.errors.TeacherName}
+                            {formik.errors.StandardId}
                           </small>
                         )}
                     </div>
@@ -178,10 +212,10 @@ const TeacherView = () => {
                           </option>
                         ))}
                       </select>
-                      {formik.touched.TeacherEmail &&
-                        formik.errors.TeacherEmail && (
+                      {formik.touched.DivisionId &&
+                        formik.errors.DivisionId && (
                           <small className="text-red-500">
-                            {formik.errors.TeacherEmail}
+                            {formik.errors.DivisionId}
                           </small>
                         )}
                     </div>
@@ -191,52 +225,21 @@ const TeacherView = () => {
                       </label>
 
                       <Multiselect
-                        selectedValues={selectedStd}
-                        onSelect={handleSelectStd}
-                        name="SubjectId"
-                        isObject={true}
-                        displayValue="Title"
-                        options={sub}
+                        options={sub} // Options to display in the dropdown
+                        selectedValues={selectedStd} // Preselected value to persist in dropdown
+                        onSelect={handleSelectStd} // Function will trigger on select event
+                        onRemove={handleSelectStd} // Function will trigger on remove event
+                        displayValue="SubjectTitles" // Property name to display in the dropdown options
+                        isObject={true} // This ensures that the options are treated as objects
+                        name="SubjectId" // Name attribute for the form field
                       />
-                      {formik.touched.TeacherPhone &&
-                        formik.errors.TeacherPhone && (
-                          <small className="text-red-500">
-                            {formik.errors.TeacherPhone}
-                          </small>
-                        )}
+                      {formik.touched.SubjectId && formik.errors.SubjectId && (
+                        <small className="text-red-500">
+                          {formik.errors.SubjectId}
+                        </small>
+                      )}
                     </div>
-                    <div className=" ">
-                      <label className="mb-3 block text-black dark:text-white">
-                        Status <span className="text-danger">*</span>
-                      </label>
-                      <div className="relative">
-                        <div>
-                          <input
-                            type="radio"
-                            onChange={formik.handleChange}
-                            name="Status"
-                            className="mx-2"
-                            value="1"
-                            checked={formik.values.Status == '1'}
-                          />
-                          Active
-                        </div>
-                        <div>
-                          <input
-                            type="radio"
-                            onChange={formik.handleChange}
-                            name="Status"
-                            className="mx-2"
-                            value="0"
-                            checked={formik.values.Status == '0'}
-                          />
-                          In Active
-                        </div>
-                      </div>
-                      <p>
-                        Please select an a one status by default is inactive.
-                      </p>
-                    </div>
+                    <div></div>
                     <div></div>
                     <div className="ml-auto mt-auto">
                       <button
@@ -272,11 +275,11 @@ const TeacherView = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data?.map((val) => (
+                    {data?.map((val, index) => (
                       <tr key={val.Id}>
                         <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                           <h5 className="font-medium text-black dark:text-white">
-                            {val.Id}
+                            {index + 1}
                           </h5>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

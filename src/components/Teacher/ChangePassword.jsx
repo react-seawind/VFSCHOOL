@@ -42,7 +42,11 @@ const TeacherChangePwd = () => {
     onSubmit: async (values, actions) => {
       setIsFormLoading(true);
       try {
-        await TeacherChangePassword(values);
+        const result = await TeacherChangePassword(values);
+        if (result.status === true) {
+          actions.resetForm();
+          navigate('/student/listing');
+        }
       } catch (error) {
         console.error('Error updating Password:', error);
       } finally {

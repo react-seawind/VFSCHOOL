@@ -96,6 +96,18 @@ const ReportCardListing = () => {
       </div>
     );
   };
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <Link to={rowData.PDF} target="_blank">
+        <button
+          type="button"
+          className="mt-2 bg-blue-600 p-2 px-5 rounded border  text-white"
+        >
+          View
+        </button>
+      </Link>
+    );
+  };
 
   return (
     <div>
@@ -141,10 +153,9 @@ const ReportCardListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="Title"
@@ -152,29 +163,23 @@ const ReportCardListing = () => {
                     sortable
                     className="border border-stroke"
                   />
-
                   <Column
-                    field="Status"
-                    header="Status"
+                    field="StudentName"
+                    header="Student Name"
+                    sortable
                     className="border border-stroke"
-                    body={(rowData) => (
-                      <span
-                        className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                          rowData.Status === 1
-                            ? 'bg-green-600 text-white'
-                            : 'bg-red-600 text-white'
-                        }`}
-                      >
-                        {rowData.Status === 1 ? 'Active' : 'Inactive'}
-                      </span>
-                    )}
                   />
+                  <Column
+                    header="Report Card"
+                    className="border border-stroke"
+                    body={imageBodyTemplate}
+                  ></Column>
                   <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
                   />
                   <Column

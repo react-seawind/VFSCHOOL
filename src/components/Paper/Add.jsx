@@ -11,6 +11,10 @@ import { AddExamTT } from '../../API/ExamtimetableApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { AddExamPaper } from '../../API/ExampaperApi';
 import FormLoader from '../../common/FormLoader';
+import {
+  getDivisionByStandardId,
+  getSubjectByDivisionId,
+} from '../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
@@ -38,32 +42,9 @@ const PaperAdd = () => {
   }, []);
   // ------------Division DATA-------------------
   const [div, setdiv] = useState([]);
-
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setdiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
-    fetchDivision();
-  }, []);
   // ------------subject DATA-------------------
   const [subject, setsubject] = useState([]);
 
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -73,7 +54,6 @@ const PaperAdd = () => {
       SubjectId: '',
       Title: '',
       PDF: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -92,6 +72,39 @@ const PaperAdd = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      if (formik.values.StandardId && formik.values.DivisionId) {
+        try {
+          const subjectData = await getSubjectByDivisionId(
+            formik.values.StandardId,
+            formik.values.DivisionId,
+          );
+          setsubject(subjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      }
+    };
+    fetchSubject();
+  }, [formik.values.StandardId, formik.values.DivisionId]);
 
   const navigate = useNavigate();
 
@@ -148,7 +161,7 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Standard</option>
+                    <option disabled>Select Standard</option>
                     {std.map((std) => (
                       <option key={std.Id} value={std.Id}>
                         {std.Title}
@@ -172,7 +185,7 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Division</option>
+                    <option disabled>Select Division</option>
                     {div.map((div) => (
                       <option key={div.Id} value={div.Id}>
                         {div.Title}
@@ -196,7 +209,7 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option>Select Subject</option>
+                    <option disabled>Select Subject</option>
                     {subject.map((subject) => (
                       <option key={subject.Id} value={subject.Id}>
                         {subject.Title}
@@ -231,36 +244,6 @@ const PaperAdd = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -269,7 +252,7 @@ const PaperAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

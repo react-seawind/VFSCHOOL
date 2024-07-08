@@ -10,7 +10,6 @@ import FormLoader from '../../../common/FormLoader';
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
   Image: yup.string().required('Image is required'),
-  Status: yup.string().required('Status is required'),
 });
 const ImageAdd = () => {
   const Id = Config.getId();
@@ -20,7 +19,6 @@ const ImageAdd = () => {
       SchoolId: Id,
       Title: '',
       Image: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -85,7 +83,7 @@ const ImageAdd = () => {
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Image
-                    <span className="text-danger">*</span>
+                    <span className="text-danger">* (Below 1 MB)</span>
                   </label>
                   <input
                     type="file"
@@ -103,42 +101,7 @@ const ImageAdd = () => {
                       {formik.errors.Image}
                     </small>
                   )}
-                  <p>Please select an a png,jpeg,jpg,gif file only.</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                  {formik.touched.Status && formik.errors.Status && (
-                    <small className="text-red-500">
-                      {formik.errors.Status}
-                    </small>
-                  )}
+                  <p>Please select an a png,jpeg,jpg,gif,webp file only.</p>
                 </div>
               </div>
 
@@ -150,7 +113,7 @@ const ImageAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

@@ -164,7 +164,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-700" />
                         </div>
                       </NavLink>
 
@@ -393,7 +393,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-700" />
                         </div>
                       </NavLink>
 
@@ -677,7 +677,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-700" />
                         </div>
                       </NavLink>
 
@@ -728,7 +728,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-600" />
                         </div>
                       </NavLink>
 
@@ -789,7 +789,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-600" />
                         </div>
                       </NavLink>
 
@@ -850,7 +850,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-600" />
                         </div>
                       </NavLink>
 
@@ -911,7 +911,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-600" />
                         </div>
                       </NavLink>
 
@@ -972,7 +972,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-500" />
                         </div>
                       </NavLink>
 
@@ -1033,7 +1033,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown />
+                          <FaChevronDown className="bg-red-500" />
                         </div>
                       </NavLink>
 

@@ -10,13 +10,13 @@ import { getAllStandard } from '../../API/StandardApi';
 import { AddExamTT } from '../../API/ExamtimetableApi';
 import { AddHolidayHW } from '../../API/HolidayHomeWorkApi';
 import FormLoader from '../../common/FormLoader';
+import { getDivisionByStandardId } from '../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Title is required'),
   StandardId: yup.string().required('Standard is required'),
   DivisionId: yup.string().required('Division is required'),
   PDF: yup.string().required('Homework is required'),
-  Status: yup.string().required('Status is required'),
 });
 const HolidayAdd = () => {
   const Id = Config.getId();
@@ -38,17 +38,6 @@ const HolidayAdd = () => {
   // ------------Division DATA-------------------
   const [div, setdiv] = useState([]);
 
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setdiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
-    fetchDivision();
-  }, []);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -57,7 +46,6 @@ const HolidayAdd = () => {
       DivisionId: '',
       Title: '',
       PDF: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -76,6 +64,22 @@ const HolidayAdd = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
 
   const navigate = useNavigate();
 
@@ -190,41 +194,6 @@ const HolidayAdd = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                  {formik.touched.Status && formik.errors.Status && (
-                    <small className="text-red-500">
-                      {formik.errors.Status}
-                    </small>
-                  )}
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -233,7 +202,7 @@ const HolidayAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

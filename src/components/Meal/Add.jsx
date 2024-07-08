@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
 import Config from '../../API/Config';
 import { AddMeal, getMealById } from '../../API/MealAPI';
+import FormLoader from '../../common/FormLoader';
 
 const validationSchema = yup.object().shape({
   Monday: yup.string().required('Monday Meal is required'),
@@ -36,6 +37,7 @@ const MealAdd = () => {
 
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Monday: '',
@@ -46,14 +48,16 @@ const MealAdd = () => {
       Friday: '',
       Saturday: '',
       Sunday: '',
-      Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         await AddMeal(values);
       } catch (error) {
         console.error('Error adding Meal:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -66,7 +70,7 @@ const MealAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Meal Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -209,35 +213,6 @@ const MealAdd = () => {
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-              </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
@@ -247,7 +222,7 @@ const MealAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

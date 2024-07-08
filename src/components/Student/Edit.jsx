@@ -13,6 +13,7 @@ import { getStudentById, updateStudentById } from '../../API/StudentApi';
 import { getAllTeacher } from '../../API/TeacherApi';
 import FormLoader from '../../common/FormLoader';
 import { format } from 'date-fns';
+import { getDivisionByStandardId } from '../../API/GetStdDivSub';
 
 const validationSchema = Yup.object().shape({
   StudentName: Yup.string()
@@ -31,8 +32,12 @@ const validationSchema = Yup.object().shape({
     .min(10, 'User Phone must be at least 10 characters')
     .max(10, 'User Phone must be at most 10 characters')
     .required('Parent Phone is required'),
-  RollNo: Yup.string().required('RollNo is required'),
-  GrNo: Yup.string().required('GrNo is required'),
+  RollNo: Yup.string()
+    .matches(/^[0-9]+$/, 'RollNo must be only digits')
+    .required('RollNo is required'),
+  GrNo: Yup.string()
+    .matches(/^[0-9]+$/, 'GrNo must be only digits')
+    .required('GrNo is required'),
   MotherName: Yup.string().required('Mother Name is required'),
   DOB: Yup.string().required('Date Of Birth is required'),
   BloodGroup: Yup.string().required('BloodGroup is required'),
@@ -110,17 +115,6 @@ const StudentEdit = () => {
   // ------------Division DATA-------------------
   const [div, setdiv] = useState([]);
 
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setdiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
-    fetchDivision();
-  }, []);
   // ------------Teacher DATA-------------------
   const [teacher, setteacher] = useState([]);
 
@@ -189,6 +183,22 @@ const StudentEdit = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.StandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.StandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.StandardId]);
   function getFileExtension(filename) {
     if (typeof filename !== 'string') {
       return 'Invalid filename';
@@ -893,7 +903,7 @@ const StudentEdit = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

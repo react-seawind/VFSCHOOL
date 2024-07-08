@@ -16,14 +16,12 @@ const validationSchema = yup.object().shape({
 const EventAdd = () => {
   const Id = Config.getId();
   const [isFormLoading, setIsFormLoading] = useState(false);
-  const currentdate = Date.now();
   const formik = useFormik({
     initialValues: {
       SchoolId: Id,
       Title: '',
       EventDate: new Date().toISOString().substring(0, 16),
       Content: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
@@ -44,6 +42,15 @@ const EventAdd = () => {
 
   const handleGoBack = () => {
     navigate('/event/listing');
+  };
+
+  const getMinDateTime = () => {
+    const now = new Date();
+    const minDateTime = new Date(
+      now.getTime() - now.getTimezoneOffset() * 60000,
+    );
+    const minDateTimeString = minDateTime.toISOString().slice(0, 16);
+    return minDateTimeString;
   };
 
   return (
@@ -89,6 +96,7 @@ const EventAdd = () => {
                   <input
                     type="datetime-local"
                     name="EventDate"
+                    min={getMinDateTime()}
                     value={formik.values.EventDate}
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -119,36 +127,6 @@ const EventAdd = () => {
                 )}
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -157,7 +135,7 @@ const EventAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >

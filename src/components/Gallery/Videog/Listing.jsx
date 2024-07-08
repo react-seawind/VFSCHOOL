@@ -100,7 +100,13 @@ const VideoListing = () => {
 
   const videoBodyTemplate = (rowData) => {
     return (
-      <video width="130" controls className="shadow-2 border-round mx-auto">
+      <video
+        width="150"
+        controls
+        autoPlay
+        muted
+        className="shadow-2 border-round mx-auto"
+      >
         <source src={rowData.Video} type="video/mp4" />
       </video>
     );
@@ -149,10 +155,9 @@ const VideoListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="Title"
@@ -166,28 +171,13 @@ const VideoListing = () => {
                     className="border border-stroke"
                     body={videoBodyTemplate}
                   ></Column>
-                  <Column
-                    field="Status"
-                    header="Status"
-                    className="border border-stroke"
-                    body={(rowData) => (
-                      <span
-                        className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                          rowData.Status === 1
-                            ? 'bg-green-600 text-white'
-                            : 'bg-red-600 text-white'
-                        }`}
-                      >
-                        {rowData.Status === 1 ? 'Active' : 'Inactive'}
-                      </span>
-                    )}
-                  />
+
                   <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'dd/MM/yyyy hh:mm a')
                     }
                   />
                   <Column

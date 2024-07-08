@@ -8,12 +8,12 @@ import { getAllStandard } from '../../../API/StandardApi';
 import Config from '../../../API/Config';
 import { AddSubject } from '../../../API/SubjectAPI';
 import FormLoader from '../../../common/FormLoader';
+import { getDivisionByStandardId } from '../../../API/GetStdDivSub';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Subject Name is required'),
   SchoolStandardId: yup.string().required('Standard is required'),
   SchoolDivisionId: yup.string().required('Division is required'),
-  Status: yup.string().required('Status is required'),
 });
 const SubjectAdd = () => {
   const Id = Config.getId();
@@ -35,17 +35,6 @@ const SubjectAdd = () => {
   // ------------Division DATA-------------------
   const [div, setdiv] = useState([]);
 
-  useEffect(() => {
-    const fetchDivision = async () => {
-      try {
-        const DivisionData = await getAllDivision();
-        setdiv(DivisionData);
-      } catch (error) {
-        console.error('Error fetching Division:', error);
-      }
-    };
-    fetchDivision();
-  }, []);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -53,7 +42,6 @@ const SubjectAdd = () => {
       Title: '',
       SchoolStandardId: '',
       SchoolDivisionId: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
@@ -69,6 +57,22 @@ const SubjectAdd = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      if (formik.values.SchoolStandardId) {
+        try {
+          const DivisionData = await getDivisionByStandardId(
+            formik.values.SchoolStandardId,
+          );
+          setdiv(DivisionData);
+        } catch (error) {
+          console.error('Error fetching Division:', error);
+        }
+      }
+    };
+    fetchDivision();
+  }, [formik.values.SchoolStandardId]);
 
   const navigate = useNavigate();
 
@@ -94,7 +98,7 @@ const SubjectAdd = () => {
             </div>
 
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5.5 py-3.5 px-5.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Select Standard <span className="text-danger">*</span>
@@ -165,41 +169,6 @@ const SubjectAdd = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                  {formik.touched.Status && formik.errors.Status && (
-                    <small className="text-red-500">
-                      {formik.errors.Status}
-                    </small>
-                  )}
-                </div>
-              </div>
-
               <div className="flex   gap-5.5 py-3.5 px-5.5">
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
@@ -208,7 +177,7 @@ const SubjectAdd = () => {
                   Submit
                 </button>
                 <button
-                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-white dark:text-white"
                   onClick={handleGoBack}
                   type="button"
                 >
