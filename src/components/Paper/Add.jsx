@@ -161,7 +161,7 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option disabled>Select Standard</option>
+                    <option>Select Standard</option>
                     {std.map((std) => (
                       <option key={std.Id} value={std.Id}>
                         {std.Title}
@@ -185,12 +185,20 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option disabled>Select Division</option>
-                    {div.map((div) => (
-                      <option key={div.Id} value={div.Id}>
-                        {div.Title}
-                      </option>
-                    ))}
+                    {div.length === 0 ? (
+                      <option>No Division</option>
+                    ) : (
+                      <>
+                        <option>Select Division</option>
+                        {div.map((div) => (
+                          <React.Fragment>
+                            <option key={div.Id} value={div.Id}>
+                              {div.Title}
+                            </option>
+                          </React.Fragment>
+                        ))}
+                      </>
+                    )}
                   </select>
 
                   {formik.touched.DivisionId && formik.errors.DivisionId && (
@@ -209,12 +217,20 @@ const PaperAdd = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    <option disabled>Select Subject</option>
-                    {subject.map((subject) => (
-                      <option key={subject.Id} value={subject.Id}>
-                        {subject.Title}
-                      </option>
-                    ))}
+                    {subject.length === 0 ? (
+                      <option>No Subject</option>
+                    ) : (
+                      <>
+                        <option>Select Subject</option>
+                        {subject.map((subject) => (
+                          <React.Fragment>
+                            <option key={subject.Id} value={subject.Id}>
+                              {subject.Title}
+                            </option>
+                          </React.Fragment>
+                        ))}
+                      </>
+                    )}
                   </select>
 
                   {formik.touched.SubjectId && formik.errors.SubjectId && (

@@ -201,11 +201,20 @@ const HolidayEdit = () => {
                     onChange={formik.handleChange}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
-                    {div.map((div) => (
-                      <option key={div.Id} value={div.Id}>
-                        {div.Title}
-                      </option>
-                    ))}
+                    {div.length === 0 ? (
+                      <option>No Division</option>
+                    ) : (
+                      <>
+                        <option>Select Division</option>
+                        {div.map((div) => (
+                          <React.Fragment>
+                            <option key={div.Id} value={div.Id}>
+                              {div.Title}
+                            </option>
+                          </React.Fragment>
+                        ))}
+                      </>
+                    )}
                   </select>
 
                   {formik.touched.DivisionId && formik.errors.DivisionId && (

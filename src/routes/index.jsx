@@ -58,6 +58,7 @@ import TeacherDataManager from '../components/Datamanager/Teacherreport';
 import SubjectListing from '../components/Standard/Subject/Listing';
 import SubjectAdd from '../components/Standard/Subject/Add';
 import SubjectEdit from '../components/Standard/Subject/Edit';
+import StudentAppData from '../components/Datamanager/StudentAppData';
 // import MainForm from '../components/TINY';
 
 const coreRoutes = [
@@ -169,6 +170,10 @@ const coreRoutes = [
   {
     path: '/teacherreport',
     component: TeacherDataManager,
+  },
+  {
+    path: '/student-inquiry-report',
+    component: StudentAppData,
   },
 
   // =================image=============

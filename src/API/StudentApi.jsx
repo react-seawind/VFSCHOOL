@@ -22,6 +22,17 @@ export const getAllStudent = async () => {
     throw error;
   }
 };
+// =========================get All Student Inquiry=========================
+export const getAllStudentInquiry = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/contact/${SId}`, {
+      headers,
+    });
+    return response.data.responsedata;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // ----------------------getStudentbyId----------------
 export const getStudentById = async (Id) => {

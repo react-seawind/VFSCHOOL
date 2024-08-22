@@ -164,7 +164,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-700" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -393,7 +393,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-700" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -677,7 +677,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-700" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -728,7 +728,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-600" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -789,7 +789,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-600" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -850,7 +850,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-600" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -911,7 +911,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-600" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -972,7 +972,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-500" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -1033,7 +1033,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             open && 'rotate-180'
                           }`}
                         >
-                          <FaChevronDown className="bg-red-500" />
+                          <FaChevronDown />
                         </div>
                       </NavLink>
 
@@ -1303,6 +1303,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                                 >
                                   <FaMoneyBill />
                                   Teacher Report
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/student-inquiry-report"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaChild />
+                                  Student Inquiry
                                 </NavLink>
                               </li>
                             </ul>

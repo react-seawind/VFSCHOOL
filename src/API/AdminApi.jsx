@@ -15,7 +15,9 @@ const headers = {
 export const AdminLogin = async (data) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/adminLogin`, data);
-    if (response.data.status === true) {
+    if (response.data.responseData.ThisAdmin === 'Teacher') {
+      toast.error('Invalid Username / Password');
+    } else if (response.data.status === true) {
       const { Id, token } = response.data.responseData;
       const schoollogindata = { Id, token };
       sessionStorage.setItem(
